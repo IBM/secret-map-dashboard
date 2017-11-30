@@ -31,13 +31,5 @@ spec:
       containers:
         - image: darryl3223/dashboard:1.0
           name: dashboard
-          env:
-            - name: MONGODB_URL
-              value: ''
-            - name: MONGODB_CERT_BASE64
-              valueFrom:
-                configMapKeyRef:
-                  name: mongodb-cert
-                  key: mongo.cert
           ports:
             - containerPort: 8080
