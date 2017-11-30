@@ -1,0 +1,22 @@
+{
+  "name": "secret-map-dashboard",
+  "version": "1.0.0",
+  "description": "map dashboard for conferences",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/db118/secret-map-dashboard.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/db118/secret-map-dashboard/issues"
+  },
+  "homepage": "https://github.com/db118/secret-map-dashboard#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
