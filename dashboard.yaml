@@ -1,0 +1,43 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dashboard
+  labels:
+    app: dashboard
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8080
+  type: LoadBalancer
+  selector:
+    app: dashboard
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: dashboard-deployment
+  labels:
+    app: dashboard
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: dashboard
+    spec:
+      containers:
+        - image: darryl3223/dashboard:1.0
+          name: dashboard
+          env:
+            - name: MONGODB_URL
+              value: ''
+            - name: MONGODB_CERT_BASE64
+              valueFrom:
+                configMapKeyRef:
+                  name: mongodb-cert
+                  key: mongo.cert
+          ports:
+            - containerPort: 8080
