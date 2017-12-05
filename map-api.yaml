@@ -41,6 +41,6 @@ spec:
           ports:
             - containerPort: 8080
       volumes:
-      - name: mongodb-cert
-        secret:
-          secretName: mongodb-cert-secret
+        - name: mongodb-cert
+          secret:
+            secretName: mongodb-cert-secret
