@@ -1,0 +1,30 @@
+extends layout
+
+block body
+  div(class="container" ng-controller="dashboardCtrl") 
+    div(class="main")
+      div(class="title")
+        span(ng-bind="conferenceTitle")
+      div(class="map")
+        div(class="mapArea")
+          svg( width="250" height="250" ng-controller="mapCtrl")
+            rect( ng-repeat="booth in map" ng-x="{{ booth.x}}" ng-y="{{booth.y}}" ng-width="{{booth.xDimension}}" ng-height="{{booth.yDimension}}" class="eventBlock")
+      div(class="footer")
+        span(ng-bind="participants+' participants - '+totalDistance+'km walked - '+fitCoins+' fitcoins earned'")
+    div(class="sideInfo")
+      div(class="sideBlock sideBlockImage")
+        img(src="images/pirate.png" alt="Pirate" class="imageIcon")
+      div(class="sideBlock")
+        div(class="sideBlockSteps")
+          span(ng-bind="steps")
+        div(class="sideBlockSteps")
+          span Image
+        div(class="sideBlockSteps")
+          span footsteps
+      div(class="sideBlockBottom")
+        div(class="sideBlockCalories" ng-cloak)
+          span(ng-bind="calories")
+        div(class="sideBlockCalories")
+          span Image
+        div(class="sideBlockCalories")
+          span calories
