@@ -4,10 +4,17 @@
 var app = angular.module("dashBoardApp", []);
   
 app.controller("mapCtrl", function($scope, $http){
+<<<<<<< HEAD
   $http.get("http://169.46.74.117/get_events")
     .then(function(res) {
       $scope.map = res.data[0].map;
       $scope.beacons = res.data[0].beacons;
+=======
+    $http.get("http://169.46.74.117/get_events")
+      .then(function(res) {
+        $scope.map = res.data[0].map;
+        $scope.beacons = res.data[0].beacons;
+>>>>>>> 440d4f8637eaa47366429a09a3891f1c654eeb5e
     });
 });
 
