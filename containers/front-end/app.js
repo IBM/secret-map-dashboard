@@ -22,10 +22,10 @@ app.use(express.static(__dirname + "/public"));
 
 // ROUTES
 app.get("/",(req,res)=>{
-    res.render("index");
+  res.render("index");
 });
 
-app.listen(port,(err)=> {});
+app.listen(port,()=> {});
 
 // more middleware (executes after routes)
 // app.use(function(req, res, next) {

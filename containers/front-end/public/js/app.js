@@ -1,5 +1,4 @@
 "use strict";
-// Declare app level module which depends on filters, and services
 
 var app = angular.module("dashBoardApp", []);
   
@@ -14,12 +13,12 @@ app.controller("mapCtrl", function($scope, $http){
 app.controller("dashboardCtrl", function($scope, $http){
   $http.get("http://169.46.74.117/get_events")
     .then(function(res) {
-        $scope.conferenceTitle = res.data[0].eventDescription + " " + res.data[0].location + " Conference";
-        $scope.calories = 10000;
-        $scope.steps = 23000;
-        $scope.participants = 240;
-        $scope.totalDistance = 52;
-        $scope.fitCoins = 750;
+      $scope.conferenceTitle = res.data[0].eventDescription + " " + res.data[0].location + " Conference";
+      $scope.calories = 10000;
+      $scope.steps = 23000;
+      $scope.participants = 240;
+      $scope.totalDistance = 52;
+      $scope.fitCoins = 750;
     });
 });
 
