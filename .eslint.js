@@ -3,7 +3,7 @@ module.exports = {
     "es6": true,
     "node": true
   },
-  "extends": "eslint:recommended",
+  "extends": ["angular", "eslint:recommended"],
   "parserOptions": {
     "sourceType": "module"
   },
