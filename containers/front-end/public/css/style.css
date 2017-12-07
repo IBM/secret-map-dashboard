@@ -1,6 +1,6 @@
 body{
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
 }
 .container {
   width: 100vw;
@@ -10,7 +10,7 @@ body{
 }
 .main {
   width: 100%;
-  display: flex;  
+  display: flex;
   flex-direction: column;
   background-color: rgb(0, 217, 255);
 }
