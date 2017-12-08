@@ -1,17 +1,19 @@
 body{
-  padding: 0px;
-  margin: 0px;
+  padding: 0;
+  margin: 0;
   font-family: Montserrat, Helvetica, sans-serif;
 }
+
 .container {
   width: 100vw;
   height: 100vh;
   display: flex;
   flex-direction: row;
 }
+
 .main {
   width: 100%;
-  display: flex;  
+  display: flex;
   flex-direction: column;
   background-color: #FEFFFF;
 }
@@ -89,6 +91,7 @@ body{
   justify-content: center;
   color: #EA998C;
 }
+
 .sideBlockCalories{
   height: 33.3%;
   display: flex;
