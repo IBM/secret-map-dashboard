@@ -3,6 +3,7 @@ FROM node:8-alpine
 COPY app.js /
 COPY package.json /
 COPY public /public
+COPY views /views
 
 RUN npm install
 
