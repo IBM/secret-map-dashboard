@@ -22,8 +22,8 @@ function addBooth() { // eslint-disable-line
   let unit = document.getElementById("unit").value;
   let description = document.getElementById("description").value;
   let measurementUnit = document.getElementById("measurementUnit").value;
-  let xDimension = parseInt(document.getElementById("xDimension").value);
-  let yDimension = parseInt(document.getElementById("yDimension").value);
+  let width = parseInt(document.getElementById("width").value);
+  let height = parseInt(document.getElementById("height").value);
   let x = parseInt(document.getElementById("x").value);
   let y = parseInt(document.getElementById("y").value);
   let contact = document.getElementById("contact").value;
@@ -33,10 +33,12 @@ function addBooth() { // eslint-disable-line
     unit: "",
     description: "",
     measurementUnit: "",
-    xDimension: null,
-    yDimension: null,
-    x: null,
-    y: null,
+    shape: {
+      width: null,
+      height: null,
+      x: null,
+      y: null
+    },
     contact: "",
   };
 
@@ -44,10 +46,10 @@ function addBooth() { // eslint-disable-line
   jsonBody.unit = unit;
   jsonBody.description = description;
   jsonBody.measurementUnit = measurementUnit;
-  jsonBody.xDimension = xDimension;
-  jsonBody.yDimension = yDimension;
-  jsonBody.x = x;
-  jsonBody.y = y;
+  jsonBody.shape.width = width;
+  jsonBody.shape.height = height;
+  jsonBody.shape.x = x;
+  jsonBody.shape.y = y;
   jsonBody.contact = contact;
   alert(JSON.stringify(jsonBody));
 
@@ -92,7 +94,7 @@ function addBeacon() { // eslint-disable-line
  */
 function addEvent() { // eslint-disable-line
   let eventId = document.getElementById("eventId").value;
-  let eventDescription = document.getElementById("eventDescription").value;
+  let eventName = document.getElementById("eventName").value;
   let location = document.getElementById("location").value;
   let startDate = document.getElementById("startDate").value;
   let endDate = document.getElementById("endDate").value;
@@ -107,7 +109,7 @@ function addEvent() { // eslint-disable-line
 
   let jsonBody = {
     eventId: "",
-    eventDescription: "",
+    eventName: "",
     location: "",
     startDate: null,
     endDate: null,
@@ -115,7 +117,7 @@ function addEvent() { // eslint-disable-line
     beacons: "",
   };
   jsonBody.eventId = eventId;
-  jsonBody.eventDescription = eventDescription;
+  jsonBody.eventName = eventName;
   jsonBody.location = location;
   jsonBody.startDate = startDate;
   jsonBody.endDate = endDate;
