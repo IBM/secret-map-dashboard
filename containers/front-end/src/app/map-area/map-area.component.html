@@ -1,0 +1,10 @@
+<svg class="mapArea" appMapArea [booths]="booths" [beacons]="beacons">
+
+    <rect *ngFor="let booth of booths"
+        [attr.x]="booth.x" [attr.y]="booth.y" [attr.width]="booth.xDimension" [attr.height]="booth.yDimension" class="eventBlock">
+    </rect>
+
+    <circle *ngFor="let beacon of beacons"
+    [attr.cx]="beacon.x" [attr.cy]="beacon.y" r="2" class="beaconBlock"/>
+    
+</svg>

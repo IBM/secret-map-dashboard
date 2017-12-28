@@ -1,0 +1,46 @@
+.sideBlock{
+    height: 33.3%;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 2px #B48E8E solid;
+    border-left: 2px #B48E8E solid;
+}
+
+.sideBlockBottom{
+  height: 33.3%;
+  display: flex;
+  flex-direction: column;
+  background-color: #FEFFFF;
+  border-left: 2px #B48E8E solid;
+}
+  
+.sideBlockImage{
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  background-color: #FEFFFF;
+  color: #EA998C;
+  font-size: 2vw;
+}
+  
+.sideBlockSteps{
+  height: 33.3%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  color: #EA998C;
+  font-size: 1.25vw
+}
+  
+.sideBlockCalories{
+  height: 33.3%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  color: #EA998C;
+  font-size: 1.25vw
+}
