@@ -28,7 +28,7 @@ module.exports = {
     "prefer-promise-reject-errors": 2,
     "no-invalid-this": 0,
   },
-  "global": {
+  "globals": {
     "jasmine": true
   }
 };
