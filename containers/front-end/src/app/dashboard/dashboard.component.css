@@ -1,0 +1,17 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+}
+.mainDisplay {
+  width: 100%;  
+  flex-direction: column;
+  background-color: #FEFFFF;
+}
+.sideDisplay {
+  width: 20%;
+  flex-direction: column;
+  background-color: #FEFFFF;
+}
+

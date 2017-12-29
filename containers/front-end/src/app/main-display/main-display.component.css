@@ -1,0 +1,54 @@
+.mainDisplayEventDescriptionContainer{
+  margin: auto;
+  height: 15%;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 2px #B48E8E solid;
+}
+.mainDisplayMapContainer{
+  margin: auto;
+  height: 70%;
+  display: flex;
+  flex-direction: column;
+  background-color: #FEFFFF;
+}
+
+.mainDisplayFooterContainer{
+  margin: auto;
+  height: 15%;
+  display: flex;
+  flex-direction: column;
+  border-top: 2px #B48E8E solid;
+}
+
+.mainDisplayEventDescription{
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  color:  #EC5133;
+  font-size: 2.25vw;
+}
+
+.mainDisplayMap{
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  color:  #723936;
+}
+
+.mainDisplayFooter{
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  color:  #723936;
+  font-size: 2.25vw;
+}

@@ -1,0 +1,22 @@
+.eventBlock {
+  fill: #CCB3B3;
+  stroke-width:0;
+  stroke:rgb(0,0,0);
+}
+
+.beaconBlock {
+  fill: rgb(255, 0, 0);
+  stroke-width:0;
+  stroke:rgb(0,0,0);
+}
+
+.mapArea {
+  margin: auto;
+  height: 65vh;
+  width: 82vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+}
