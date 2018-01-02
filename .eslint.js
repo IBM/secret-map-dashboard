@@ -27,5 +27,8 @@ module.exports = {
     "guard-for-in": 0,
     "prefer-promise-reject-errors": 2,
     "no-invalid-this": 0,
+  },
+  "globals": {
+    "jasmine": true
   }
 };
