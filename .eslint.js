@@ -24,6 +24,7 @@ module.exports = {
       "error",
       "always"
     ],
+    "no-console" : "off",
     "guard-for-in": 0,
     "prefer-promise-reject-errors": 2,
     "no-invalid-this": 0,
