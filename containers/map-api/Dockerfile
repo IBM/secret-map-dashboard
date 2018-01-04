@@ -3,6 +3,7 @@ FROM node:8-alpine
 COPY app.js /
 COPY package.json /
 COPY public /public
+COPY routes /routes
 COPY models /models
 
 RUN npm install
