@@ -26,7 +26,7 @@ export class MapAreaDirective implements AfterViewChecked {
 
     const children = parent.getElementsByClassName('eventBlock');
 
-    if (!children) {
+    if (children.length === 0) {
       return;
     }
 
@@ -55,7 +55,7 @@ export class MapAreaDirective implements AfterViewChecked {
 
     const children = parent.getElementsByClassName('beaconBlock');
 
-    if (!children) {
+    if (children.length === 0) {
       return;
     }
 
@@ -83,7 +83,7 @@ export class MapAreaDirective implements AfterViewChecked {
     const boothTexts = parent.getElementsByClassName('boothText');
     const rectTags = parent.getElementsByClassName('eventBlock');
 
-    if (!boothTexts || !rectTags) {
+    if (boothTexts.length === 0 || rectTags.length === 0) {
       return;
     }
 
