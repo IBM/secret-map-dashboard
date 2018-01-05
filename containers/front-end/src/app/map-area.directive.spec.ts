@@ -29,13 +29,9 @@ describe('MapAreaDirective', () => {
     directive.booths = [
      {
         'contact': 'John Doe',
-        'y': 0,
-        'x': 0,
-        'yDimension': 3,
-        'xDimension': 3,
         'measurementUnit': 'metre',
         'description': 'Node description',
-        'unit': 'Node',
+        'shape': {'y': 0, 'x': 0, 'width': 3, 'height': 3},
         'boothId': 'A01'
     }
    ];

@@ -2,7 +2,7 @@ import {Booth, Beacon} from './conferenceItems';
 
 export class Conference {
     eventId: string;
-    eventDescription: string;
+    eventName: string;
     location: string;
     startDate: Date;
     endDate: Date;

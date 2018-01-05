@@ -30,7 +30,7 @@ describe('MainDisplayComponent', () => {
     component.conferences = [
     {
       'eventId': 'E01',
-      'eventDescription': 'Index',
+      'eventName': 'Index',
       'location': 'San Francisco',
       'startDate': new Date( '2018-02-20T00:00:00.000Z' ),
       'endDate': new Date( '2018-02-24T00:00:00.000Z' ),
@@ -46,13 +46,9 @@ describe('MainDisplayComponent', () => {
       'map': [
           {
             'contact': 'John Doe',
-            'y': 0,
-            'x': 0,
-            'yDimension': 3,
-            'xDimension': 3,
+            'shape': {'width': 3, 'height': 3, 'x': 3, 'y': 3},
             'measurementUnit': 'metre',
             'description': 'Node description',
-            'unit': 'Node',
             'boothId': 'A01'
           }
       ]

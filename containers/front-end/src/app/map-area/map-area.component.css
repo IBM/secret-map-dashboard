@@ -10,6 +10,14 @@
   stroke:rgb(0,0,0);
 }
 
+.boothText{
+  fill: blue;
+  stroke-width:0;
+  stroke:rgb(0,0,0);
+  font-size: 0.75vw;
+  font-family: sans-serif;
+}
+
 .mapArea {
   margin: auto;
   height: 65vh;
