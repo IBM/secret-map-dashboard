@@ -16,9 +16,11 @@ export class DashboardService {
 
   /** GET conferences from the map-api server */
   getConferences(): Observable<Conference[]> {
-    return this.http.get<Conference[]>(this.mapApiURL + 'get_events')
+    return this.http.get<Conference[]>(this.mapApiURL + 'events')
       .pipe(
-        tap(conferences => console.log(`fetched conferences`)),
+        tap(conferences => {
+          console.log(`fetched conferences`);
+      }),
         catchError(this.handleError('getConferences', []))
       );
   }

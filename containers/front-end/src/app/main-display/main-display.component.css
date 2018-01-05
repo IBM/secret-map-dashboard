@@ -1,9 +1,9 @@
-.mainDisplayEventDescriptionContainer{
+.mainDisplayEventNameContainer{
   margin: auto;
   height: 15%;
   display: flex;
   flex-direction: column;
-  border-bottom: 2px #B48E8E solid;
+  border-bottom: 3px #B48E8E solid;
 }
 .mainDisplayMapContainer{
   margin: auto;
@@ -18,10 +18,10 @@
   height: 15%;
   display: flex;
   flex-direction: column;
-  border-top: 2px #B48E8E solid;
+  border-top: 3px #B48E8E solid;
 }
 
-.mainDisplayEventDescription{
+.mainDisplayEventName{
   margin: auto;
   display: flex;
   flex-direction: row;

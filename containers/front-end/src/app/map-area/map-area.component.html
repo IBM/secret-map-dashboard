@@ -1,10 +1,22 @@
 <svg class="mapArea" appMapArea [booths]="booths" [beacons]="beacons">
 
     <rect *ngFor="let booth of booths"
-        [attr.x]="booth.x" [attr.y]="booth.y" [attr.width]="booth.xDimension" [attr.height]="booth.yDimension" class="eventBlock">
+        [attr.x]="booth.shape['x']"
+        [attr.y]="booth.shape['y']"
+        [attr.width]="booth.shape['width']"
+        [attr.height]="booth.shape['height']"
+        class="eventBlock">
     </rect>
 
+    <text *ngFor="let booth of booths" 
+        [attr.x]="booth.shape['x']" 
+        [attr.y]="booth.shape['y']" 
+        class="boothText"> {{booth.description}} 
+    </text>
+
     <circle *ngFor="let beacon of beacons"
-    [attr.cx]="beacon.x" [attr.cy]="beacon.y" r="2" class="beaconBlock"/>
-    
+        [attr.cx]="beacon.x" 
+        [attr.cy]="beacon.y" 
+        r="3" 
+        class="beaconBlock"/> 
 </svg>
