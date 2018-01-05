@@ -27,3 +27,15 @@ tags
 Network Trash Folder
 Temporary Items
 .apdisk
+
+/**/ca
+/**/tls
+/**/crypto
+/**/blockchainNetwork/certs/**
+/cli/peers/**
+/**/admincerts
+/**/cacerts
+/**/keystore
+/**/signcerts
+/**/tlscerts
+/**/*.pem
