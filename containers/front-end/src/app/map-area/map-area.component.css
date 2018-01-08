@@ -19,7 +19,8 @@
 }
 
 .mapArea {
-  margin: auto;
+  margin-left: 10px;
+  margin-right: 10px;
   height: 65vh;
   width: 82vw;
   display: flex;
