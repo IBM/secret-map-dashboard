@@ -11,6 +11,8 @@ import { MapAreaComponent } from './map-area/map-area.component';
 import { SideDisplayComponent } from './side-display/side-display.component';
 import { DashboardService } from './dashboard.service';
 import { MapAreaDirective } from './map-area.directive';
+import { AppRoutingModule } from './/app-routing.module';
+import { HomepageComponent } from './homepage/homepage.component';
 
 
 @NgModule({
@@ -21,11 +23,13 @@ import { MapAreaDirective } from './map-area.directive';
     MapAreaComponent,
     SideDisplayComponent,
     MapAreaDirective,
+    HomepageComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
+    AppRoutingModule,
   ],
   providers: [DashboardService],
   bootstrap: [AppComponent]
