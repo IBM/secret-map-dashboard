@@ -8,6 +8,7 @@ const cors = require("cors");
 const beaconRoute = require("./routes/beacons");
 const boothRoute = require("./routes/booths");
 const eventRoute = require("./routes/events");
+const svgRoute = require("./routes/svg");
 
 const mongoDbUrl = process.env.MONGODB_URL;
 
@@ -46,6 +47,7 @@ app.use(express.static(__dirname + "/public"));
 app.use("/beacons", beaconRoute);
 app.use("/booths", boothRoute);
 app.use("/events", eventRoute);
+app.use("/svg", svgRoute);
 
 let port = process.env.PORT || 8080;
 app.listen(port, function() {
