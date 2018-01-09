@@ -14,22 +14,21 @@ export class MainDisplayComponent implements OnChanges {
   @Input() steps: number;
   @Input() conferenceAttendees: number;
   @Input() fitcoins: number;
-  @Input() conferences: Conference[];
-  conference: Conference;
+  @Input() conference: Conference;
 
   constructor() { }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['conferences']) {
-      this.conference = this.getConference(this.conferences);
+    if (changes['conference']) {
+      this.getConference(this.conference);
     }
   }
 
-  getConference(conferences: Conference[]): Conference {
-    if (!conferences) {
+  getConference(conference: Conference): Conference {
+    if (!conference) {
       return;
     }
-    return conferences.map(x => x)[0];
+    return conference;
   }
 
 }

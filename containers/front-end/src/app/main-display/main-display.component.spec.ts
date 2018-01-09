@@ -27,7 +27,7 @@ describe('MainDisplayComponent', () => {
   });
 
   it('should be created', () => {
-    component.conferences = [
+    component.conference = 
     {
       'eventId': 'E01',
       'eventName': 'Index',
@@ -52,9 +52,9 @@ describe('MainDisplayComponent', () => {
             'boothId': 'A01'
           }
       ]
-    }];
+    };
     component.ngOnChanges({
-        conferences: new SimpleChange(null, component.conferences, true)
+        conference: new SimpleChange(null, component.conference, true)
     });
     fixture.detectChanges();
     expect(component).toBeTruthy();
