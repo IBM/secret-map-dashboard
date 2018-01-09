@@ -1,0 +1,23 @@
+<div  *ngIf="conferences" class="container">
+
+  <div class="mainDisplay">
+    <div class="titleContainer"> 
+      <div class="title"> 
+          Conferences 
+      </div>
+    </div>
+    <div class="conferenceListContainer">
+      <div class="conferenceList">
+            <ul >
+              <li *ngFor="let conference of conferences"> 
+                http://localhost:4200/dashboard/{{conference.eventId}}
+              </li>
+            </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="sideDisplay">
+  </div>
+
+</div>

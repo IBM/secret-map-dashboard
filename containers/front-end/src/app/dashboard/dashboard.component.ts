@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {setInterval} from 'timers';
 import { Conference } from '../conference';
 import { DashboardService } from '../dashboard.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,29 +11,32 @@ import { DashboardService } from '../dashboard.service';
 })
 export class DashboardComponent implements OnInit {
 
-  conferences: Conference[];
   steps: number;
   calories: number;
   fitcoins: number;
   conferenceAttendees: number;  // Will change to an array of Conference Attendees
   sideDisplayInterval: any;
   MainDisplayInterval: any;
+  conference: Conference;
 
-  constructor(private dashboardService: DashboardService) { }
+  constructor(
+    private dashboardService: DashboardService,
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.steps = 0;
     this.calories = 0;
     this.fitcoins = 0;
     this.conferenceAttendees = 0;  // initialization will change to getConferenceAttendees()
-    this.getConferences();
     this.getSideDisplayInfo();
     this.getConferenceAttendees();
+    this.getConference();
   }
 
-  getConferences(): void {
-    this.dashboardService.getConferences()
-    .subscribe(conferences => this.conferences = conferences);
+  getConference(): void {
+    const eventId = this.route.snapshot.paramMap.get('eventId');
+    this.dashboardService.getConference(eventId)
+    .subscribe( conference => this.conference = conference)
   }
 
   // Implementation will be swapped with http calls from

@@ -10,13 +10,14 @@ import {ConferenceAttendee} from './conferenceAttendee';
 
 @Injectable()
 export class DashboardService {
-  private mapApiURL = 'http://169.46.74.117/';
+  private mapApiURL = 'http://169.46.74.117';
 
   constructor(private http: HttpClient) { }
 
   /** GET conferences from the map-api server */
   getConferences(): Observable<Conference[]> {
-    return this.http.get<Conference[]>(this.mapApiURL + 'events')
+    const url = `${this.mapApiURL}/events`
+    return this.http.get<Conference[]>(url)
       .pipe(
         tap(conferences => {
           console.log(`fetched conferences`);
@@ -25,7 +26,20 @@ export class DashboardService {
       );
   }
 
-  /** GET conferenceAttendees from the map-api server */
+  /** GET conference by id from the map-api server */
+  getConference(eventId: string): Observable<Conference> {
+    const url = `${this.mapApiURL}/events/${eventId}`;
+    return this.http.get<Conference>(url).pipe(
+        tap(conference => {
+          console.log(`fetched conference eventId=${eventId}`);
+        }),
+        catchError(this.handleError<Conference>(`getConference eventId=${eventId}`))
+    );
+  }
+
+  /** GET conferenceAttendees from the map-api server 
+   * Not yet Implemented
+  */
   getConferenceAttendees(): Observable<ConferenceAttendee[]> {
     return this.http.get<ConferenceAttendee[]>( this.mapApiURL + 'get_attendees')
       .pipe(
