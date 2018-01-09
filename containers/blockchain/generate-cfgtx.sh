@@ -3,7 +3,6 @@
 CHANNEL_NAME="mychannel"
 PROJPATH=$(pwd)
 CLIPATH=$PROJPATH/cli/peers
-FABRIC_CFG_PATH=$(pwd)
 
 echo
 echo "##########################################################"
@@ -16,7 +15,8 @@ echo "#################################################################"
 echo "### Generating channel configuration transaction 'channel.tx' ###"
 echo "#################################################################"
 $PROJPATH/configtxgen -profile TwoOrgsChannel -outputCreateChannelTx $CLIPATH/channel.tx -channelID $CHANNEL_NAME
-cp $CLIPATH/channel.tx $PROJPATH/blockchain
+cp $CLIPATH/channel.tx $PROJPATH/fitcoin-backend/channel.tx
+cp $CLIPATH/channel.tx $PROJPATH/shop-backend/channel.tx
 
 echo
 echo "#################################################################"

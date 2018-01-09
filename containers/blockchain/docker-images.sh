@@ -61,5 +61,6 @@ if [ $BUILD ];
     docker build -t fitcoin-peer:latest fitcoinPeer/
     docker build -t shop-ca:latest shopCA/
     docker build -t fitcoin-ca:latest fitcoinCA/
-    docker build -t blockchain-peer:latest blockchainNetwork/
+    docker build -t shop-backend:latest shop-backend/
+    docker build -t fitcoin-backend:latest fitcoin-backend/
 fi

@@ -14,3 +14,5 @@
 /**/signcerts
 /**/tlscerts
 /**/*.pem
+/**/fitcoin-peer
+/**/shop-peer
