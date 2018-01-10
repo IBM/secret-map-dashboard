@@ -5,11 +5,15 @@ source "$(dirname "$0")"/../scripts/resources.sh
 
 main(){
     for DIRECTORY in ./containers/*; do
-        pushd "$DIRECTORY"
-        if ! docker build --quiet .; then
-            test_failed "$0"
+        if [ "$DIRECTORY" == "./containers/blockchain" ]; then
+          echo "Ignoring blockchain folder"
+        else
+          pushd "$DIRECTORY"
+          if ! docker build --quiet .; then
+              test_failed "$0"
+          fi
+          popd
         fi
-        popd
     done
     test_passed "$0"
 }

@@ -1,7 +1,8 @@
+---
 version: '2'
 
 services:
   ca-base:
     environment:
-    - FABRIC_CA_HOME=/ca
+      - FABRIC_CA_HOME=/ca
     command: fabric-ca-server start
