@@ -14,10 +14,10 @@ router.get("/:eventId", function(req, res) {
       return console.error(err);
     } else if (event) {
       // Get SVG Content
-      let SVGContent = svgContent(event.map,10);
+      let SVGContent = svgContent(event.map,25);
 
       // Send SVG
-      res.send(svgTemplate(100,100,SVGContent,10));
+      res.send(svgTemplate(100,100,SVGContent,25));
     } else {
       res.send("Event not found...");
     }
@@ -30,12 +30,12 @@ router.get("/:eventId/pdf", function(req, res) {
       res.send("Error getting event: " + err);
       return console.error(err);
     } else if (event) {
-      // Get SVG with a scale of 10
-      let SVGContent = svgContent(event.map,10);
-      let svg = svgTemplate(100,100,SVGContent,10); // Fixed to 100 for now.
+      // Get SVG with a scale of 25
+      let SVGContent = svgContent(event.map,25);
+      let svg = svgTemplate(100,100,SVGContent,25); // Fixed to 100,100 for now.
 
       // Start making PDF
-      let doc = new PDFDocument({ size: [400,400]}); // Fixed to 400 for now.
+      let doc = new PDFDocument({ size: [1000,1000]}); // Fixed to 1000 for now.
       let echoStream = new stream.Writable();
       let pdfBuffer = new Buffer("");
 
@@ -84,22 +84,21 @@ function svgContent(arrayOfElements,scale) {
   let svg = "";
   for (let i = 0; i < arrayOfElements.length; i++) {
     let booth = arrayOfElements[i];
-    let elem = booth.shape;
-    if(elem.type == "rectangle") {
+    if(booth.shape.type == "rectangle") {
       svg +=
-        rectangleTemplate(elem.x, elem.y, elem.width, elem.height,scale);
+        rectangleTemplate(booth,scale);
     }
-    if(elem.type == "circle") {
+    if(booth.shape.type == "circle") {
       svg +=
-        circleTemplate(elem.cx, elem.cy, elem.radius,scale);
+        circleTemplate(booth,scale);
     }
-    if(elem.type == "ellipse") {
+    if(booth.shape.type == "ellipse") {
       svg +=
-        ellipseTemplate(elem.cx, elem.cy, elem.rx, elem.ry,scale);
+        ellipseTemplate(booth,scale);
     }
-    if(elem.type == "polygon") {
+    if(booth.shape.type == "polygon") {
       svg +=
-        polygonTemplate(elem.points,scale);
+        polygonTemplate(booth,scale);
     }
   }
   return svg;
@@ -114,9 +113,21 @@ function svgContent(arrayOfElements,scale) {
  * @param {String} scale is used to scale the values above.
  * @return {String} an SVG element of rectangle in xml format
  */
-function rectangleTemplate(x, y, width, height, scale) {
-  let svg = "<rect x='" + x*scale + "' y='" + y*scale + "' width='" +
-    width*scale + "' height='" + height*scale + "' />";
+function rectangleTemplate(booth, scale) {
+  let elem = booth.shape;
+  elem.x *= scale;
+  elem.y *= scale;
+  elem.width *= scale;
+  elem.height *= scale;
+  const xCentroid = (elem.width/2)+elem.x;
+  const yCentroid = (elem.height/2)+elem.y;
+
+  let svg = "<rect x='" + elem.x + "' y='" + elem.y + "' width='" +
+    elem.width + "' height='" + elem.height + "' fill='#CCB3B3' />";
+  svg += "<text x='" + xCentroid + "' y='" +
+    yCentroid + "' alignment-baseline='middle' text-anchor='middle'\
+    fill='blue' font-size='0.75vw' font-family='sans-serif'>" +
+    booth.unit + "</text>";
   return svg;
 }
 
@@ -128,9 +139,18 @@ function rectangleTemplate(x, y, width, height, scale) {
  * @param {String} scale is used to scale the values above.
  * @return {String} an SVG element of circle in xml format
  */
-function circleTemplate(cx, cy, radius, scale) {
-  let svg = "<circle cx='" + cx*scale + "' cy='" + cy*scale + "' r='" +
-    radius*scale + "' />";
+function circleTemplate(booth, scale) {
+  let elem = booth.shape;
+  elem.cx *= scale;
+  elem.cy *= scale;
+  elem.radius *= scale;
+
+  let svg = "<circle cx='" + elem.cx + "' cy='" + elem.cy + "' r='" +
+    elem.radius + "' fill='#CCB3B3' />";
+  svg += "<text x='" + elem.cx + "' y='" +
+    elem.cy + "' alignment-baseline='middle' text-anchor='middle'\
+    fill='blue' font-size='0.75vw' font-family='sans-serif'>" +
+    booth.unit + "</text>";
   return svg;
 }
 
@@ -143,9 +163,19 @@ function circleTemplate(cx, cy, radius, scale) {
  * @param {String} scale is used to scale the values above.
  * @return {String} an SVG element of rectangle in xml format
  */
-function ellipseTemplate(cx, cy, rx, ry, scale) {
-  let svg = "<ellipse cx='" + cx*scale + "' cy='" + cy*scale + "' rx='" +
-    rx*scale + "' ry='" + ry*scale + "' />";
+function ellipseTemplate(booth, scale) {
+  let elem = booth.shape;
+  elem.cx *= scale;
+  elem.cy *= scale;
+  elem.rx *= scale;
+  elem.ry *= scale;
+
+  let svg = "<ellipse cx='" + elem.cx + "' cy='" + elem.cy + "' rx='" +
+    elem.rx + "' ry='" + elem.ry + "' fill='#CCB3B3' />";
+  svg += "<text x='" + elem.cx + "' y='" +
+    elem.cy + "' alignment-baseline='middle' text-anchor='middle'\
+    fill='blue' font-size='0.75vw' font-family='sans-serif'>" +
+    booth.unit + "</text>";
   return svg;
 }
 
@@ -155,19 +185,31 @@ function ellipseTemplate(cx, cy, rx, ry, scale) {
  * @param {String} scale is used to scale the values above.
  * @return {String} an SVG element of rectangle in xml format
  */
-function polygonTemplate(points, scale) {
-  let integers = points.split(/[\s,]+/);
+function polygonTemplate(booth, scale) {
+  let elem = booth.shape;
+  let integers = elem.points.split(/[\s,]+/);
   let scaledInt = "";
+  let xPoints = [];
+  let yPoints = [];
+
   for (let i in integers) {
     if (i % 2 == 0) {
       scaledInt += integers[i]*scale + ",";
+      xPoints.push(integers[i]*scale);
     }
     else {
       scaledInt += integers[i]*scale + " ";
+      yPoints.push(integers[i]*scale);
     }
   }
-  points = scaledInt;
-  let svg = "<polygon points='" + points + "' />";
+
+  const xCentroid = xPoints.reduce((a,b) => (a+b)) / xPoints.length;
+  const yCentroid = yPoints.reduce((a,b) => (a+b)) / yPoints.length;
+  let svg = "<polygon points='" + scaledInt + "' fill='#CCB3B3' />";
+  svg += "<text x='" + xCentroid + "' y='" +
+    yCentroid + "' alignment-baseline='middle' text-anchor='middle'\
+    fill='blue' font-size='0.75vw' font-family='sans-serif'>" +
+    booth.unit + "</text>";
   return svg;
 }
 
