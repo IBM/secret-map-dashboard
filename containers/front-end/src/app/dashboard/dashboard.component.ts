@@ -36,7 +36,7 @@ export class DashboardComponent implements OnInit {
   getConference(): void {
     const eventId = this.route.snapshot.paramMap.get('eventId');
     this.dashboardService.getConference(eventId)
-    .subscribe( conference => this.conference = conference)
+    .subscribe( conference => this.conference = conference);
   }
 
   // Implementation will be swapped with http calls from

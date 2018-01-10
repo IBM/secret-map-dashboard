@@ -1,22 +1,53 @@
 <svg class="mapArea" appMapArea [booths]="booths" [beacons]="beacons">
 
-    <rect *ngFor="let booth of booths"
-        [attr.x]="booth.shape['x']"
-        [attr.y]="booth.shape['y']"
-        [attr.width]="booth.shape['width']"
-        [attr.height]="booth.shape['height']"
-        class="eventBlock">
-    </rect>
+    <g *ngFor="let booth of booths">
+        <rect *ngIf="booth.shape['type'] === 'rectangle'"
+          [attr.x]="booth.shape['x']"
+          [attr.y]="booth.shape['y']"
+          [attr.width]="booth.shape['width']"
+          [attr.height]="booth.shape['height']"
+          class="eventBlock"
+          name="rectangle">
+        </rect>
 
-    <text *ngFor="let booth of booths" 
-        [attr.x]="booth.shape['x']" 
-        [attr.y]="booth.shape['y']" 
-        class="boothText"> {{booth.description}} 
-    </text>
+        <circle *ngIf="booth.shape['type'] === 'circle'"
+          [attr.cx]="booth.shape['cx']"
+          [attr.cy]="booth.shape['cy']"
+          [attr.r]="booth.shape['radius']"
+          class="eventBlock"
+          name="circle">
+        </circle>
 
-    <circle *ngFor="let beacon of beacons"
-        [attr.cx]="beacon.x" 
-        [attr.cy]="beacon.y" 
-        r="3" 
-        class="beaconBlock"/> 
+        <ellipse *ngIf="booth.shape['type'] === 'ellipse'"
+          [attr.cx]="booth.shape['cx']"
+          [attr.cy]="booth.shape['cy']"
+          [attr.rx]="booth.shape['rx']"
+          [attr.ry]="booth.shape['ry']"
+          class="eventBlock"
+          name="ellipse">
+        </ellipse>
+
+        <polygon *ngIf="booth.shape['type'] === 'polygon'"
+          [attr.points]="booth.shape['points']"
+          class="eventBlock"
+          name="polygon">
+        </polygon>
+    </g>
+
+    <g>
+      <circle *ngFor="let beacon of beacons"
+      [attr.cx]="beacon.x"
+      [attr.cy]="beacon.y"
+      [attr.r]= 4
+      class="beaconBlock">
+      </circle>
+    </g>
+
+    <g *ngFor="let booth of booths">
+      <text
+        class="boothText"> 
+        {{booth.description}}
+      </text>
+    </g>
+
 </svg>
