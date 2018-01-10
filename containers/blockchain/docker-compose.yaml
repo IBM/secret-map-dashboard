@@ -1,3 +1,4 @@
+---
 version: '2'
 
 services:
@@ -8,7 +9,7 @@ services:
       service: ca-base
     image: shop-ca
     ports:
-    - 7054:7054
+      - 7054:7054
 
   fitcoin-ca:
     container_name: fitcoin-ca
@@ -23,20 +24,20 @@ services:
     container_name: orderer0
     image: orderer
     environment:
-    - ORDERER_GENERAL_LOGLEVEL=debug
-    - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
-    - ORDERER_GENERAL_GENESISMETHOD=file
-    - ORDERER_GENERAL_GENESISFILE=/orderer/crypto/genesis.block
-    - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
-    - ORDERER_GENERAL_LOCALMSPDIR=/orderer/crypto/msp
-    - ORDERER_GENERAL_TLS_ENABLED=true
-    - ORDERER_GENERAL_TLS_PRIVATEKEY=/orderer/crypto/tls/server.key
-    - ORDERER_GENERAL_TLS_CERTIFICATE=/orderer/crypto/tls/server.crt
-    - ORDERER_GENERAL_TLS_ROOTCAS=[/orderer/crypto/tls/ca.crt]
+      - ORDERER_GENERAL_LOGLEVEL=debug
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/orderer/crypto/genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/orderer/crypto/msp
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/orderer/crypto/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/orderer/crypto/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/orderer/crypto/tls/ca.crt]
     working_dir: /orderer
     command: orderer
     ports:
-    - 7050:7050
+      - 7050:7050
 
   shop-peer:
     container_name: shop-peer
@@ -45,20 +46,20 @@ services:
       service: peer-base
     image: shop-peer
     environment:
-    - CORE_PEER_ID=shop-peer
-    - CORE_PEER_ADDRESS=shop-peer:7051
-    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=shop-peer:7051
-    - CORE_PEER_LOCALMSPID=ShopOrgMSP
-    - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-    - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
-    - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
-    - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+      - CORE_PEER_ID=shop-peer
+      - CORE_PEER_ADDRESS=shop-peer:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=shop-peer:7051
+      - CORE_PEER_LOCALMSPID=ShopOrgMSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
     ports:
-    - 7051:7051
-    - 7053:7053
+      - 7051:7051
+      - 7053:7053
     depends_on:
-    - orderer0
-    - couchdb0
+      - orderer0
+      - couchdb0
 
   fitcoin-peer:
     container_name: fitcoin-peer
@@ -67,58 +68,58 @@ services:
       service: peer-base
     image: fitcoin-peer
     environment:
-    - CORE_PEER_ID=fitcoin-peer
-    - CORE_PEER_ADDRESS=fitcoin-peer:7051
-    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=fitcoin-peer:7051
-    - CORE_PEER_LOCALMSPID=FitCoinOrgMSP
-    - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-    - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb1:5984
-    - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
-    - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
+      - CORE_PEER_ID=fitcoin-peer
+      - CORE_PEER_ADDRESS=fitcoin-peer:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=fitcoin-peer:7051
+      - CORE_PEER_LOCALMSPID=FitCoinOrgMSP
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb1:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
     ports:
-    - 8051:7051
-    - 8053:7053
+      - 8051:7051
+      - 8053:7053
     depends_on:
-    - orderer0
-    - shop-peer
-    - couchdb1
+      - orderer0
+      - shop-peer
+      - couchdb1
 
-  shop-backend :
+  shop-backend:
     container_name: shop-backend
     image: shop-backend
     environment:
-    - PORT=3000
-    - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
-    - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.2
-    - CREATE_CHANNEL=true
+      - PORT=3000
+      - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
+      - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.2
+      - CREATE_CHANNEL=true
     ports:
-    - 3001:3000
+      - 3001:3000
     volumes:
-    - /var/run/:/host/var/run/
+      - /var/run/:/host/var/run/
     depends_on:
-    - orderer0
-    - shop-ca
-    - shop-peer
-    - couchdb0
+      - orderer0
+      - shop-ca
+      - shop-peer
+      - couchdb0
 
-  fitcoin-backend :
+  fitcoin-backend:
     container_name: fitcoin-backend
     image: fitcoin-backend
     environment:
-    - PORT=3000
-    - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
-    - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.2
-    - CREATE_CHANNEL=false
+      - PORT=3000
+      - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
+      - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.2
+      - CREATE_CHANNEL=false
     ports:
-    - 3002:3000
+      - 3002:3000
     volumes:
-    - /var/run/:/host/var/run/
+      - /var/run/:/host/var/run/
     depends_on:
-    - orderer0
-    - fitcoin-ca
-    - fitcoin-peer
-    - couchdb1
-    - shop-backend
+      - orderer0
+      - fitcoin-ca
+      - fitcoin-peer
+      - couchdb1
+      - shop-backend
 
   couchdb0:
     container_name: couchdb0
