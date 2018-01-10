@@ -9,7 +9,7 @@ import { Conference } from '../conference';
 })
 export class HomepageComponent implements OnInit {
 
-  conferences: Conference[]; 
+  conferences: Conference[];
 
   constructor(private dashboardService: DashboardService) { }
 

@@ -16,7 +16,7 @@ export class DashboardService {
 
   /** GET conferences from the map-api server */
   getConferences(): Observable<Conference[]> {
-    const url = `${this.mapApiURL}/events`
+    const url = `${this.mapApiURL}/events`;
     return this.http.get<Conference[]>(url)
       .pipe(
         tap(conferences => {
@@ -37,7 +37,7 @@ export class DashboardService {
     );
   }
 
-  /** GET conferenceAttendees from the map-api server 
+  /** GET conferenceAttendees from the map-api server
    * Not yet Implemented
   */
   getConferenceAttendees(): Observable<ConferenceAttendee[]> {

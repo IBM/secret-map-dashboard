@@ -27,8 +27,7 @@ describe('MainDisplayComponent', () => {
   });
 
   it('should be created', () => {
-    component.conference = 
-    {
+    component.conference = {
       'eventId': 'E01',
       'eventName': 'Index',
       'location': 'San Francisco',
