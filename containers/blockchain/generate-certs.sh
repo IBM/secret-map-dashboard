@@ -22,8 +22,8 @@ cp -r $PEERS/shop-org/peers/shop-peer/{msp,tls} $PROJPATH/shopPeer/crypto
 cp -r $PEERS/fitcoin-org/peers/fitcoin-peer/{msp,tls} $PROJPATH/fitcoinPeer/crypto
 cp $CLIPATH/genesis.block $PROJPATH/orderer/crypto/
 
-SHOPCAPATH=$PROJPATH/shopCA
-FITCOINCAPATH=$PROJPATH/fitcoinCA
+SHOPCAPATH=$PROJPATH/shopCertificateAuthority
+FITCOINCAPATH=$PROJPATH/fitcoinCertificateAuthority
 
 rm -rf {$SHOPCAPATH,$FITCOINCAPATH}/{ca,tls}
 mkdir -p {$SHOPCAPATH,$FITCOINCAPATH}/{ca,tls}
@@ -42,7 +42,7 @@ mv $FITCOINCAPATH/ca/*-cert.pem $FITCOINCAPATH/ca/cert.pem
 mv $FITCOINCAPATH/tls/*_sk $FITCOINCAPATH/tls/key.pem
 mv $FITCOINCAPATH/tls/*-cert.pem $FITCOINCAPATH/tls/cert.pem
 
-SHOP=$PROJPATH/shop-backend
+SHOP=$PROJPATH/shopBackend
 rm -rf $SHOP/certs
 rm -rf $SHOP/set-up
 rm -rf $SHOP/chaincode
@@ -58,7 +58,7 @@ cp $PROJPATH/blockchainNetwork/set-up/* $SHOP/set-up/
 cp $PROJPATH/configuration/shop-config.js $SHOP/set-up/config.js
 mv $SHOP/channel.tx $SHOP/set-up/channel.tx
 
-FITCOIN=$PROJPATH/fitcoin-backend
+FITCOIN=$PROJPATH/fitcoinBackend
 rm -rf $FITCOIN/certs
 rm -rf $FITCOIN/set-up
 rm -rf $FITCOIN/chaincode

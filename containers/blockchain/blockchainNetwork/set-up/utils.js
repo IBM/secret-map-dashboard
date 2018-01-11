@@ -1,4 +1,3 @@
-/*eslint no-unused-vars: "off"*/
 'use strict';
 import {
   resolve
@@ -8,15 +7,11 @@ import {
   load as loadProto
 } from 'grpc';
 import Long from 'long';
-import hfc from 'fabric-client';
-import utils from 'fabric-client/lib/utils';
-import Orderer from 'fabric-client/lib/Orderer';
-import Peer from 'fabric-client/lib/Peer';
-import EventHub from 'fabric-client/lib/EventHub';
+var hfc = require('fabric-client');
 import User from 'fabric-client/lib/User';
-import CAClient from 'fabric-ca-client';
-var CKS = require('fabric-client/lib/impl/CryptoKeyStore.js');
+var CAClient = require('fabric-ca-client');
 var CouchDBKeyValueStore = require('fabric-client/lib/impl/CouchDBKeyValueStore.js');
+var CKS = require('fabric-client/lib/impl/CryptoKeyStore.js');
 import {
   snakeToCamelCase,
   camelToSnakeCase
@@ -50,17 +45,33 @@ export class OrganizationClient extends EventEmitter {
     this._peers.push(defaultPeer);
     this._channel.addPeer(defaultPeer);
     this._adminUser = null;
+    this._ca = null;
   }
   async login() {
     try {
-      /*this._client.setStateStore(await hfc.newDefaultKeyValueStore({
-        path: `./${this._peerConfig.hostname}`
-      }));*/
+      var crypto_suite = hfc.newCryptoSuite();
+      var crypto_store = await hfc.newCryptoKeyStore(CouchDBKeyValueStore, {
+        name: this._peerConfig.userKeystoreDBName,
+        url: this._peerConfig.userKeystoreDBUrl
+      });
+      crypto_suite.setCryptoKeyStore(crypto_store);
+      this._client.setCryptoSuite(crypto_suite);
+      console.log("Register CA " + this._caConfig.caName);
+      this._ca = await new CAClient(this._caConfig.url, {
+        trustedRoots: [],
+        verify: false
+      }, "", crypto_suite);
+      console.log("CA registration complete " + this._ca);
       await this._client.setStateStore(await CKS(CouchDBKeyValueStore, {
-        name: this._peerConfig.dbname,
-        url: this._peerConfig.dburl
+        name: this._peerConfig.stateDBName,
+        url: this._peerConfig.stateDBUrl
       }));
-      this._adminUser = await getSubmitter(this._client, "admin", "adminpw", this._caConfig);
+      await this.createOrgAdmin();
+      this._adminUser = await getSubmitter(this._client, "admin", "adminpw", this._ca, {
+        mspId: this._caConfig.mspId,
+        adminUser: null,
+        affiliationOrg: this._peerConfig.org
+      });
     } catch(e) {
       console.log(`Failed to enroll user. Error: ${e.message}`);
       throw e;
@@ -84,7 +95,7 @@ export class OrganizationClient extends EventEmitter {
       throw e;
     }
   }
-  async getOrgAdmin() {
+  async createOrgAdmin() {
     return this._client.createUser({
       username: `Admin@${this._peerConfig.hostname}`,
       mspid: this._caConfig.mspId,
@@ -93,6 +104,9 @@ export class OrganizationClient extends EventEmitter {
         signedCertPEM: this._admin.cert
       }
     });
+  }
+  async getOrgAdmin() {
+    return this._adminUser;
   }
   async initialize() {
     try {
@@ -360,6 +374,26 @@ export class OrganizationClient extends EventEmitter {
     const blocks = await Promise.all([...blockPromises]);
     return blocks.map(unmarshalBlock);
   }
+  async registerAndEnroll(enrollmentID) {
+    try {
+      if(!enrollmentID && enrollmentID === "") {
+        throw new Error(`Invalid User Id`);
+      }
+      return getSubmitter(this._client, enrollmentID, "", this._ca, {
+        mspId: this._caConfig.mspId,
+        adminUser: this._adminUser,
+        affiliationOrg: this._peerConfig.org
+      });
+    } catch(e) {
+      throw e;
+    }
+  }
+}
+export function wrapError(message, innerError) {
+  let error = new Error(message);
+  error.inner = innerError;
+  console.log(error.message);
+  throw error;
 }
 /**
  * Enrolls a user with the respective CA.
@@ -371,19 +405,37 @@ export class OrganizationClient extends EventEmitter {
  * @param {object} { url, mspId }
  * @returns the User object
  */
-async function getSubmitter(client, enrollmentID, enrollmentSecret, {
-  url,
-  mspId
+// enrollmentID enrollmentSecret ca client
+async function getSubmitter(client, enrollmentID, enrollmentSecret, ca, {
+  mspId,
+  adminUser,
+  affiliationOrg
 }) {
   try {
+    if(!enrollmentID && enrollmentID === "") {
+      throw new Error(`Invalid User Id`);
+    }
     let user = await client.getUserContext(enrollmentID, true);
     if(user && user.isEnrolled()) {
       return user;
     }
-    // Need to enroll with CA server
-    const ca = new CAClient(url, {
-      verify: false
-    });
+    try {
+      if(!enrollmentSecret || enrollmentSecret === "") {
+        if(!adminUser && !adminUser.isEnrolled()) {
+          throw new Error(`Admin user not present to register user : ` + enrollmentID);
+        }
+        console.log('Initiate member ' + enrollmentID + " registration to " + affiliationOrg);
+        enrollmentSecret = await ca.register({
+          enrollmentID: enrollmentID,
+          affiliation: affiliationOrg,
+          maxEnrollments: 1,
+          role: 'client'
+        }, adminUser);
+        console.log("Successfully registered user " + enrollmentID + " with secret " + enrollmentSecret);
+      }
+    } catch(e) {
+      throw new Error(`Failed to register User. Error: ${e.message}`);
+    }
     try {
       const enrollment = await ca.enroll({
         enrollmentID,
@@ -399,12 +451,6 @@ async function getSubmitter(client, enrollmentID, enrollmentSecret, {
   } catch(e) {
     throw new Error(`Could not get UserContext! Error: ${e.message}`);
   }
-}
-export function wrapError(message, innerError) {
-  let error = new Error(message);
-  error.inner = innerError;
-  console.log(error.message);
-  throw error;
 }
 
 function marshalArgs(args) {

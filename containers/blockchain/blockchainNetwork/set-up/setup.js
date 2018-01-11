@@ -8,8 +8,6 @@ import url from 'url';
 let status = 'down';
 let statusChangedCallbacks = [];
 // Setup clients per organization
-//const shopClient = new OrganizationClient(config.channelName, config.orderer0, config.shopOrg.peer, config.shopOrg.ca, config.shopOrg.admin);
-//const fitcoinClient = new OrganizationClient(config.channelName, config.orderer0, config.fitcoinOrg.peer, config.fitcoinOrg.ca, config.fitcoinOrg.admin);
 const clientPeer = new OrganizationClient(config.channelName, config.orderer, config.peer, config.ca, config.admin);
 
 function setStatus(s) {
@@ -31,21 +29,21 @@ export function isReady() {
 }
 
 function getAdminOrgs() {
-  return Promise.resolve(clientPeer.getOrgAdmin());
+  return Promise.resolve(clientPeer.createOrgAdmin());
 }
 (async () => {
   // Login
   try {
     await Promise.resolve(clientPeer.login());
+    await getAdminOrgs();
   } catch(e) {
     console.log('Fatal error logging into blockchain organization clients!');
     console.log(e);
     process.exit(-1);
   }
   // Setup event hubs
-  clientPeer.initEventHubs();
+  await clientPeer.initEventHubs();
   try {
-    await getAdminOrgs();
     //console.log("process.env.CREATE_CHANNEL  value :  " + process.env.CREATE_CHANNEL);
     if(!(await clientPeer.checkChannelMembership()) && process.env.CREATE_CHANNEL === "true") {
       console.log('Default channel not found, attempting creation...');
@@ -88,7 +86,7 @@ function getAdminOrgs() {
   // Install chaincode on all peers
   let installedOnPeer;
   try {
-    await getAdminOrgs();
+    //await getAdminOrgs();
     installedOnPeer = await clientPeer.checkInstalled(config.chaincodeId, config.chaincodeVersion, config.chaincodePath);
   } catch(e) {
     console.log('Fatal error getting installation status of the chaincode!');
@@ -99,7 +97,7 @@ function getAdminOrgs() {
     console.log('Chaincode is not installed, attempting installation...');
     // Pull chaincode environment base image
     try {
-      await getAdminOrgs();
+      //await getAdminOrgs();
       const socketPath = process.env.DOCKER_SOCKET_PATH || (process.platform === 'win32' ? '//./pipe/docker_engine' : '/var/run/docker.sock');
       const ccenvImage = process.env.DOCKER_CCENV_IMAGE || 'hyperledger/fabric-ccenv:x86_64-1.0.2';
       const listOpts = {
@@ -179,6 +177,8 @@ function getAdminOrgs() {
       console.log('Chaincode is already instantiated on channel.');
     }
     setStatus('ready');
+    var member_user = await clientPeer.registerAndEnroll("sample_user");
+    console.log('sample_user was successfully registered and enrolled and is ready to intreact with the fabric network');
   } catch(e) {
     console.log('Fatal error instantiating chaincode on some(all) peers!');
     console.log(e);

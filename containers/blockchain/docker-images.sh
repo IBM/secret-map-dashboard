@@ -59,8 +59,9 @@ if [ $BUILD ];
     docker build -t orderer:latest orderer/
     docker build -t shop-peer:latest shopPeer/
     docker build -t fitcoin-peer:latest fitcoinPeer/
-    docker build -t shop-ca:latest shopCA/
-    docker build -t fitcoin-ca:latest fitcoinCA/
-    docker build -t shop-backend:latest shop-backend/
-    docker build -t fitcoin-backend:latest fitcoin-backend/
+    docker build -t shop-ca:latest shopCertificateAuthority/
+    docker build -t fitcoin-ca:latest fitcoinCertificateAuthority/
+    docker build -t shop-backend:latest shopBackend/
+    docker build -t fitcoin-backend:latest fitcoinBackend/
 fi
+#docker-compose -p "fitcoin" up -d

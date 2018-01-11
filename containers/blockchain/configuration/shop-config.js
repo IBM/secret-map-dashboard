@@ -21,9 +21,13 @@ const config = {
     hostname: 'shop-peer',
     url: 'grpcs://shop-peer:7051',
     eventHubUrl: 'grpcs://shop-peer:7053',
-    dbname: 'member_db',
-    dburl: 'http://couchdb0:5984',
-    pem: readCryptoFile('shopOrg.pem')
+    pem: readCryptoFile('shopOrg.pem'),
+    userKeystoreDBName: 'user_keystore_db',
+    userKeystoreDBUrl: 'http://couchdb0:5984',
+    stateDBName: 'member_state_db',
+    stateDBUrl: 'http://couchdb0:5984',
+    org: 'org.ShopOrg',
+    caName: 'shop-org'
   },
   ca: {
     hostname: 'shop-ca',

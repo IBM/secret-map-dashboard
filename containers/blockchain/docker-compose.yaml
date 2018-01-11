@@ -15,7 +15,7 @@ services:
     extends:
       file: ./ca-base.yaml
       service: ca-base
-    image: shop-ca
+    image: fitcoin-ca
     ports:
       - 8054:7054
 

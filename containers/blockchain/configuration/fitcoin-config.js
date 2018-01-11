@@ -21,9 +21,13 @@ const config = {
     hostname: 'fitcoin-peer',
     url: 'grpcs://fitcoin-peer:7051',
     pem: readCryptoFile('fitcoinOrg.pem'),
-    dbname: 'member_db',
-    dburl: 'http://couchdb1:5984',
+    userKeystoreDBName: 'user_keystore_db',
+    userKeystoreDBUrl: 'http://couchdb1:5984',
+    stateDBName: 'member_state_db',
+    stateDBUrl: 'http://couchdb1:5984',
     eventHubUrl: 'grpcs://fitcoin-peer:7053',
+    org: 'FitCoinOrg',
+    caName: 'fitcoin-org'
   },
   ca: {
     hostname: 'fitcoin-ca',
