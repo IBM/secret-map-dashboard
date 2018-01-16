@@ -9,6 +9,7 @@ const beaconRoute = require("./routes/beacons");
 const boothRoute = require("./routes/booths");
 const eventRoute = require("./routes/events");
 const svgRoute = require("./routes/svg");
+const pageRoute = require("./routes/pages");
 
 const mongoDbUrl = process.env.MONGODB_URL;
 
@@ -48,6 +49,7 @@ app.use("/beacons", beaconRoute);
 app.use("/booths", boothRoute);
 app.use("/events", eventRoute);
 app.use("/svg", svgRoute);
+app.use("/pages", pageRoute);
 
 let port = process.env.PORT || 8080;
 app.listen(port, function() {
