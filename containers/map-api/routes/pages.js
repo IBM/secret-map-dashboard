@@ -10,8 +10,7 @@ router.post("/add", function(req, res) {
   let addPage = new Pages(req.body);
   addPage.save(function(err) {
     if (err) {
-      res.send("Error saving: " + err);
-      return console.error(err);
+      res.send(err);
     } else {
       res.send("Saved booklet page.");
     }
@@ -21,8 +20,7 @@ router.post("/add", function(req, res) {
 router.get("/", function(req, res) {
   Pages.find(function(err, pages) {
     if (err) {
-      res.send("Error getting page: " + err);
-      return console.error(err);
+      res.send(err);
     } else {
       res.send(pages);
     }
@@ -32,8 +30,7 @@ router.get("/", function(req, res) {
 router.get("/:page", function(req, res) {
   Pages.findOne({"page": parseInt(req.params.page)}, function(err, page) {
     if (err) {
-      res.send("Error getting page: " + err);
-      return console.error(err);
+      res.send(err);
     } else if (page) {
       if (req.params.page.split(".").pop() == "png") {
         res.contentType("image/png");

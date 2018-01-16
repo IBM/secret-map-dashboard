@@ -10,8 +10,7 @@ router.post("/add", function(req, res) {
   let addBeacon = new Beacons(req.body);
   addBeacon.save(function(err) {
     if (err) {
-      res.send("Error saving: " + err);
-      return console.error(err);
+      res.send(err);
     } else {
       res.send("Saved beacon.");
     }
@@ -21,8 +20,7 @@ router.post("/add", function(req, res) {
 router.get("/", function(req, res) {
   Beacons.find(function(err, beacons) {
     if (err) {
-      res.send("Error getting beacons: " + err);
-      return console.error(err);
+      res.send(err);
     } else {
       res.send(beacons);
     }
@@ -32,8 +30,7 @@ router.get("/", function(req, res) {
 router.get("/:beaconId", function(req, res) {
   Beacons.findOne(req.params, function(err, beacon) {
     if (err) {
-      res.send("Error getting beacon: " + err);
-      return console.error(err);
+      res.send(err);
     } else if (beacon) {
       res.send(beacon);
     } else {

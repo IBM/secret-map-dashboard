@@ -10,8 +10,7 @@ router.post("/add", function(req, res) {
   let addBooth = new Booths(req.body);
   addBooth.save(function(err) {
     if (err) {
-      res.send("Error saving: " + err);
-      return console.error(err);
+      res.send(err);
     } else {
       res.send("Saved booth.");
     }
@@ -21,8 +20,7 @@ router.post("/add", function(req, res) {
 router.get("/", function(req, res) {
   Booths.find(function(err, booths) {
     if (err) {
-      res.send("Error getting booths: " + err);
-      return console.error(err);
+      res.send(err);
     } else {
       res.send(booths);
     }
@@ -32,8 +30,7 @@ router.get("/", function(req, res) {
 router.get("/:boothId", function(req, res) {
   Booths.findOne(req.params, function(err, booth) {
     if (err) {
-      res.send("Error getting booth: " + err);
-      return console.error(err);
+      res.send(err);
     } else if (booth) {
       res.send(booth);
     } else {
