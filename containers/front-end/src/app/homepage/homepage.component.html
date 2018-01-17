@@ -1,23 +1,16 @@
 <div  *ngIf="conferences" class="container">
 
   <div class="mainDisplay">
-    <div class="titleContainer"> 
-      <div class="title"> 
-          Conferences 
-      </div>
-    </div>
     <div class="conferenceListContainer">
+      <p style="margin-left:10px;"> Conference Endpoints </p>
       <div class="conferenceList">
-            <ul >
-              <li *ngFor="let conference of conferences"> 
-                http://localhost:4200/dashboard/{{conference.eventId}}
-              </li>
-            </ul>
+        <ul >
+          <li *ngFor="let conference of conferences"> 
+            /dashboard/{{conference.eventId}}
+          </li>
+          </ul>
       </div>
     </div>
-  </div>
-
-  <div class="sideDisplay">
   </div>
 
 </div>
