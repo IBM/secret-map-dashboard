@@ -41,15 +41,25 @@ Example of adding an event:
 curl -X POST -H 'Content-Type: application/json' -d '{ "eventId":"index","eventName":"Index","location":"San Francisco","startDate":"2018-02-20","endDate":"2018-02-24", beacons: "B01,B02,B03,B04", map:"A01,A02,A03,A04,A05,A06,A07"}' http://localhost:8080/events/add
 ```
 
-# secret-map-dashboard front-end client
+# Secret-map-dashboard front-end
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.1.
+This project was implemented using with [Angular CLI](https://cli.angular.io/)
 
+## Getting Started
 ```
-npm install
-
-npm install -g @angular/cli
-
-npm start
-
+  cd containers/front-end
+  npm install -g @angular/cli
+  npm install
+  npm start
 ```
+_Application will served on http://localhost:4200_
+
+## Syntax Checking
+* `npm run lint`  _(checks for typescript syntax)_
+ 
+## E2E tests
+* `npm run e2e`
+
+## Unit tests
+
+* `npm run test`
