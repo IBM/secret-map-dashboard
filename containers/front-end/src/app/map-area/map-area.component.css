@@ -14,14 +14,15 @@
   fill: blue;
   stroke-width:0;
   stroke:rgb(0,0,0);
-  font-size: 0.75vw;
-  font-family: sans-serif;
+  font-size: calc(0.30vw + 0.30vh + 0.30vmin);
+  /* font-family: 'Source Code Pro', monospace, sans-serif; */
+  /* font-family: 'Freckle Face', cursive; */
+  font-family: 'Fredoka One', cursive, sans-serif;
 }
 
 .mapArea {
-  margin-left: 10px;
-  margin-right: 10px;
-  height: 65vh;
+  margin: auto;
+  height: 69vh;
   width: 75vw;
   display: flex;
   flex-direction: column;

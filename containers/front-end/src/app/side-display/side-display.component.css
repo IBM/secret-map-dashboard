@@ -2,8 +2,8 @@
     height: 33.3%;
     display: flex;
     flex-direction: column;
-    border-bottom: 3px #B48E8E solid;
-    border-left: 3px #B48E8E solid;
+    border-bottom: 0.3vh #B48E8E solid;
+    border-left: 0.25vw #B48E8E solid;
 }
 
 .sideBlockBottom{
@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: column;
   background-color: #FEFFFF;
-  border-left: 3px #B48E8E solid;
+  border-left: 0.25vw #B48E8E solid;
 }
 
 .sideBlockPriateImage{
@@ -37,7 +37,7 @@
   align-content: center;
   justify-content: center;
   color: #EA998C;
-  font-size: 1.25vw
+  font-size: calc(0.75vw + 0.75vh + 0.75vmin);
 }
   
 .sideBlockCalories{
@@ -48,7 +48,7 @@
   align-content: center;
   justify-content: center;
   color: #EA998C;
-  font-size: 1.25vw
+  font-size: calc(0.75vw + 0.75vh + 0.75vmin);
 }
 
 .sideBlockImage{
