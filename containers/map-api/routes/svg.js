@@ -8,58 +8,49 @@ const Events = require("../models/event");
 
 
 router.get("/:eventId", function(req, res) {
-  Events.findOne(req.params, function(err, event) {
+  Events.findOne({"eventId": req.params.eventId.split(".")[0]}, function(err, event) {
     if (err) {
-      res.send("Error getting event: " + err);
-      return console.error(err);
+      res.send(err);
     } else if (event) {
+
       // Get SVG Content
       let SVGContent = svgContent(event.map,25);
+      let svg = svgTemplate(100,100,SVGContent,25);
+      
+      // If .pdf is present, send a pdf version of the svg
+      if (req.params.eventId.split(".").pop() == "pdf") {
 
-      // Send SVG
-      res.send(svgTemplate(100,100,SVGContent,25));
-    } else {
-      res.send("Event not found...");
-    }
-  });
-});
+        // Start making PDF
+        let doc = new PDFDocument({ size: [1000,1000]}); // Fixed to 1000 for now.
+        let echoStream = new stream.Writable();
+        let pdfBuffer = new Buffer("");
 
-router.get("/:eventId/pdf", function(req, res) {
-  Events.findOne(req.params, function(err, event) {
-    if (err) {
-      res.send("Error getting event: " + err);
-      return console.error(err);
-    } else if (event) {
-      // Get SVG with a scale of 25
-      let SVGContent = svgContent(event.map,25);
-      let svg = svgTemplate(100,100,SVGContent,25); // Fixed to 100,100 for now.
+        // Write to Buffer
+        echoStream._write = function (chunk, encoding, done) {
+          pdfBuffer = Buffer.concat([pdfBuffer, chunk]);
+          done();
+        };
 
-      // Start making PDF
-      let doc = new PDFDocument({ size: [1000,1000]}); // Fixed to 1000 for now.
-      let echoStream = new stream.Writable();
-      let pdfBuffer = new Buffer("");
+        // Use svg-to-pdfkit
+        SVGtoPDF(doc, svg, 0, 0);
+        doc.pipe(echoStream);
+        doc.end();
 
-      // Write to Buffer
-      echoStream._write = function (chunk, encoding, done) {
-        pdfBuffer = Buffer.concat([pdfBuffer, chunk]);
-        done();
-      };
+        // Set content type to pdf
+        res.contentType("application/pdf");
 
-      // Use svg-to-pdfkit
-      SVGtoPDF(doc, svg, 0, 0);
-      doc.pipe(echoStream);
-      doc.end();
-
-      // Set content type to pdf
-      res.contentType("application/pdf");
-
-      // When stream is done, send pdf
-      echoStream.on("finish", function () {
-        // Make Buffer readable stream
-        let bufferStream = new stream.PassThrough();
-        bufferStream.end(pdfBuffer);
-        bufferStream.pipe(res);
-      });
+        // When stream is done, send pdf
+        echoStream.on("finish", function () {
+          // Make Buffer readable stream
+          let bufferStream = new stream.PassThrough();
+          bufferStream.end(pdfBuffer);
+          bufferStream.pipe(res);
+        });
+      } else {
+        
+        // Send SVG
+        res.send(svg);
+      }
     } else {
       res.send("Event not found...");
     }
