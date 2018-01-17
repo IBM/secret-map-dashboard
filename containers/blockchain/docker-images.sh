@@ -56,12 +56,12 @@ if [ $BUILD ];
     echo '############################################################'
     echo '#                 BUILDING CONTAINER IMAGES                #'
     echo '############################################################'
-    docker build -t orderer:latest orderer/
+    docker build -t orderer-peer:latest orderer/
     docker build -t shop-peer:latest shopPeer/
     docker build -t fitcoin-peer:latest fitcoinPeer/
     docker build -t shop-ca:latest shopCertificateAuthority/
     docker build -t fitcoin-ca:latest fitcoinCertificateAuthority/
-    docker build -t shop-backend:latest shopBackend/
-    docker build -t fitcoin-backend:latest fitcoinBackend/
+    docker build -t blockchain-setup:latest blockchainNetwork/
+    docker build -t backend-application:latest backend/
 fi
 #docker-compose -p "fitcoin" up -d

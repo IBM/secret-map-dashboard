@@ -19,9 +19,27 @@ services:
     ports:
       - 8054:7054
 
+  couchdb0:
+    container_name: couchdb0
+    image: hyperledger/fabric-couchdb:x86_64-1.0.2
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 5984:5984
+
+  couchdb1:
+    container_name: couchdb1
+    image: hyperledger/fabric-couchdb:x86_64-1.0.2
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 6984:5984
+
   orderer0:
     container_name: orderer0
-    image: orderer
+    image: orderer-peer
     environment:
     - ORDERER_GENERAL_LOGLEVEL=debug
     - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
@@ -83,57 +101,40 @@ services:
     - shop-peer
     - couchdb1
 
-  shop-backend :
-    container_name: shop-backend
-    image: shop-backend
+  blockchain-setup :
+    container_name: blockchain-setup
+    image: blockchain-setup
     environment:
-    - PORT=3000
     - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
     - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.2
-    - CREATE_CHANNEL=true
-    ports:
-    - 3001:3000
     volumes:
     - /var/run/:/host/var/run/
     depends_on:
     - orderer0
     - shop-ca
     - shop-peer
+    - fitcoin-ca
+    - fitcoin-peer
     - couchdb0
+    - couchdb1
 
-  fitcoin-backend :
-    container_name: fitcoin-backend
-    image: fitcoin-backend
+  backend-application :
+    container_name: backend-application
+    image: backend-application
     environment:
     - PORT=3000
     - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
     - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.2
-    - CREATE_CHANNEL=false
     ports:
-    - 3002:3000
+    - 3000:3000
     volumes:
     - /var/run/:/host/var/run/
-    depends_on:
+    external_links:
     - orderer0
+    - shop-ca
+    - shop-peer
     - fitcoin-ca
     - fitcoin-peer
+    - couchdb0
     - couchdb1
-    - shop-backend
-
-  couchdb0:
-    container_name: couchdb0
-    image: hyperledger/fabric-couchdb:x86_64-1.0.2
-    environment:
-      - COUCHDB_USER=
-      - COUCHDB_PASSWORD=
-    ports:
-      - 5984:5984
-
-  couchdb1:
-    container_name: couchdb1
-    image: hyperledger/fabric-couchdb:x86_64-1.0.2
-    environment:
-      - COUCHDB_USER=
-      - COUCHDB_PASSWORD=
-    ports:
-      - 6984:5984
+    - blockchain-setup

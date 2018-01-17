@@ -26,7 +26,7 @@ const config = {
     stateDBName: 'member_state_db',
     stateDBUrl: 'http://couchdb1:5984',
     eventHubUrl: 'grpcs://fitcoin-peer:7053',
-    org: 'FitCoinOrg',
+    org: 'org.FitCoinOrg',
     caName: 'fitcoin-org'
   },
   ca: {
