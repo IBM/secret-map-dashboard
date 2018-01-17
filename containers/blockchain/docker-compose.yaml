@@ -105,6 +105,7 @@ services:
     container_name: blockchain-setup
     image: blockchain-setup
     environment:
+    - PORT 3000
     - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
     - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.2
     volumes:
@@ -126,7 +127,7 @@ services:
     - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
     - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.2
     ports:
-    - 3000:3000
+    - 3001:3000
     volumes:
     - /var/run/:/host/var/run/
     external_links:

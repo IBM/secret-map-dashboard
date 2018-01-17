@@ -16,3 +16,4 @@
 /**/*.pem
 /**/fitcoin-peer
 /**/shop-peer
+/**/channel.tx

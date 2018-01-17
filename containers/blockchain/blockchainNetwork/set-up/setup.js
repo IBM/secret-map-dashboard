@@ -145,7 +145,9 @@ function getAdminOrgs() {
   try {
     await shopClient.instantiate(config.chaincodeId, config.chaincodeVersion, config.chaincodePath, '{"Args":[""]}');
     console.log('Successfully instantiated chaincode on all peers.');
-    process.exit(-1);
+    //var member_user = shopClient.registerAndEnroll("sample_user");
+    //console.log(member_user);
+    //process.exit(-1);
   } catch(e) {
     console.log('Fatal error instantiating chaincode on some(all) peers!');
     console.log(e);

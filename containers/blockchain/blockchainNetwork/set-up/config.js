@@ -10,7 +10,7 @@ const config = {
   channelName: 'mychannel',
   channelConfig: readFileSync(resolve(__dirname, 'channel.tx')),
   chaincodeId: 'bcfit',
-  chaincodeVersion: '1.0',
+  chaincodeVersion: '1',
   chaincodePath: 'bcfit',
   orderer: {
     hostname: 'orderer0',

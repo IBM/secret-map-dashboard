@@ -121,6 +121,8 @@ export class OrganizationClient extends EventEmitter {
     };
     const response = await this._client.createChannel(request);
     // Wait for 5sec to create channel
+    console.log("channel log ");
+    console.log(response);
     await new Promise(resolve => {
       setTimeout(resolve, 5000);
     });

@@ -11,8 +11,7 @@ chmod +x docker-images.sh
 chmod +x build.sh
 chmod +x clean.sh
 ./build.sh
-docker-compose -p "fitcoin" up -d blockchain-setup
-docker-compose -p "fitcoin" up -d backend-application
+docker-compose -p "fitcoin" up -d
 ```
 
 ###  Check the logs
@@ -59,7 +58,9 @@ Successfully instantiated chaincode on all peers.
 
 **Command**
 ```bash
-docker-compose -p "fitcoin" up -d backend-application
+docker rm -f backend-application
+docker-compose -p "fitcoin" up -d
+docker logs backend-application
 ```
 **Output:**
 ```bash
