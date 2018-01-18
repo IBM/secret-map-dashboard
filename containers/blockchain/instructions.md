@@ -73,4 +73,28 @@ info: [EventHub.js]: _connect - options {"grpc.ssl_target_name_override":"shop-p
 info: [EventHub.js]: _connect - options {"grpc.ssl_target_name_override":"fitcoin-peer","grpc.default_authority":"fitcoin-peer"}
 ```
 
-**You can now do REST calls for enroll user, invoke and query operations on http://localhost:3000**
+**You can now do REST calls for enroll user, invoke and query operations on http://localhost:3001**
+
+**Sample Enroll API request**
+```
+POST /enroll HTTP/1.1
+Host: localhost:3001
+Content-Type: application/x-www-form-urlencoded
+Cache-Control: no-cache
+Postman-Token: e0b7de4b-7f53-2b16-ffaf-ffb7a0f98edf
+
+orgId=fitcoinOrg
+```
+
+**Sample Query Request**
+```
+API Post call : http://localhost:3001/query
+Form data  : params:{"orgId":"fitcoinOrg","userId":"6b10b74c-ec8f-4f85-989b-42c07f96a77e","fcn":"query","args":["a"]}
+```
+>Note : Make sure you use the registered userId or just use the userId from the enroll calls
+
+**Sample Invoke Request**
+```
+API Post call : http://localhost:3001/invoke
+Form data  : params:{"orgId":"fitcoinOrg","userId":"6b10b74c-ec8f-4f85-989b-42c07f96a77e","fcn":"move","args":["a","b","10"]}
+```

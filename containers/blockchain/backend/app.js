@@ -84,31 +84,35 @@ app.post('/enroll', function(req, res) {
 app.post('/invoke', function(req, res) {
   //console.log(req);
   var data = typeof req.body !== "string" ? req.body : JSON.parse(req.body);
+  var values = typeof data.params !== "string" ? data.params : JSON.parse(data.params);
+  //console.log(values);
   //console.log(data);
   //console.log(data.userId);
-  console.log(data.orgId + "   " + data.userId);
+  console.log(values.orgId + "   " + values.userId);
   var client = null;
-  if(!data.orgId || !data.userId) {
+  if(!values.orgId || !values.userId) {
     res.json({
       message: "Missing OrgId/UserId "
     });
   } else {
     var userId = uuidv4();
     var client = null;
-    if(data.orgId === "shopOrg") {
+    if(values.orgId === "shopOrg") {
       client = shopClient;
-    } else if(data.orgId === "fitcoinOrg") {
+    } else if(values.orgId === "fitcoinOrg") {
       client = fitcoinClient;
     }
-    if(!data.fcn) {
+    if(!values.fcn) {
       res.json({
         message: "Missing function name "
       });
     }
-    var args = data.args ? data.args.split(",") : "";
+    if(!values.args || (values.args.length == 1 && values.args[0] == null)) {
+      values.args = [""]
+    }
     console.log("Args");
-    console.log(args);
-    invokeFunc(data.userId, client, config.chaincodeId, config.chaincodeVersion, data.fcn, args).then((result) => {
+    console.log(values.args);
+    invokeFunc(values.userId, client, config.chaincodeId, config.chaincodeVersion, values.fcn, values.args).then((result) => {
       console.log("Query Results ");
       console.log(result);
       res.json({
@@ -121,31 +125,34 @@ app.post('/invoke', function(req, res) {
 app.post('/query', function(req, res) {
   //console.log(req);
   var data = typeof req.body !== "string" ? req.body : JSON.parse(req.body);
+  var values = typeof data.params !== "string" ? data.params : JSON.parse(data.params);
   //console.log(data);
   //console.log(data.userId);
-  console.log(data.orgId + "   " + data.userId);
+  console.log(values.orgId + "   " + values.userId);
   var client = null;
-  if(!data.orgId || !data.userId) {
+  if(!values.orgId || !values.userId) {
     res.json({
       message: "Missing OrgId/UserId "
     });
   } else {
     var userId = uuidv4();
     var client = null;
-    if(data.orgId === "shopOrg") {
+    if(values.orgId === "shopOrg") {
       client = shopClient;
-    } else if(data.orgId === "fitcoinOrg") {
+    } else if(values.orgId === "fitcoinOrg") {
       client = fitcoinClient;
     }
-    if(!data.fcn) {
+    if(!values.fcn) {
       res.json({
         message: "Missing function name "
       });
     }
-    var args = data.args ? data.args.split(",") : "";
+    if(!values.args || (values.args.length == 1 && values.args[0] == null)) {
+      values.args = [""]
+    }
     console.log("Args");
-    console.log(args);
-    queryFunc(data.userId, client, config.chaincodeId, config.chaincodeVersion, data.fcn, args).then((result) => {
+    console.log(values.args);
+    queryFunc(values.userId, client, config.chaincodeId, config.chaincodeVersion, values.fcn, values.args).then((result) => {
       console.log("Query Results ");
       console.log(result);
       res.json({
