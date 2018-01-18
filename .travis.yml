@@ -5,6 +5,7 @@ sudo: required
 
 services:
   - docker
+  - mongodb
 
 addons:
   apt:
@@ -15,9 +16,6 @@ addons:
 
 matrix:
   fast_finish: true
-
-env:
-  - TEST_RUN="./tests/test-docker.sh"
 
 before_install:
   - npm install eslint html-lint csslint
@@ -32,4 +30,9 @@ before_script:
   - "./tests/test-shellcheck.sh"
   - "./tests/test-yamllint.sh"
 
-script: "$TEST_RUN"
+jobs:
+  include:
+    - script: ./tests/test-docker.sh
+    - script: >
+        npm install --prefix containers/map-api &&
+        npm test --prefix containers/map-api

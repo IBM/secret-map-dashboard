@@ -1,7 +1,8 @@
 module.exports = {
   "env": {
     "es6": true,
-    "node": true
+    "node": true,
+    "mocha": true
   },
   "extends": "eslint:recommended",
   "parserOptions": {
@@ -28,5 +29,13 @@ module.exports = {
   },
   "globals": {
     "jasmine": true
-  }
+  },
+  "overrides": [
+    {
+        "files": "containers/map-api/test/*.js",
+        "rules": {
+            "no-unused-vars": "off"
+        }
+    }
+]
 };
