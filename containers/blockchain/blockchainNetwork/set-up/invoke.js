@@ -6,7 +6,7 @@ export default async function(userId, clientObject, chaincodeId, chaincodeVersio
   if(!(user_from_store && user_from_store.isEnrolled())) {
     throw new Error('Failed to get user : ' + userId + ' from persistence');
   }
-  console.log('Successfully loaded user : ' + userId + ' from persistence');
+  //console.log('Successfully loaded user : ' + userId + ' from persistence');
   let proposalResponses, proposal;
   const txId = new Transaction(user_from_store);
   try {
@@ -70,7 +70,7 @@ export default async function(userId, clientObject, chaincodeId, chaincodeVersio
     });
     promises.push(txPromise);
     var results = await Promise.all(promises);
-    console.log('Send transaction promise and event listener promise have completed');
+    //console.log('Send transaction promise and event listener promise have completed');
     // check the results in the order the promises were added to the promise all list
     if(results && results[0] && results[0].status === 'SUCCESS') {
       console.log('Successfully sent transaction to the orderer.');
@@ -78,8 +78,8 @@ export default async function(userId, clientObject, chaincodeId, chaincodeVersio
       throw new Error('Failed to order the transaction. Error code: ' + response.status);
     }
     if(results && results[1] && results[1].event_status === 'VALID') {
-      console.log('Successfully committed the change to the ledger by the peer');
-      console.log("Transaction Id " + results[1].tx_id);
+      //console.log('Successfully committed the change to the ledger by the peer');
+      //console.log("Transaction Id " + results[1].tx_id);
     } else {
       throw new Error('Transaction failed to be committed to the ledger due to ::' + results[1].event_status);
     }

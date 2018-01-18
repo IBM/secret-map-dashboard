@@ -4,7 +4,7 @@ import {
   OrganizationClient
 } from '../set-up/client';
 import invokeFunc from '../set-up/invoke';
-const shopClient = new OrganizationClient(config.channelName, config.orderer, config.shopOrg.peer, config.shopOrg.ca, config.shopOrg.admin);
+const shopClient = new OrganizationClient(config.channelName, config.orderer, config.peers[0].peer, config.peers[0].ca, config.peers[0].admin);
 (async () => {
   try {
     await Promise.all([shopClient.login()]);
@@ -14,5 +14,5 @@ const shopClient = new OrganizationClient(config.channelName, config.orderer, co
     process.exit(-1);
   };
   await Promise.all([shopClient.initEventHubs()]);
-  invokeFunc("sample_user", shopClient, config.chaincodeId, config.chaincodeVersion, "move", ["a", "b", "10"]);
+  invokeFunc("admin", shopClient, config.chaincodeId, config.chaincodeVersion, "move", ["a", "b", "10"]);
 })();

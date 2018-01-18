@@ -17,7 +17,7 @@ const config = {
     url: 'grpcs://orderer0:7050',
     pem: readCryptoFile('ordererOrg.pem')
   },
-  shopOrg: {
+  peers: [{
     peer: {
       hostname: 'shop-peer',
       url: 'grpcs://shop-peer:7051',
@@ -39,8 +39,7 @@ const config = {
       key: readCryptoFile('Admin@shop-org-key.pem'),
       cert: readCryptoFile('Admin@shop-org-cert.pem')
     }
-  },
-  fitcoinOrg: {
+  }, {
     peer: {
       hostname: 'fitcoin-peer',
       url: 'grpcs://fitcoin-peer:7051',
@@ -62,19 +61,19 @@ const config = {
       key: readCryptoFile('Admin@fitcoin-org-key.pem'),
       cert: readCryptoFile('Admin@fitcoin-org-cert.pem')
     }
-  }
+  }]
 };
 if(process.env.LOCALCONFIG) {
   config.orderer.url = 'grpcs://localhost:7050';
-  config.shopOrg.peer.url = 'grpcs://localhost:7051';
-  config.shopOrg.peer.eventHubUrl = 'grpcs://localhost:7053';
-  config.shopOrg.ca.url = 'https://localhost:7054';
-  config.shopOrg.peer.userKeystoreDBUrl = 'http://localhost:5984';
-  config.shopOrg.peer.stateDBUrl = 'http://localhost:5984';
-  config.fitcoinOrg.peer.url = 'grpcs://localhost:8051';
-  config.fitcoinOrg.peer.eventHubUrl = 'grpcs://localhost:8053';
-  config.fitcoinOrg.ca.url = 'https://localhost:8054';
-  config.fitcoinOrg.peer.userKeystoreDBUrl = 'http://localhost:6984';
-  config.fitcoinOrg.peer.stateDBUrl = 'http://localhost:6984';
+  config.peers[0].peer.url = 'grpcs://localhost:7051';
+  config.peers[0].peer.eventHubUrl = 'grpcs://localhost:7053';
+  config.peers[0].ca.url = 'https://localhost:7054';
+  config.peers[0].peer.userKeystoreDBUrl = 'http://localhost:5984';
+  config.peers[0].peer.stateDBUrl = 'http://localhost:5984';
+  config.peers[1].peer.url = 'grpcs://localhost:8051';
+  config.peers[1].peer.eventHubUrl = 'grpcs://localhost:8053';
+  config.peers[1].ca.url = 'https://localhost:8054';
+  config.peers[1].peer.userKeystoreDBUrl = 'http://localhost:6984';
+  config.peers[1].peer.stateDBUrl = 'http://localhost:6984';
 }
 export default config;

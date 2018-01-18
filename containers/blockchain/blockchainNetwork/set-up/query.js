@@ -5,7 +5,7 @@ export default async function(userId, clientObject, chaincodeId, chaincodeVersio
     if(!(user_from_store && user_from_store.isEnrolled())) {
       throw new Error('Failed to get user : ' + userId + ' from persistence');
     }
-    console.log('Successfully loaded user : ' + userId + ' from persistence');
+    //console.log('Successfully loaded user : ' + userId + ' from persistence');
     const request = {
       //targets : --- letting this default to the peers assigned to the channel
       chaincodeId: chaincodeId,
@@ -14,13 +14,13 @@ export default async function(userId, clientObject, chaincodeId, chaincodeVersio
       args: args
     };
     const query_responses = await clientObject._channel.queryByChaincode(request, user_from_store);
-    console.log("Query has completed, checking results");
+    //console.log("Query has completed, checking results");
     // query_responses could have more than one  results if there multiple peers were used as targets
     if(query_responses && query_responses.length == 1) {
       if(query_responses[0] instanceof Error) {
         throw new Error("Error from query = ", query_responses[0]);
       } else {
-        console.log("Query Response : " + query_responses);
+        //console.log("Query Response : " + query_responses);
         return JSON.stringify({
           response: query_responses.toString('utf8')
         });

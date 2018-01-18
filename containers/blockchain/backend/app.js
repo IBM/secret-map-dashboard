@@ -26,17 +26,16 @@ import queryFunc from './set-up/query';
 import {
   OrganizationClient
 } from './set-up/client';
-const shopClient = new OrganizationClient(config.channelName, config.orderer, config.shopOrg.peer, config.shopOrg.ca, config.shopOrg.admin);
-const fitcoinClient = new OrganizationClient(config.channelName, config.orderer, config.fitcoinOrg.peer, config.fitcoinOrg.ca, config.fitcoinOrg.admin);
+const clientArray = config.peers.map(obj => new OrganizationClient(config.channelName, config.orderer, obj.peer, obj.ca, obj.admin));
 (async () => {
   try {
-    await Promise.all([shopClient.login(), fitcoinClient.login()]);
+    await Promise.all(clientArray.map(obj => obj.login()));
   } catch(e) {
     console.log('Fatal error logging into blockchain organization clients!');
     console.log(e);
     process.exit(-1);
   };
-  await Promise.all([shopClient.initEventHubs(), fitcoinClient.initEventHubs()]);
+  await Promise.all(clientArray.map(obj => obj.initEventHubs()));
 })();
 const app = express();
 app.use(bodyParser.urlencoded({
@@ -44,7 +43,7 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 app.use(cors());
-app.post('/enroll', function(req, res) {
+app.post('/enroll', function(req, res, next) {
   //console.log(req);
   var data = typeof req.body !== "string" ? req.body : JSON.parse(req.body);
   //console.log(data);
@@ -52,36 +51,37 @@ app.post('/enroll', function(req, res) {
   console.log(data.orgId);
   var client = null;
   if(!data.orgId) {
-    res.json({
-      message: "Invalid Org ID"
-    });
+    var err = new Error('Org ID Missing');
+    err.status = 400;
+    next(err);
   } else {
     var userId = uuidv4();
     var client = null;
     if(data.orgId === "shopOrg") {
-      client = shopClient;
+      client = clientArray[0];
     } else if(data.orgId === "fitcoinOrg") {
-      client = fitcoinClient;
+      client = clientArray[1];
+    } else {
+      var err = new Error('Invalid Org ID');
+      err.status = 400;
+      next(err);
     }
     client.registerAndEnroll(userId).then((user) => {
       console.log("Successfully enrolled user " + userId);
       //console.log(user);
       res.json({
         message: "enrolled",
-        data: JSON.stringify({
+        result: JSON.stringify({
           user: userId,
           orgId: data.orgId
         })
       });
-    }).catch((err) => {
-      res.json({
-        message: "error",
-        data: err
-      });
+    }).catch(err => {
+      next(err)
     });
   }
 })
-app.post('/invoke', function(req, res) {
+app.post('/invoke', function(req, res, next) {
   //console.log(req);
   var data = typeof req.body !== "string" ? req.body : JSON.parse(req.body);
   var values = typeof data.params !== "string" ? data.params : JSON.parse(data.params);
@@ -91,21 +91,21 @@ app.post('/invoke', function(req, res) {
   console.log(values.orgId + "   " + values.userId);
   var client = null;
   if(!values.orgId || !values.userId) {
-    res.json({
-      message: "Missing OrgId/UserId "
-    });
+    var err = new Error('Missing OrgId/UserId');
+    err.status = 400;
+    next(err);
   } else {
     var userId = uuidv4();
     var client = null;
     if(values.orgId === "shopOrg") {
-      client = shopClient;
+      client = clientArray[0];
     } else if(values.orgId === "fitcoinOrg") {
-      client = fitcoinClient;
+      client = clientArray[1];
     }
     if(!values.fcn) {
-      res.json({
-        message: "Missing function name "
-      });
+      var err = new Error('Missing function name');
+      err.status = 400;
+      next(err);
     }
     if(!values.args || (values.args.length == 1 && values.args[0] == null)) {
       values.args = [""]
@@ -117,12 +117,14 @@ app.post('/invoke', function(req, res) {
       console.log(result);
       res.json({
         message: "ok",
-        data: result
+        result: result
       });
+    }).catch(err => {
+      next(err);
     });
   }
 })
-app.post('/query', function(req, res) {
+app.post('/query', function(req, res, next) {
   //console.log(req);
   var data = typeof req.body !== "string" ? req.body : JSON.parse(req.body);
   var values = typeof data.params !== "string" ? data.params : JSON.parse(data.params);
@@ -131,21 +133,21 @@ app.post('/query', function(req, res) {
   console.log(values.orgId + "   " + values.userId);
   var client = null;
   if(!values.orgId || !values.userId) {
-    res.json({
-      message: "Missing OrgId/UserId "
-    });
+    var err = new Error('Missing OrgId/UserId');
+    err.status = 400;
+    next(err);
   } else {
     var userId = uuidv4();
     var client = null;
     if(values.orgId === "shopOrg") {
-      client = shopClient;
+      client = clientArray[0];
     } else if(values.orgId === "fitcoinOrg") {
-      client = fitcoinClient;
+      client = clientArray[1];
     }
     if(!values.fcn) {
-      res.json({
-        message: "Missing function name "
-      });
+      var err = new Error('Missing function name');
+      err.status = 400;
+      next(err);
     }
     if(!values.args || (values.args.length == 1 && values.args[0] == null)) {
       values.args = [""]
@@ -157,8 +159,10 @@ app.post('/query', function(req, res) {
       console.log(result);
       res.json({
         message: "ok",
-        data: result
+        result: result
       });
+    }).catch(err => {
+      next(err);
     });
   }
 })

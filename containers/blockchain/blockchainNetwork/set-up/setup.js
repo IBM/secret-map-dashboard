@@ -6,33 +6,31 @@ import {
 import http from 'http';
 import url from 'url';
 // Setup clients per organization
-const shopClient = new OrganizationClient(config.channelName, config.orderer, config.shopOrg.peer, config.shopOrg.ca, config.shopOrg.admin);
-const fitcoinClient = new OrganizationClient(config.channelName, config.orderer, config.fitcoinOrg.peer, config.fitcoinOrg.ca, config.fitcoinOrg.admin);
+const clients = config.peers.map(obj => new OrganizationClient(config.channelName, config.orderer, obj.peer, obj.ca, obj.admin));
 
 function getAdminOrgs() {
-  return Promise.all([shopClient.createOrgAdmin(), fitcoinClient.createOrgAdmin()]);
+  return Promise.all(clients.map(client => client.createOrgAdmin()));
 }
 (async () => {
   // Login
   try {
-    await Promise.all([shopClient.login(), fitcoinClient.login()]);
+    await Promise.all(clients.map(client => client.login()));
   } catch(e) {
     console.log('Fatal error logging into blockchain organization clients!');
     console.log(e);
     process.exit(-1);
   }
   // Setup event hubs
-  shopClient.initEventHubs();
-  fitcoinClient.initEventHubs();
+  clients.map(client => client.initEventHubs());
   try {
     await getAdminOrgs();
-    if(!(await shopClient.checkChannelMembership())) {
+    if(!(await clients[0].checkChannelMembership())) {
       console.log('Default channel not found, attempting creation...');
-      const createChannelResponse = await shopClient.createChannel(config.channelConfig);
+      const createChannelResponse = await clients[0].createChannel(config.channelConfig);
       if(createChannelResponse.status === 'SUCCESS') {
         console.log('Successfully created a new default channel.');
         console.log('Joining peers to the default channel.');
-        await Promise.all([shopClient.joinChannel(), fitcoinClient.joinChannel()]);
+        await Promise.all(clients.map(client => client.joinChannel()));
         // Wait for 10s for the peers to join the newly created channel
         await new Promise(resolve => {
           setTimeout(resolve, 10000);
@@ -46,24 +44,27 @@ function getAdminOrgs() {
   }
   // Initialize network
   try {
-    await Promise.all([shopClient.initialize(), fitcoinClient.initialize()]);
+    await Promise.all(clients.map(client => client.initialize()));
   } catch(e) {
     console.log('Fatal error initializing blockchain organization clients!');
     console.log(e);
     process.exit(-1);
   }
   // Install chaincode on all peers
-  let installedOnShopOrg, installedOnFitcoinOrg;
+  let installedOnClients;
   try {
     await getAdminOrgs();
-    installedOnShopOrg = await shopClient.checkInstalled(config.chaincodeId, config.chaincodeVersion, config.chaincodePath);
-    installedOnFitcoinOrg = await fitcoinClient.checkInstalled(config.chaincodeId, config.chaincodeVersion, config.chaincodePath);
+    installedOnClients = await Promise.all(clients.map(client => client.checkInstalled(config.chaincodeId, config.chaincodeVersion, config.chaincodePath)));
   } catch(e) {
     console.log('Fatal error getting installation status of the chaincode!');
     console.log(e);
     process.exit(-1);
   }
-  if(!(installedOnShopOrg && installedOnFitcoinOrg)) {
+  let check = true;
+  installedOnClients.forEach(function(entry) {
+    check = !entry ? false : check;
+  });
+  if(!(check)) {
     console.log('Chaincode is not installed, attempting installation...');
     // Pull chaincode environment base image
     try {
@@ -121,13 +122,8 @@ function getAdminOrgs() {
       console.log(e);
       process.exit(-1);
     }
-    // Install chaincode
-    const installationPromises = [
-      shopClient.install(config.chaincodeId, config.chaincodeVersion, config.chaincodePath),
-      fitcoinClient.install(config.chaincodeId, config.chaincodeVersion, config.chaincodePath)
-    ];
     try {
-      await Promise.all(installationPromises);
+      await Promise.all(clients.map(client => client.install(config.chaincodeId, config.chaincodeVersion, config.chaincodePath)));
       await new Promise(resolve => {
         setTimeout(resolve, 10000);
       });
@@ -143,11 +139,8 @@ function getAdminOrgs() {
   // Instantiate chaincode on all peers
   // Instantiating the chaincode on a single peer should be enough (for now)
   try {
-    await shopClient.instantiate(config.chaincodeId, config.chaincodeVersion, config.chaincodePath, '{"Args":[""]}');
+    await clients[0].instantiate(config.chaincodeId, config.chaincodeVersion, config.chaincodePath, '{"Args":[""]}');
     console.log('Successfully instantiated chaincode on all peers.');
-    //var member_user = shopClient.registerAndEnroll("sample_user");
-    //console.log(member_user);
-    //process.exit(-1);
   } catch(e) {
     console.log('Fatal error instantiating chaincode on some(all) peers!');
     console.log(e);
@@ -155,7 +148,7 @@ function getAdminOrgs() {
   }
 })();
 // Export organization clients
-export {
+/*export {
   shopClient,
   fitcoinClient
-};
+};*/
