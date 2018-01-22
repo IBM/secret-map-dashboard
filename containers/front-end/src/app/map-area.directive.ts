@@ -13,10 +13,9 @@ export class MapAreaDirective implements AfterViewChecked {
   heightRatio: number;
   widthRatio: number;
 
-  constructor(private el: ElementRef) {
-
+  constructor(private el: ElementRef) { 
   }
-
+  
    /**
    * Checks whether incoming data such as booth or beacon data is changing
    * @param - none
@@ -55,7 +54,7 @@ export class MapAreaDirective implements AfterViewChecked {
         eventBlock.setNamedItem(this.updateAttributes('cx', this.booths[counter].shape['cx'] * this.widthRatio));
         eventBlock.setNamedItem(this.updateAttributes('cy', this.booths[counter].shape['cy'] * this.heightRatio));
         eventBlock.setNamedItem(this.updateAttributes('r', this.booths[counter].shape['radius']
-          * ( (this.widthRatio + this.heightRatio) / 2)));
+          * ( (this.widthRatio + this.heightRatio) / 4)));
       } else if (eventBlock.getNamedItem('name').value === 'ellipse') {
         eventBlock.setNamedItem(this.updateAttributes('cx', this.booths[counter].shape['cx'] * this.widthRatio));
         eventBlock.setNamedItem(this.updateAttributes('cy', this.booths[counter].shape['cy'] * this.heightRatio));

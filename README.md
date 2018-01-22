@@ -2,9 +2,47 @@
 
 # secret-map-dashboard map-api
 
+## Getting Started
+
+* Create a MongoDB instance with IBM Cloud
+  * [Compose for MongoDB](https://console.bluemix.net/catalog/services/compose-for-mongodb)
+
+* Export credentials in your environment
+```
+export MONGODB_URL="<your_mongodb_url_found_in_ibmcloud>"
+```
+Encode your MongoDB's SSL certificate in base64 then export them in your environment
+```
+echo -n "<paste_your_certificate_here>" | base64
+
+export MONGODB_CERT_BASE64="<paste_the_encoded_result_here>"
+```
+
+* Install dependencies and Run the app
 ```
 npm install
+
+npm start
 ```
+
+* The app will run in `http://localhost:8080`
+
+## Unit tests
+
+* The unit tests will look for a local MongoDB. You can start one easily with Docker.
+```
+docker run -d -p 27017:27017 --name local-mongo mongo
+```
+
+* Run the test script
+```
+npm test
+```
+
+To stop your MongoDB container: `docker stop local-mongo`
+To start your MongoDB container back up, simply run: `docker start local-mongo`
+
+To permanently delete the MongoDB container: `docker rm local-mongo`
 
 #### Endpoints
 
