@@ -1,6 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+// Modules
+import { HttpClientModule } from '@angular/common/http';
+// Components
 import { HomepageComponent } from './homepage.component';
+// Services
+import { DashboardService } from '../dashboard.service';
 
 describe('HomepageComponent', () => {
   let component: HomepageComponent;
@@ -8,7 +12,9 @@ describe('HomepageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HomepageComponent ]
+      declarations: [ HomepageComponent ],
+      providers: [DashboardService],
+      imports: [HttpClientModule]
     })
     .compileComponents();
   }));

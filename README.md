@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/IBM/secret-map-dashboard.svg?branch=master)](https://travis-ci.org/IBM/secret-map-dashboard)
 
-# secret-map-dashboard map-api
+# Secret-map-dashboard map-api
 
 ## Getting Started
 
@@ -81,7 +81,7 @@ curl -X POST -H 'Content-Type: application/json' -d '{ "eventId":"index","eventN
 
 # Secret-map-dashboard front-end
 
-This project was implemented using with [Angular CLI](https://cli.angular.io/)
+This project was implemented using with [Angular 2 CLI](https://cli.angular.io/)
 
 ## Getting Started
 ```
@@ -90,7 +90,37 @@ This project was implemented using with [Angular CLI](https://cli.angular.io/)
   npm install
   npm start
 ```
-_Application will served on http://localhost:4200_
+_Application will be served on http://localhost:4200_
+
+## Project Structure 
+
+> Components, directives and services are angular.js terminology
+
+### Componenets 
+
+* Homepage - landing page that shows endpoints for all conferences that are registered  
+
+* Main-dispaly - shows the event name, the event booth blocks with centered text ( which is the Map area componenet), and a footer that displays the total tally number of the distance traveled, the calories burned, and the fitcoins accumlated by conference attendees at a conference. 
+
+* Map-area - displays the event booth blocks with centered text as well as a movement heatmap of the conference attendees
+
+* Side-display -  displays theme related images as well as a running count of the number of steps walked and the number calories burned by the conference attendees at the conference
+
+* Dashboard - contains Main-dispaly and Side-display componenets
+
+
+> _To create a componenent run this commmand_ `ng generate component < component-name >`
+
+### Services
+
+* Dashboard service - handles all of the http requests towards the map-api server 
+
+> _To create a service run this commmand_ `ng generate service < service-name >`
+
+### Directives 
+* Map-area directive - handles the responsiveness of the size and positioning of the event booth blocks in regards to changing of the browser window's size
+
+> _To create a directive run this commmand_ `ng generate directive < directive-name >`
 
 ## Syntax Checking
 * `npm run lint`  _(checks for typescript syntax)_
