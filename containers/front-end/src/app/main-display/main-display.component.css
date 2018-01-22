@@ -3,7 +3,7 @@
   height: 15%;
   display: flex;
   flex-direction: column;
-  border-bottom: 3px #B48E8E solid;
+  border-bottom: 0.3vh #B48E8E solid;
 }
 .mainDisplayMapContainer{
   margin: auto;
@@ -18,18 +18,18 @@
   height: 15%;
   display: flex;
   flex-direction: column;
-  border-top: 3px #B48E8E solid;
+  border-top: 0.3vh #B48E8E solid;
 }
 
 .mainDisplayEventName{
-  margin: auto;
+  margin-right: auto;
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-left: 1.5em;
   display: flex;
   flex-direction: row;
-  align-items: center;
-  align-content: center;
-  justify-content: center;
   color:  #EC5133;
-  font-size: 2.25vw;
+  font-size: calc(1vw + 1vh + 1vmin);
 }
 
 .mainDisplayMap{
@@ -43,12 +43,12 @@
 }
 
 .mainDisplayFooter{
-  margin: auto;
+  margin-right: auto;
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-left: 1.5em;
   display: flex;
   flex-direction: row;
-  align-items: center;
-  align-content: center;
-  justify-content: center;
   color:  #723936;
-  font-size: 2.25vw;
+  font-size: calc(1vw + 1vh + 1vmin);
 }
