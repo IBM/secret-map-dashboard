@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, ElementRef, ViewChild} from '@angular/core';
-
-import {Booth, Beacon} from '../conferenceItems';
+// Directives
 import { MapAreaDirective } from '../map-area.directive';
+// Objects
+import {Booth, Beacon} from '../conferenceItems';
 
 @Component({
   selector: 'app-map-area',
@@ -13,8 +14,19 @@ export class MapAreaComponent implements OnInit {
   @Input() booths: Booth[];
   @Input() beacons: Beacon[];
 
-  constructor(private el: ElementRef) { }
+  /**
+   * Constructor for the map-area component
+   * @param el - HTML element
+  */
+  constructor(private el: ElementRef) {
 
+   }
+
+
+   /**
+   * Initializes component
+   * @param - none
+   */
   ngOnInit() {
   }
 

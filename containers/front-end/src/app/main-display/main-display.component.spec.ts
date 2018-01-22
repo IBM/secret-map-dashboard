@@ -52,9 +52,6 @@ describe('MainDisplayComponent', () => {
           }
       ]
     };
-    component.ngOnChanges({
-        conference: new SimpleChange(null, component.conference, true)
-    });
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });

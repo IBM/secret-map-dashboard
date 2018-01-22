@@ -9,8 +9,14 @@ export class SideDisplayComponent implements OnInit {
   @Input() steps: number;
   @Input() calories: number;
 
-  constructor() { }
+  constructor() {
 
+   }
+
+   /**
+   * Initializes component
+   * @param - none
+   */
   ngOnInit() {
   }
 

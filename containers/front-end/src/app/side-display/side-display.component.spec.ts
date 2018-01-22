@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+// Components
 import { SideDisplayComponent } from './side-display.component';
 
 describe('SideDisplayComponent', () => {
