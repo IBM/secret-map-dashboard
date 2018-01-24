@@ -1,20 +1,24 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { catchError, map, tap } from 'rxjs/operators';
-
+// Objects
 import {Conference} from './conference';
-import {ConferenceAttendee} from './conferenceAttendee';
 
 @Injectable()
 export class DashboardService {
+  // IP address where map api server is being served
   private mapApiURL = 'http://169.46.74.117';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
 
-  /** GET conferences from the map-api server */
+   }
+
+    /**
+   * GET all conferences from the map-api server.
+   * @param - none
+   */
   getConferences(): Observable<Conference[]> {
     const url = `${this.mapApiURL}/events`;
     return this.http.get<Conference[]>(url)
@@ -26,7 +30,10 @@ export class DashboardService {
       );
   }
 
-  /** GET conference by id from the map-api server */
+    /**
+   * GET a conference by id from the map-api server.
+   * @param eventId - id of the conference
+   */
   getConference(eventId: string): Observable<Conference> {
     const url = `${this.mapApiURL}/events/${eventId}`;
     return this.http.get<Conference>(url).pipe(
@@ -35,17 +42,6 @@ export class DashboardService {
         }),
         catchError(this.handleError<Conference>(`getConference eventId=${eventId}`))
     );
-  }
-
-  /** GET conferenceAttendees from the map-api server
-   * Not yet Implemented
-  */
-  getConferenceAttendees(): Observable<ConferenceAttendee[]> {
-    return this.http.get<ConferenceAttendee[]>( this.mapApiURL + 'get_attendees')
-      .pipe(
-        tap(conferenceAttendees => console.log(`fetched conferenceAttendees`)),
-        catchError(this.handleError('getConferenceAttendees', []))
-      );
   }
 
   /**

@@ -11,13 +11,11 @@ router.post("/add", function(req, res) {
   // Insert input validation
   let boothIds = req.body.map;
   let beaconIds = req.body.beacons;
-  console.log("req.body.map = " + boothIds);
 
   let queryBooth = Booths.find({"boothId": {$in: boothIds}},
     function(err, booths) {
       if (err) {
-        res.send("Error getting booths: " + err);
-        return console.error(err);
+        res.send(err);
       } else {
         req.body.map = booths;
       }
@@ -26,8 +24,7 @@ router.post("/add", function(req, res) {
   let queryBeacon = Beacons.find({"beaconId": {$in: beaconIds}},
     function(err, beacons) {
       if (err) {
-        res.send("Error getting beacons: " + err);
-        return console.error(err);
+        res.send(err);
       } else {
         req.body.beacons = beacons;
       }
@@ -35,12 +32,10 @@ router.post("/add", function(req, res) {
 
   queryBooth.then(queryBeacon)
     .then(function() {
-      console.log(req.body);
       let addEvent = new Events(req.body);
       addEvent.save(function(err) {
         if (err) {
-          res.send("Error saving: " + err);
-          return console.error(err);
+          res.send(err);
         } else {
           res.send("Saved event.");
         }
@@ -51,8 +46,7 @@ router.post("/add", function(req, res) {
 router.get("/", function(req, res) {
   Events.find(function(err, events) {
     if (err) {
-      res.send("Error getting events: " + err);
-      return console.error(err);
+      res.send(err);
     } else {
       res.send(events);
     }
@@ -62,8 +56,7 @@ router.get("/", function(req, res) {
 router.get("/:eventId", function(req, res) {
   Events.findOne(req.params, function(err, event) {
     if (err) {
-      res.send("Error getting event: " + err);
-      return console.error(err);
+      res.send(err);
     } else if (event) {
       res.send(event);
     } else {

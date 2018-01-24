@@ -1,6 +1,8 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { ElementRef} from '@angular/core';
+// Components
 import { MapAreaComponent } from './map-area/map-area.component';
+// Directives
 import { MapAreaDirective } from './map-area.directive';
 
 describe('MapAreaDirective', () => {
@@ -31,7 +33,7 @@ describe('MapAreaDirective', () => {
         'contact': 'John Doe',
         'measurementUnit': 'metre',
         'description': 'Node description',
-        'shape': {'y': 0, 'x': 0, 'width': 3, 'height': 3},
+        'shape': {type: 'rectangle', 'y': 0, 'x': 0, 'width': 3, 'height': 3},
         'boothId': 'A01'
     }
    ];

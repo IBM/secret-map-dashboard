@@ -1,7 +1,8 @@
 import { Directive, Input, ElementRef, AfterViewChecked, HostListener, OnInit} from '@angular/core';
-import { Booth, Beacon} from './conferenceItems';
 import { forEach } from '@angular/router/src/utils/collection';
 import { interceptingHandler } from '@angular/common/http/src/module';
+// Objects
+import { Booth, Beacon} from './conferenceItems';
 @Directive({
   selector: '[appMapArea]'
 })
@@ -12,15 +13,23 @@ export class MapAreaDirective implements AfterViewChecked {
   heightRatio: number;
   widthRatio: number;
 
-  constructor(private el: ElementRef) { }
-
+  constructor(private el: ElementRef) { 
+  }
+  
+   /**
+   * Checks whether incoming data such as booth or beacon data is changing
+   * @param - none
+   */
   ngAfterViewChecked() {
     this.changeEventBlockSize(this.el.nativeElement);
     this.changeBeaconBlockSize(this.el.nativeElement);
     this.changeBoothTextSize(this.el.nativeElement);
   }
 
-  // Changes booth blocks in proporation to the window size
+   /**
+   * Changes booth blocks in proporation to the window size
+   * @param parent - HTML Element
+   */
   changeEventBlockSize(parent: HTMLElement) {
     if (!parent) {
       return;
@@ -45,7 +54,7 @@ export class MapAreaDirective implements AfterViewChecked {
         eventBlock.setNamedItem(this.updateAttributes('cx', this.booths[counter].shape['cx'] * this.widthRatio));
         eventBlock.setNamedItem(this.updateAttributes('cy', this.booths[counter].shape['cy'] * this.heightRatio));
         eventBlock.setNamedItem(this.updateAttributes('r', this.booths[counter].shape['radius']
-          * ( (this.widthRatio + this.heightRatio) / 2)));
+          * ( (this.widthRatio + this.heightRatio) / 4)));
       } else if (eventBlock.getNamedItem('name').value === 'ellipse') {
         eventBlock.setNamedItem(this.updateAttributes('cx', this.booths[counter].shape['cx'] * this.widthRatio));
         eventBlock.setNamedItem(this.updateAttributes('cy', this.booths[counter].shape['cy'] * this.heightRatio));
@@ -73,7 +82,10 @@ export class MapAreaDirective implements AfterViewChecked {
     });
   }
 
-  // Changes Beacon location in proporation to the window size
+   /**
+   * Changes Beacon location in proporation to the window size
+   * @param parent - HTML Element
+   */
   changeBeaconBlockSize(parent: HTMLElement) {
     if (!parent) {
       return;
@@ -100,7 +112,10 @@ export class MapAreaDirective implements AfterViewChecked {
     });
   }
 
-  // Centers booth description
+   /**
+   * Centers booth description
+   * @param parent - HTML Element
+   */
   changeBoothTextSize(parent: HTMLElement) {
     if (!parent) {
       return;
@@ -153,7 +168,10 @@ export class MapAreaDirective implements AfterViewChecked {
     });
   }
 
-  // Looking for when the browser changes in size
+   /**
+   * Checks when browser changes in size and will make the maparea responsive
+   * @param - none
+   */
   @HostListener('window:resize')
   onResize() {
     this.changeEventBlockSize(this.el.nativeElement);
@@ -161,6 +179,11 @@ export class MapAreaDirective implements AfterViewChecked {
     this.changeBoothTextSize(this.el.nativeElement);
   }
 
+   /**
+   * Centers booth description
+   * @param attribute - attribute name that will change value
+   * @param attributeValue - value that you wish to change the attribute to
+   */
   updateAttributes(attributeName: string, attributeValue: any ): Attr {
     const attr = document.createAttribute(attributeName);
     attr.value = String(attributeValue);

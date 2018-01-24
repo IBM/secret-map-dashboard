@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {setInterval} from 'timers';
-import { Conference } from '../conference';
-import { DashboardService } from '../dashboard.service';
 import { ActivatedRoute } from '@angular/router';
+import {setInterval} from 'timers';
+// Services
+import { DashboardService } from '../dashboard.service';
+// Objects
+import { Conference } from '../conference';
 
 @Component({
   selector: 'app-dashboard',
@@ -19,10 +21,21 @@ export class DashboardComponent implements OnInit {
   MainDisplayInterval: any;
   conference: Conference;
 
+   /**
+   * Constructor for dashboard component
+   * @param  dashboardService - for requesting conference data from map-api
+   * @param route - routing information
+   */
   constructor(
     private dashboardService: DashboardService,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute) {
 
+     }
+
+   /**
+   * Initializes component
+   * @param - none
+   */
   ngOnInit() {
     this.steps = 0;
     this.calories = 0;
@@ -33,14 +46,21 @@ export class DashboardComponent implements OnInit {
     this.getConference();
   }
 
+   /**
+   * Get conference by eventId in map-api server using the Dashboard service
+   * @param - none
+   */
   getConference(): void {
     const eventId = this.route.snapshot.paramMap.get('eventId');
     this.dashboardService.getConference(eventId)
     .subscribe( conference => this.conference = conference);
   }
 
-  // Implementation will be swapped with http calls from
-  // dashboardService.getSideDisplayInfo()
+   /**
+   * Increments the values of steps, calories and fitcoins every 2 seconds by
+   * a certain value
+   * @param - none
+   */
   getSideDisplayInfo(): void {
     this.sideDisplayInterval = setInterval(() => {
       this.steps += 10;
@@ -50,8 +70,10 @@ export class DashboardComponent implements OnInit {
     , 2000);
   }
 
-  // Implementation will be swapped with http calls from
-  // dashboardService.getConferenceAttendees()
+   /**
+   * Increments the value of conferenceAttendees every second by 4
+   * @param - none
+   */
   getConferenceAttendees(): void {
     this.MainDisplayInterval = setInterval(() => {
       this.conferenceAttendees += 4;
