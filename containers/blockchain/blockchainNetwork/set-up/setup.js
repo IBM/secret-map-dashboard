@@ -60,10 +60,7 @@ function getAdminOrgs() {
     console.log(e);
     process.exit(-1);
   }
-  let check = true;
-  installedOnClients.forEach(function(entry) {
-    check = !entry ? false : check;
-  });
+  let check = installedOnClients.every(installed => installed);
   if(!(check)) {
     console.log('Chaincode is not installed, attempting installation...');
     // Pull chaincode environment base image

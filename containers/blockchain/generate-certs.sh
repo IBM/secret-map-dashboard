@@ -55,16 +55,27 @@ cp $PEERS/fitcoin-org/users/Admin@fitcoin-org/msp/signcerts/* $WEBCERTS/
 mv $PROJPATH/blockchainNetwork/channel.tx $PROJPATH/blockchainNetwork/set-up/channel.tx
 
 WEBCERTS=$PROJPATH/blockchainNetwork
-BACKEND=$PROJPATH/backend
+BACKEND=$PROJPATH/fitcoinBackend
 rm -rf $BACKEND/certs
 rm -rf $BACKEND/set-up
-rm -rf $BACKEND/chaincode
+#rm -rf $BACKEND/chaincode
 mkdir -p $BACKEND/certs
 mkdir -p $BACKEND/set-up
-mkdir -p $BACKEND/chaincode
+#mkdir -p $BACKEND/chaincode
 cp -r $WEBCERTS/certs/* $BACKEND/certs/
 cp -r $WEBCERTS/set-up/* $BACKEND/set-up/
-cp -r $WEBCERTS/chaincode/* $BACKEND/chaincode/
+#cp -r $WEBCERTS/chaincode/* $BACKEND/chaincode/
+
+BACKEND=$PROJPATH/shopBackend
+rm -rf $BACKEND/certs
+rm -rf $BACKEND/set-up
+#rm -rf $BACKEND/chaincode
+mkdir -p $BACKEND/certs
+mkdir -p $BACKEND/set-up
+#mkdir -p $BACKEND/chaincode
+cp -r $WEBCERTS/certs/* $BACKEND/certs/
+cp -r $WEBCERTS/set-up/* $BACKEND/set-up/
+#cp -r $WEBCERTS/chaincode/* $BACKEND/chaincode/
 
 #cp $PROJPATH/orderer/crypto/tls/ca.crt $SHOP/certs/ordererOrg.pem
 #cp $PROJPATH/shopPeer/crypto/tls/ca.crt $SHOP/certs/shopOrg.pem

@@ -1,4 +1,5 @@
 'use strict';
+var Long = require('long');
 var resolve = require('path').resolve;
 var EventEmitter = require('events').EventEmitter;
 var hfc = require('fabric-client');
@@ -266,6 +267,35 @@ export class OrganizationClient extends EventEmitter {
     } catch(e) {
       throw e;
     }
+  }
+  async getBlocks(noOfLastBlocks) {
+    if(typeof noOfLastBlocks !== 'number' && typeof noOfLastBlocks !== 'string') {
+      return [];
+    }
+    const {
+      height
+    } = await this._channel.queryInfo();
+    let blockCount;
+    if(height.comp(noOfLastBlocks) > 0) {
+      blockCount = noOfLastBlocks;
+    } else {
+      blockCount = height;
+    }
+    if(typeof blockCount === 'number') {
+      blockCount = Long.fromNumber(blockCount, height.unsigned);
+    } else if(typeof blockCount === 'string') {
+      blockCount = Long.fromString(blockCount, height.unsigned);
+    }
+    blockCount = blockCount.toNumber();
+    const queryBlock = this._channel.queryBlock.bind(this._channel);
+    const blockPromises = {};
+    blockPromises[Symbol.iterator] = function*() {
+      for(let i = 1; i <= blockCount; i++) {
+        yield queryBlock(height.sub(i).toNumber());
+      }
+    };
+    const blocks = await Promise.all([...blockPromises]);
+    return blocks.map(utils.unmarshalBlock);
   }
   async registerAndEnroll(enrollmentID) {
     try {

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Blockchain History of Events</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Blockchain Blocks</a>
+        </div>
+      </div>
+    </nav>
+    <div class="container" id="section_one">
+      <div style="overflow:auto;">
+        <table id="table_view" style="width: 100%">
+          <thead>
+            <tr style="width: 100%">
+              <th>Block Id</th>
+              <th>Fingerprint</th>
+              <th>Block Info</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </div>
+      </table>
+    </div>
+  </body>
+</html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/web-socket-js/1.0.0/web_socket.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="./scripts/events.js"></script>

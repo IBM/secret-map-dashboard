@@ -119,18 +119,42 @@ services:
     - couchdb0
     - couchdb1
 
-  backend-application :
-    container_name: backend-application
-    image: backend-application
+  shop-backend :
+    container_name: shop-backend
+    image: shop-backend
     environment:
     - PORT=3000
+    - ORGID=org.ShopOrg
+    - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
+    - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.2
+    ports:
+    - 3002:3000
+    - 8080:8080
+    volumes:
+    - /var/run/:/host/var/run/
+    depends_on:
+    - orderer0
+    - shop-ca
+    - shop-peer
+    - fitcoin-ca
+    - fitcoin-peer
+    - couchdb0
+    - couchdb1
+    - blockchain-setup
+
+  fitcoin-backend :
+    container_name: fitcoin-backend
+    image: fitcoin-backend
+    environment:
+    - PORT=3000
+    - ORGID=org.FitCoinOrg
     - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
     - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.2
     ports:
     - 3001:3000
     volumes:
     - /var/run/:/host/var/run/
-    external_links:
+    depends_on:
     - orderer0
     - shop-ca
     - shop-peer

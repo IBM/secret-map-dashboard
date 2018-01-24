@@ -52,11 +52,20 @@ module.exports.unmarshalBlock = function(block) {
     const {
       type,
       timestamp,
-      epoch
+      tx_id,
+      channel_id
     } = channel_header;
+    const {
+      actions
+    } = data;
+    var execution_response = actions ? actions.map(obj => obj.payload.action.proposal_response_payload.extension.response) : "";
+    //console.log(execution_response);
     return {
       type,
-      timestamp
+      timestamp,
+      tx_id,
+      channel_id,
+      execution_response
     };
   }) : [];
   return {
