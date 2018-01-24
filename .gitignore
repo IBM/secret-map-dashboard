@@ -1,6 +1,7 @@
 # Ignore Node files
 node_modules
-package-lock.json
+
+/**/node_modules
 
 # Ignore Vim files
 [._]*.s[a-w][a-z]

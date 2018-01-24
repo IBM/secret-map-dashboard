@@ -8,8 +8,7 @@ ENV DOCKER_CCENV_IMAGE hyperledger/fabric-ccenv:x86_64-1.0.2
 RUN mkdir /app
 COPY . /app
 WORKDIR /app
-RUN apt update && apt install -y build-essential \
-      && npm install
+RUN npm install
 
 EXPOSE 3000
 
