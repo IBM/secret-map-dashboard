@@ -44,4 +44,4 @@ export default async function(client, enrollmentID, enrollmentSecret, ca, {
   } catch(e) {
     throw new Error(`Could not get UserContext! Error: ${e.message}`);
   }
-};
+}

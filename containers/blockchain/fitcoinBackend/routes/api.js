@@ -8,7 +8,7 @@ router.post('/enroll', function(req, res, next) {
   var data = typeof req.body !== "string" ? req.body : JSON.parse(req.body);
   var userId = uuidv4();
   var client = req.client;
-  client.registerAndEnroll(userId).then((user) => {
+  client.registerAndEnroll(userId).then(() => {
     console.log("Successfully enrolled user " + userId);
     //console.log(user);
     res.json({
@@ -19,27 +19,27 @@ router.post('/enroll', function(req, res, next) {
       })
     });
   }).catch(err => {
-    next(err)
+    next(err);
   });
 });
 router.post('/invoke', function(req, res, next) {
   var data = typeof req.body !== "string" ? req.body : JSON.parse(req.body);
   var values = typeof data.params !== "string" ? data.params : JSON.parse(data.params);
   //console.log(values.orgId + "   " + values.userId);
+  var err = null;
   if(!values.userId) {
-    var err = new Error('Missing UserId');
+    err = new Error('Missing UserId');
     err.status = 400;
     next(err);
   } else {
-    var userId = uuidv4();
     var client = req.client;
     if(!values.fcn) {
-      var err = new Error('Missing function name');
+      err = new Error('Missing function name');
       err.status = 400;
       next(err);
     }
     if(!values.args || (values.args.length == 1 && values.args[0] == null)) {
-      values.args = [""]
+      values.args = [""];
     }
     invokeFunc(values.userId, client, config.chaincodeId, config.chaincodeVersion, values.fcn, values.args).then((result) => {
       console.log("Query Results ");
@@ -57,20 +57,20 @@ router.post('/query', function(req, res, next) {
   var data = typeof req.body !== "string" ? req.body : JSON.parse(req.body);
   var values = typeof data.params !== "string" ? data.params : JSON.parse(data.params);
   //    console.log(values.orgId + "   " + values.userId);
+  var err = null;
   if(!values.userId) {
-    var err = new Error('Missing UserId');
+    err = new Error('Missing UserId');
     err.status = 400;
     next(err);
   } else {
-    var userId = uuidv4();
     var client = req.client;
     if(!values.fcn) {
-      var err = new Error('Missing function name');
+      err = new Error('Missing function name');
       err.status = 400;
       next(err);
     }
     if(!values.args || (values.args.length == 1 && values.args[0] == null)) {
-      values.args = [""]
+      values.args = [""];
     }
     queryFunc(values.userId, client, config.chaincodeId, config.chaincodeVersion, values.fcn, values.args).then((result) => {
       console.log("Query Results ");

@@ -11,7 +11,7 @@ export async function initiateClient() {
     console.log('Fatal error logging into blockchain organization clients!');
     console.log(e);
     process.exit(-1);
-  };
+  }
   await Promise.all(clientArray.map(obj => obj.initEventHubs()));
 }
 exports.clients = clientArray;

@@ -43,7 +43,7 @@ const peer = require('./src/peer');
     err.status = 404;
     next(err);
   });
-  app.use(function(err, req, res, next) {
+  app.use(function(err, req, res) {
     res.status(err.status || 500);
     res.json({
       'errors': {

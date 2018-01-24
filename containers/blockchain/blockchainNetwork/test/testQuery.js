@@ -12,7 +12,7 @@ const objArray = config.peers.map(obj => new OrganizationClient(config.channelNa
     console.log('Fatal error logging into blockchain organization clients!');
     console.log(e);
     process.exit(-1);
-  };
+  }
   await Promise.all(objArray.map(obj => obj.initEventHubs()));
   objArray.forEach(function(entry) {
     queryFunc("admin", entry, config.chaincodeId, config.chaincodeVersion, "query", ["a"]).then((result) => {

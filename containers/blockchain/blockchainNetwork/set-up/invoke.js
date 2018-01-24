@@ -75,7 +75,7 @@ export default async function(userId, clientObject, chaincodeId, chaincodeVersio
     if(results && results[0] && results[0].status === 'SUCCESS') {
       console.log('Successfully sent transaction to the orderer.');
     } else {
-      throw new Error('Failed to order the transaction. Error code: ' + response.status);
+      throw new Error('Failed to order the transaction. Error code: ' + results.status);
     }
     if(results && results[1] && results[1].event_status === 'VALID') {
       //console.log('Successfully committed the change to the ledger by the peer');

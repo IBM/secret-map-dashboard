@@ -7,7 +7,7 @@ module.exports.wrapError = function(message, innerError) {
   error.inner = innerError;
   console.log(error.message);
   throw error;
-}
+};
 module.exports.marshalArgs = function(args) {
   if(!args) {
     return args;
@@ -22,7 +22,7 @@ module.exports.marshalArgs = function(args) {
   if(typeof args === 'object') {
     return [JSON.stringify(snakeArgs)];
   }
-}
+};
 module.exports.unmarshalResult = function(result) {
   if(!Array.isArray(result)) {
     return result;
@@ -37,8 +37,7 @@ module.exports.unmarshalResult = function(result) {
   }
   let obj = JSON.parse(json);
   return snakeToCamelCase(obj);
-}
-//function unmarshalBlock(block)
+};
 module.exports.unmarshalBlock = function(block) {
   const transactions = Array.isArray(block.data.data) ? block.data.data.map(({
     payload: {
@@ -73,4 +72,4 @@ module.exports.unmarshalBlock = function(block) {
     fingerprint: block.header.data_hash.slice(0, 20),
     transactions
   };
-}
+};

@@ -1,14 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const uuidv4 = require('uuid/v4');
-import config from '../set-up/config';
-import invokeFunc from '../set-up/invoke';
-import queryFunc from '../set-up/query';
 router.post('/enroll', function(req, res, next) {
   var data = typeof req.body !== "string" ? req.body : JSON.parse(req.body);
   var userId = uuidv4();
   var client = req.client;
-  client.registerAndEnroll(userId).then((user) => {
+  client.registerAndEnroll(userId).then(() => {
     console.log("Successfully enrolled user " + userId);
     res.json({
       message: "success",
@@ -18,7 +15,7 @@ router.post('/enroll', function(req, res, next) {
       })
     });
   }).catch(err => {
-    next(err)
+    next(err);
   });
 });
 router.get('/blocks', function(req, res, next) {
@@ -37,7 +34,7 @@ router.get('/blocks', function(req, res, next) {
         })
       });
     }).catch(err => {
-      next(err)
+      next(err);
     });
   }
 });

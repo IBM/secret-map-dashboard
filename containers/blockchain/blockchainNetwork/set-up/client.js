@@ -7,7 +7,6 @@ var CAClient = require('fabric-ca-client');
 var CouchDBKeyValueStore = require('fabric-client/lib/impl/CouchDBKeyValueStore.js');
 var CKS = require('fabric-client/lib/impl/CryptoKeyStore.js');
 import enrollUser from './enroll';
-import invokeFunc from './invoke';
 var utils = require('./utils.js');
 process.env.GOPATH = resolve(__dirname, '../chaincode');
 const JOIN_TIMEOUT = 120000,

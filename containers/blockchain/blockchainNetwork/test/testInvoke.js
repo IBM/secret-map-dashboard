@@ -12,7 +12,7 @@ const shopClient = new OrganizationClient(config.channelName, config.orderer, co
     console.log('Fatal error logging into blockchain organization clients!');
     console.log(e);
     process.exit(-1);
-  };
+  }
   await Promise.all([shopClient.initEventHubs()]);
   invokeFunc("admin", shopClient, config.chaincodeId, config.chaincodeVersion, "move", ["a", "b", "10"]);
 })();
