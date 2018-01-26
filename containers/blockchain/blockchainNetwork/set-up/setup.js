@@ -12,7 +12,6 @@ function getAdminOrgs() {
   return Promise.all(clients.map(client => client.createOrgAdmin()));
 }
 (async () => {
-  // Login
   try {
     await Promise.all(clients.map(client => client.login()));
   } catch(e) {
