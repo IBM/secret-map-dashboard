@@ -15,7 +15,7 @@ echo "#################################################################"
 echo "### Generating channel configuration transaction 'channel.tx' ###"
 echo "#################################################################"
 $PROJPATH/configtxgen -profile TwoOrgsChannel -outputCreateChannelTx $CLIPATH/channel.tx -channelID $CHANNEL_NAME
-cp $CLIPATH/channel.tx $PROJPATH/blockchainNetwork/channel.tx
+cp $CLIPATH/channel.tx $PROJPATH/configuration/channel.tx
 
 echo
 echo "#################################################################"
