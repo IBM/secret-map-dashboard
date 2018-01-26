@@ -12,7 +12,7 @@ export class MapAreaDirective implements AfterViewChecked {
   heightRatio: number;
   widthRatio: number;
 
-  constructor(private el: ElementRef) { 
+  constructor(private el: ElementRef) {
   }
 
   ngAfterViewChecked() {

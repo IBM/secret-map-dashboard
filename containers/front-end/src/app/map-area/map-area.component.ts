@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ElementRef, ViewChild} from '@angular/core';
+import { Component, OnInit, Input, ElementRef} from '@angular/core';
 
 import {Booth, Beacon} from '../conferenceItems';
 import { MapAreaDirective } from '../map-area.directive';
@@ -13,7 +13,8 @@ export class MapAreaComponent implements OnInit {
   @Input() booths: Booth[];
   @Input() beacons: Beacon[];
 
-  constructor(private el: ElementRef) { }
+  constructor(private el: ElementRef) {
+   }
 
   ngOnInit() {
   }

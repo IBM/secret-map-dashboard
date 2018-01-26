@@ -13,6 +13,7 @@ import { DashboardService } from './dashboard.service';
 import { MapAreaDirective } from './map-area.directive';
 import { AppRoutingModule } from './/app-routing.module';
 import { HomepageComponent } from './homepage/homepage.component';
+import { HeatmapComponent } from './heatmap/heatmap.component';
 
 
 @NgModule({
@@ -24,6 +25,7 @@ import { HomepageComponent } from './homepage/homepage.component';
     SideDisplayComponent,
     MapAreaDirective,
     HomepageComponent,
+    HeatmapComponent,
   ],
   imports: [
     BrowserModule,
