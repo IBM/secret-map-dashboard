@@ -11,4 +11,5 @@ There are multiple ways to do that:
 3) npm start
 
 * B - As a docker
-docker build the app
+
+docker build the app then docker run it
