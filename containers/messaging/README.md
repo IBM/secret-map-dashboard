@@ -13,3 +13,22 @@ There are multiple ways to do that:
 * B - As a docker
 
 docker build the app then docker run it
+
+
+### What to expect when you run the messaging broker:
+
+> **_To send a message and push it to the queue:_**
+
+```
+http://localhost:5000/publish/{"fitcoins"=10, "steps"=20}
+```
+
+> **_To receive message from the queue:_**
+
+```
+http://localhost:5000/subscribe
+```
+
+> **_Output:_**
+
+![](https://github.com/hovig/rabbitmq-nodejs/blob/master/docs/Screen%20Shot%202018-01-28%20at%201.44.30%20PM.png)
