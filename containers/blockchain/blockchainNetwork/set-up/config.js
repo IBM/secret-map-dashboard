@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const SECRETS_DIR = '/run/secrets';
+const SECRETS_DIR = process.env.SECRETSDIR || '/run/secrets';
 
 function readConfig() {
   if(fs.existsSync(SECRETS_DIR)) {
