@@ -58,6 +58,14 @@ ef97bd92a3bc        shop-peer                                                   
 704be331bbbb        hyperledger/fabric-couchdb:x86_64-1.0.2                                                  "tini -- /docker-ent…"   5 minutes ago       Up 5 minutes        4369/tcp, 9100/tcp, 0.0.0.0:6984->5984/tcp       couchdb1
 ba70779b5c65        shop-ca                                                                                  "fabric-ca-server st…"   5 minutes ago       Up 5 minutes        0.0.0.0:7054->7054/tcp                           shop-ca
 ```
+
+**Command**
+```bash
+docker rm -f fitcoin-backend
+docker rm -f shop-backend
+docker-compose -p "fitcoin" up -d
+```
+
 **Command**
 ```bash
 docker logs fitcoin-backend
