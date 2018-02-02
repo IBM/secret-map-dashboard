@@ -1,20 +1,24 @@
 var amqp = require('amqplib/callback_api');
 
 function requestServer(params) {
-  amqp.connect('amqp://localhost:5672', function(err, conn) {
-    conn.createChannel(function(err, ch) {
+  amqp.connect('amqp://localhost:5672', function (err, conn) {
+    conn.createChannel(function (err, ch) {
       ch.assertQueue('', {
         exclusive: true
-      }, function(err, q) {
+      }, function (err, q) {
         var corr = generateUuid();
-        params = JSON.stringify(params)
+        params = JSON.stringify(params);
         console.log(' [x] Requesting %s', params);
-        ch.consume(q.queue, function(msg) {
+        ch.consume(q.queue, function (msg) {
           if(msg.properties.correlationId === corr) {
             msg.content = JSON.parse(msg.content.toString());
             if(msg.content.message === "success") {
               console.log(' [.] Query Result ');
               console.log(msg.content);
+              //conn.close();
+              setTimeout(function () {
+                conn.close();
+              }, 500);
             } else if(msg.content.message === "failed" && msg.content.error.includes('READ_CONFLICT') && parseInt(msg.properties.messageId) < 3) {
               console.log("Error in query. Request Attempt No : " + (parseInt(msg.properties.messageId) + 1));
               //  console.log("Error in query. Queueing request");
