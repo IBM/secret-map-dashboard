@@ -14,13 +14,11 @@
  * the License.
  */
 'use strict';
-const express = require('express'); // app server
-const bodyParser = require('body-parser'); // parser for post requests
-const cors = require("cors");
+//const express = require('express');  app server
+//const bodyParser = require('body-parser');  parser for post requests
+//const cors = require("cors");
 const peer = require('./utils/peer');
-const amqp = require('amqplib/callback_api');
 const utils = require('./utils/util');
-import config from './set-up/config';
 (async () => {
   try {
     await peer.initiateClient();
@@ -29,6 +27,25 @@ import config from './set-up/config';
     console.log(e);
     process.exit(-1);
   }
+  utils.createServer(peer.clients);
+  var socketPort = process.env.SOCKETPORT || 3031;
+  var io = require('socket.io')(socketPort);
+  var executeEvent = io.of('/execute');
+  executeEvent.on('connection', function (socket) {
+    console.log("Connect on block");
+    socket.on('disconnect', function () {
+      console.log('user disconnected');
+    });
+    socket.on('error', function () {
+      console.log('Error : Socket connection');
+    });
+    socket.on('exec', function (params) {
+      //console.log("received params");
+      //console.log(params);
+      utils.queueRequest(params, executeEvent);
+    });
+  });
+  //executeEvent.on('connection', function (socket) {});
   /*const app = express();
   app.use(bodyParser.urlencoded({
     extended: false
@@ -60,33 +77,4 @@ import config from './set-up/config';
     console.log('Server running on port: %d', port);
   });*/
   //console.log(config.rabbitmq);
-  amqp.connect(config.rabbitmq, function(err, conn) {
-    conn.createChannel(function(err, ch) {
-      var q = process.env.RABBITMQQUEUE || 'user_queue';
-      ch.assertQueue(q, {
-        durable: true
-      });
-      ch.prefetch(1);
-      console.log(' [x] Awaiting RPC requests');
-      ch.consume(q, function reply(msg) {
-        var input = JSON.parse(msg.content.toString());
-        var reply = (ch, msg, data) => {
-          ch.sendToQueue(msg.properties.replyTo, new Buffer(data), {
-            correlationId: msg.properties.correlationId,
-            messageId: msg.properties.messageId,
-            content_type: 'application/json'
-          });
-          ch.ack(msg);
-        };
-        utils.execute(input.type, peer.clients[0], input.params).then(function(value) {
-          reply(ch, msg, JSON.stringify(value));
-        }).catch(err => {
-          reply(ch, msg, JSON.stringify({
-            message: "failed",
-            error: err.message
-          }));
-        });
-      });
-    });
-  });
 })();

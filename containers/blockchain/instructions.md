@@ -80,7 +80,7 @@ Server running on port: 3000
 
 **Command**
 ```bash
-docker logs fitcoin-backend
+docker logs shop-backend
 ```
 **Output:**
 ```
@@ -90,51 +90,38 @@ info: [EventHub.js]: _connect - options {"grpc.ssl_target_name_override":"shop-p
 Server running on port: 3000
 ```
 
-**You can now do REST calls for enroll user, invoke and query operations for fitcoin org on http://localhost:3001**
-
-**Sample Enroll API request**
-```
-API Post call : http://localhost:3001/api/enroll
-```
-**Sample Enroll API response**
-```
-{
-    "message": "success",
-    "result": "{\"user\":\"bc489389-3029-466c-b4fa-f9020df2af8b\"}"
-}
-```
-**Sample Query Request**
-```
-API Post call : http://localhost:3001/api/query
-x-www-form-urlencoded values :  params:{"userId":"bc489389-3029-466c-b4fa-f9020df2af8b","fcn":"query","args":["a"]}
-```
->Note : Make sure you use the registered userId or just use the userId from the enroll calls
-
-**Sample Query API response**
-```
-{
-    "message": "success",
-    "result": "{\"response\":\"125\"}"
-}
-```
-
-**Sample Invoke Request**
-```
-API Post call : http://localhost:3001/api/invoke
-x-www-form-urlencoded values: params:{"userId":"6b10b74c-ec8f-4f85-989b-42c07f96a77e","fcn":"move","args":["a","b","10"]}
-```
-
-**Sample Invoke API response**
-```
-{
-    "message": "success",
-    "result": "{\"txId\":\"0adf8cd4e75a4a372d0a2d960cb493b8f5cae3e24c16dbe5366f46132fb7d7e2\"}"
-}
-```
 **To view the Blockchain Events**
 
 In a separate terminal navigate to testApplication folder and run the following command:
 ```
+npm install
 node index.js
 ```
-Now navigate to url : **http://localhost:8000/history.html**
+Navigate to url to view the blockchain blocks: **http://localhost:8000/history.html**
+Now navigate to url to perform operations on network : **http://localhost:8000/test.html**
+
+**Sample  values for request**
+
+**Invoke Operation**
+```
+type = invoke
+userId = admin
+fcn = move
+args = a,b,10
+```
+
+**Query Operation**
+```
+type = query
+userId = admin
+fcn = query
+args = a
+```
+
+**Query Operation**
+```
+type = query
+userId = admin
+fcn = query
+args = b
+```
