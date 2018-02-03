@@ -43,13 +43,30 @@ async function enrollUser(client) {
     return {
       message: "success",
       result: JSON.stringify({
-        user: userId,
-        orgId: data.orgId
+        user: userId
       })
     };
   }).catch(err => {
     throw err;
   });
+}
+async function getBlocks(client, params) {
+  var values = typeof params !== "string" ? params : JSON.parse(params);
+  if(!values.noOfLastBlocks || (values.noOfLastBlocks && isNaN(values.noOfLastBlocks))) {
+    values.noOfLastBlocks = 50;
+  } else {
+    //console.log("here");
+    return client.getBlocks(Number(values.noOfLastBlocks)).then((results) => {
+      return {
+        message: "success",
+        result: JSON.stringify({
+          result: results
+        })
+      };
+    }).catch(err => {
+      throw err;
+    });
+  }
 }
 async function execute(type, client, params) {
   try {
@@ -59,6 +76,8 @@ async function execute(type, client, params) {
       return invokeChaincode(type, client, params);
     case 'enroll':
       return enrollUser(client);
+    case 'blocks':
+      return getBlocks(client, params);
     default:
       throw new Error('Invalid Function Call');
     }
@@ -112,10 +131,10 @@ export async function queueRequest(params, executeEvent) {
         ch.consume(q.queue, function (msg) {
           if(msg.properties.correlationId === corr) {
             msg.content = JSON.parse(msg.content.toString());
+            msg.content.corrId = msg.properties.correlationId;
             if(msg.content.message === "success") {
               console.log(' [.] Query Result ');
               console.log(msg.content);
-              msg.content.corrId = msg.properties.correlationId;
               executeEvent.emit('executionResult', msg.content);
               setTimeout(function () {
                 conn.close();
@@ -131,7 +150,6 @@ export async function queueRequest(params, executeEvent) {
                 });
               }, 20000);
             } else {
-              msg.content.corrId = msg.properties.correlationId;
               executeEvent.emit('executionResult', msg.content);
               conn.close();
             }

@@ -14,9 +14,9 @@
  * the License.
  */
 'use strict';
-const express = require('express'); // app server
-const bodyParser = require('body-parser'); // parser for post requests
-const cors = require("cors");
+//const express = require('express'); // app server
+//const bodyParser = require('body-parser'); // parser for post requests
+//const cors = require("cors");
 const peer = require('./utils/peer');
 const utils = require('./utils/util');
 (async () => {
@@ -27,8 +27,8 @@ const utils = require('./utils/util');
     console.log(e);
     process.exit(-1);
   }
-  const apiRoute = require("./routes/api");
-  const app = express();
+  //const apiRoute = require("./routes/api");
+  //const app = express();
   var socketPort = process.env.SOCKETPORT || 3030;
   var io = require('socket.io')(socketPort);
   var blockEvent = io.of('/block');
@@ -60,7 +60,7 @@ const utils = require('./utils/util');
       utils.queueRequest(params, executeEvent);
     });
   });
-  app.use(bodyParser.urlencoded({
+  /*app.use(bodyParser.urlencoded({
     extended: false
   }));
   app.use(bodyParser.json());
@@ -88,5 +88,5 @@ const utils = require('./utils/util');
   const port = process.env.PORT || process.env.VCAP_APP_PORT || 3002;
   app.listen(port, function () {
     console.log('Server running on port: %d', port);
-  });
+  });*/
 })();
