@@ -43,8 +43,7 @@ async function enrollUser(client) {
     return {
       message: "success",
       result: JSON.stringify({
-        user: userId,
-        orgId: data.orgId
+        user: userId
       })
     };
   }).catch(err => {
@@ -89,8 +88,6 @@ export async function createServer(clients) {
           execute(input.type, peerClient, input.params).then(function (value) {
             reply(ch, msg, JSON.stringify(value));
           }).catch(err => {
-            console.log("here");
-            console.log(err);
             reply(ch, msg, JSON.stringify({
               message: "failed",
               error: err.message
@@ -114,10 +111,10 @@ export async function queueRequest(params, executeEvent) {
         ch.consume(q.queue, function (msg) {
           if(msg.properties.correlationId === corr) {
             msg.content = JSON.parse(msg.content.toString());
+            msg.content.corrId = msg.properties.correlationId;
             if(msg.content.message === "success") {
               console.log(' [.] Query Result ');
               console.log(msg.content);
-              msg.content.corrId = msg.properties.correlationId;
               executeEvent.emit('executionResult', msg.content);
               setTimeout(function () {
                 conn.close();
@@ -133,7 +130,6 @@ export async function queueRequest(params, executeEvent) {
                 });
               }, 20000);
             } else {
-              msg.content.corrId = msg.properties.correlationId;
               executeEvent.emit('executionResult', msg.content);
               conn.close();
             }

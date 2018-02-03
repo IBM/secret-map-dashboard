@@ -1,4 +1,4 @@
-/*eslint no-undef:0*/
+/*eslint no-undef:0 */
 class ReqEvents {
   constructor() {
     //const socket = new WebSocket('ws://localhost:8080');;
@@ -64,3 +64,4 @@ function amqpFunc() {
   };
   requestEvents.requestServer(input);
 }
+document.getElementById("request_server").addEventListener("click", amqpFunc);
