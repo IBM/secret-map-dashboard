@@ -1,11 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+// Components
 import { MainDisplayComponent } from './main-display.component';
-import { MapAreaDirective } from '../map-area.directive';
 import { MapAreaComponent } from '../map-area/map-area.component';
+import { HeatmapComponent } from '../heatmap/heatmap.component';
+// Directives
+import { MapAreaDirective } from '../map-area.directive';
+// Objects
 import { Conference } from '../conference';
-import { SimpleChange } from '@angular/core/';
-
 
 describe('MainDisplayComponent', () => {
   let component: MainDisplayComponent;
@@ -16,6 +17,7 @@ describe('MainDisplayComponent', () => {
       declarations: [ MainDisplayComponent,
       MapAreaComponent,
       MapAreaDirective,
+      HeatmapComponent
     ],
     })
     .compileComponents();

@@ -2,6 +2,7 @@ import { TestBed, inject } from '@angular/core/testing';
 import { ElementRef} from '@angular/core';
 // Components
 import { MapAreaComponent } from './map-area/map-area.component';
+import { HeatmapComponent } from './heatmap/heatmap.component';
 // Directives
 import { MapAreaDirective } from './map-area.directive';
 
@@ -11,7 +12,9 @@ describe('MapAreaDirective', () => {
   // setup
   beforeEach(() => {
     TestBed.configureTestingModule({
-        declarations: [ MapAreaComponent, MapAreaDirective ]
+        declarations: [ MapAreaComponent,
+          MapAreaDirective,
+          HeatmapComponent]
       });
     fixture = TestBed.createComponent(MapAreaComponent);
     element = fixture.nativeElement;

@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+// Components
 import { MapAreaComponent } from './map-area.component';
+import { HeatmapComponent } from '../heatmap/heatmap.component';
+// Directives
 import { MapAreaDirective } from '../map-area.directive';
 
 describe('MapAreaComponent', () => {
@@ -10,7 +12,8 @@ describe('MapAreaComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ MapAreaComponent,
-      MapAreaDirective]
+      MapAreaDirective,
+      HeatmapComponent]
     })
     .compileComponents();
   }));

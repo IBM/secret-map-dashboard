@@ -15,7 +15,7 @@ export class MapAreaDirective implements AfterViewChecked {
 
   constructor(private el: ElementRef) {
   }
-  
+
    /**
    * Checks whether incoming data such as booth or beacon data is changing
    * @param - none
