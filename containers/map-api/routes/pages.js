@@ -18,7 +18,7 @@ router.post("/add", function(req, res) {
 });
 
 router.get("/", function(req, res) {
-  Pages.find(function(err, pages) {
+  Pages.find({},{},{sort: { page: 1 }},function(err, pages) {
     if (err) {
       res.send(err);
     } else {
