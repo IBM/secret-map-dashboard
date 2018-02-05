@@ -78,14 +78,14 @@ export default async function(userId, clientObject, chaincodeId, chaincodeVersio
       throw new Error('Failed to order the transaction. Error code: ' + results.status);
     }
     if(results && results[1] && results[1].event_status === 'VALID') {
-      //console.log('Successfully committed the change to the ledger by the peer');
+      console.log('Successfully committed the change to the ledger by the peer');
       //console.log("Transaction Id " + results[1].tx_id);
+      return JSON.stringify({
+        txId: results[1].tx_id
+      });
     } else {
       throw new Error('Transaction failed to be committed to the ledger due to ::' + results[1].event_status);
     }
-    return JSON.stringify({
-      txId: results[1].tx_id
-    });
   } catch(e) {
     throw e;
   }

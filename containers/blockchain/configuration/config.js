@@ -9,6 +9,7 @@ const config = {
   chaincodeId: 'bcfit',
   chaincodeVersion: '1',
   chaincodePath: 'bcfit',
+  rabbitmq: 'amqp://rabbitmq:5672',
   orderer: {
     hostname: 'orderer0',
     url: 'grpcs://orderer0:7050',
@@ -72,6 +73,7 @@ if(process.env.LOCALCONFIG) {
   config.peers[1].ca.url = 'https://localhost:8054';
   config.peers[1].peer.userKeystoreDBUrl = 'http://localhost:6984';
   config.peers[1].peer.stateDBUrl = 'http://localhost:6984';
+  config.rabbitmq = 'amqp://localhost:5672';
 }
 //export default config;
 fs.writeFile("./config.json", JSON.stringify(config), (err) => {

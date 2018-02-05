@@ -14,10 +14,11 @@
  * the License.
  */
 'use strict';
-const express = require('express'); // app server
-const bodyParser = require('body-parser'); // parser for post requests
-const cors = require("cors");
-const peer = require('./src/peer');
+//const express = require('express');  app server
+//const bodyParser = require('body-parser');  parser for post requests
+//const cors = require("cors");
+const peer = require('./utils/peer');
+const utils = require('./utils/util');
 (async () => {
   try {
     await peer.initiateClient();
@@ -26,7 +27,26 @@ const peer = require('./src/peer');
     console.log(e);
     process.exit(-1);
   }
-  const app = express();
+  utils.createServer(peer.clients);
+  var socketPort = process.env.SOCKETPORT || 3031;
+  var io = require('socket.io')(socketPort);
+  var executeEvent = io.of('/execute');
+  executeEvent.on('connection', function (socket) {
+    console.log("Connect on block");
+    socket.on('disconnect', function () {
+      console.log('user disconnected');
+    });
+    socket.on('error', function () {
+      console.log('Error : Socket connection');
+    });
+    socket.on('exec', function (params) {
+      //console.log("received params");
+      //console.log(params);
+      utils.queueRequest(params, executeEvent);
+    });
+  });
+  //executeEvent.on('connection', function (socket) {});
+  /*const app = express();
   app.use(bodyParser.urlencoded({
     extended: false
   }));
@@ -55,5 +75,6 @@ const peer = require('./src/peer');
   const port = process.env.PORT || process.env.VCAP_APP_PORT || 3001;
   app.listen(port, function() {
     console.log('Server running on port: %d', port);
-  });
+  });*/
+  //console.log(config.rabbitmq);
 })();

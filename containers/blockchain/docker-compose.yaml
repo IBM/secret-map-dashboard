@@ -37,6 +37,13 @@ services:
     ports:
       - 6984:5984
 
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
   orderer0:
     container_name: orderer0
     image: orderer-peer
@@ -134,6 +141,7 @@ services:
     - PORT 3000
     - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
     - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.2
+    - SECRETSDIR=/run/secrets
     volumes:
     - /var/run/:/host/var/run/
     depends_on:
@@ -156,9 +164,12 @@ services:
     - ORGID=org.ShopOrg
     - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
     - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.2
+    - SECRETSDIR=/run/secrets
+    - RABBITMQQUEUE=seller_queue
+    - SOCKETPORT=3030
     ports:
     - 3002:3000
-    - 8080:8080
+    - 3030:3030
     volumes:
     - /var/run/:/host/var/run/
     depends_on:
@@ -170,6 +181,7 @@ services:
     - couchdb0
     - couchdb1
     - blockchain-setup
+    - rabbitmq
     secrets:
       - config
       - channel
@@ -182,8 +194,12 @@ services:
     - ORGID=org.FitCoinOrg
     - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
     - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.2
+    - SECRETSDIR=/run/secrets
+    - RABBITMQQUEUE=user_queue
+    - SOCKETPORT=3030
     ports:
     - 3001:3000
+    - 3031:3030
     volumes:
     - /var/run/:/host/var/run/
     depends_on:
@@ -195,10 +211,11 @@ services:
     - couchdb0
     - couchdb1
     - blockchain-setup
+    - rabbitmq
     secrets:
       - config
       - channel
-      
+
 secrets:
   config:
     file: ./configuration/config.json

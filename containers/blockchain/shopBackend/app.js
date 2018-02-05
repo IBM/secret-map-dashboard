@@ -14,11 +14,11 @@
  * the License.
  */
 'use strict';
-const express = require('express'); // app server
-const bodyParser = require('body-parser'); // parser for post requests
-const cors = require("cors");
-const peer = require('./src/peer');
-const WebSocket = require('ws');
+//const express = require('express'); // app server
+//const bodyParser = require('body-parser'); // parser for post requests
+//const cors = require("cors");
+const peer = require('./utils/peer');
+const utils = require('./utils/util');
 (async () => {
   try {
     await peer.initiateClient();
@@ -28,47 +28,55 @@ const WebSocket = require('ws');
     process.exit(-1);
   }
   //const apiRoute = require("./routes/api");
-  const app = express();
-  const wss = new WebSocket.Server({
-    port: 8080
-  });
-  wss.broadcast = function broadcast(data) {
-    console.log("Emit event with data : ");
-    console.log(JSON.stringify(data));
-    //.toString('utf8')
-    wss.clients.forEach(function each(client) {
-      try {
-        if(client.readyState === WebSocket.OPEN) {
-          client.send(JSON.stringify(data));
-        }
-      } catch(e) {
-        console.log("Connection Closed Error");
-      }
+  //const app = express();
+  var socketPort = process.env.SOCKETPORT || 3030;
+  var io = require('socket.io')(socketPort);
+  var blockEvent = io.of('/block');
+  blockEvent.on('connection', function (socket) {
+    console.log("Connect on block");
+    socket.on('disconnect', function () {
+      console.log('user disconnected');
     });
-  };
-  wss.on('connection', function connection(ws) {
-    ws.on('error', () => console.log('Connection closed'));
+    socket.on('error', function () {
+      console.log('Error : Socket connection');
+    });
   });
   peer.clients[0].on('block', block => {
-    wss.broadcast(block);
+    blockEvent.emit('block', JSON.stringify(block));
   });
-  app.use(bodyParser.urlencoded({
+  utils.createConnection(peer.clients);
+  var executeEvent = io.of('/execute');
+  executeEvent.on('connection', function (socket) {
+    console.log("Connect on block");
+    socket.on('disconnect', function () {
+      console.log('user disconnected');
+    });
+    socket.on('error', function () {
+      console.log('Error : Socket connection');
+    });
+    socket.on('exec', function (params) {
+      //console.log("received params");
+      //console.log(params);
+      utils.queueRequest(params, executeEvent);
+    });
+  });
+  /*app.use(bodyParser.urlencoded({
     extended: false
   }));
   app.use(bodyParser.json());
   app.use(cors());
-  app.use(function(req, res, next) {
+  app.use(function (req, res, next) {
     req.client = peer.clients[0];
     next();
   });
   app.use("/api", require("./routes/api").router);
   /// catch 404 and forward to error handler
-  app.use(function(req, res, next) {
+  app.use(function (req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
   });
-  app.use(function(err, req, res) {
+  app.use(function (err, req, res) {
     res.status(err.status || 500);
     res.json({
       'errors': {
@@ -78,7 +86,7 @@ const WebSocket = require('ws');
     });
   });
   const port = process.env.PORT || process.env.VCAP_APP_PORT || 3002;
-  app.listen(port, function() {
+  app.listen(port, function () {
     console.log('Server running on port: %d', port);
-  });
+  });*/
 })();
