@@ -17,6 +17,7 @@
 //const express = require('express'); // app server
 //const bodyParser = require('body-parser'); // parser for post requests
 //const cors = require("cors");
+const request = require('request');
 const peer = require('./utils/peer');
 const utils = require('./utils/util');
 (async () => {
