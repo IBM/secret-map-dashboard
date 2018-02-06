@@ -10,6 +10,7 @@ const boothRoute = require("./routes/booths");
 const eventRoute = require("./routes/events");
 const svgRoute = require("./routes/svg");
 const pageRoute = require("./routes/pages");
+const renderRoute = require("./routes/renderSvg");
 
 const mongoDbUrl = process.env.MONGODB_URL;
 
@@ -52,12 +53,15 @@ else {
 app.use(require("body-parser").json());
 app.use(cors());
 
+app.set('view engine', 'ejs');
+
 app.use(express.static(__dirname + "/public"));
 
+app.use("/main", renderRoute);
 app.use("/beacons", beaconRoute);
 app.use("/booths", boothRoute);
 app.use("/events", eventRoute);
-app.use("/svg", svgRoute);
+app.use("/svg", svgRoute.main);
 app.use("/pages", pageRoute);
 
 let port = process.env.PORT || 8080;

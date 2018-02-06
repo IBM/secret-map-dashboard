@@ -15,13 +15,17 @@ router.get("/:eventId", function(req, res) {
 
       // Get SVG Content
       let SVGContent = svgContent(event.map,25);
-      let svg = svgTemplate(100,100,SVGContent,25);
+      let svg = svgTemplate(event.x,event.y,SVGContent,25);
       
       // If .pdf is present, send a pdf version of the svg
       if (req.params.eventId.split(".").pop() == "pdf") {
 
+        const pdfPointRatio = 3/4;
+        let pdfX = pdfPointRatio * event.x * 25;
+        let pdfY = pdfPointRatio * event.y * 25;
+
         // Start making PDF
-        let doc = new PDFDocument({ size: [1000,1000]}); // Fixed to 1000 for now.
+        let doc = new PDFDocument({ size: [pdfX,pdfY]}); // Fixed to 1000 for now.
         let echoStream = new stream.Writable();
         let pdfBuffer = new Buffer("");
 
@@ -204,4 +208,7 @@ function polygonTemplate(booth, scale) {
   return svg;
 }
 
-module.exports = router;
+module.exports = {
+  main: router,
+  functions: { svgTemplate, svgContent, rectangleTemplate, circleTemplate, ellipseTemplate, polygonTemplate }
+};
