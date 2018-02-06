@@ -14,9 +14,9 @@
  * the License.
  */
 'use strict';
-//const express = require('express');  app server
-//const bodyParser = require('body-parser');  parser for post requests
-//const cors = require("cors");
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require("cors");
 const peer = require('./utils/peer');
 const utils = require('./utils/util');
 (async () => {
@@ -27,43 +27,21 @@ const utils = require('./utils/util');
     console.log(e);
     process.exit(-1);
   }
-  utils.createServer(peer.clients);
-  var socketPort = process.env.SOCKETPORT || 3031;
-  var io = require('socket.io')(socketPort);
-  var executeEvent = io.of('/execute');
-  executeEvent.on('connection', function (socket) {
-    console.log("Connect on block");
-    socket.on('disconnect', function () {
-      console.log('user disconnected');
-    });
-    socket.on('error', function () {
-      console.log('Error : Socket connection');
-    });
-    socket.on('exec', function (params) {
-      //console.log("received params");
-      //console.log(params);
-      utils.queueRequest(params, executeEvent);
-    });
-  });
-  //executeEvent.on('connection', function (socket) {});
-  /*const app = express();
+  utils.createConnection(peer.clients);
+  const app = express();
   app.use(bodyParser.urlencoded({
     extended: false
   }));
   app.use(bodyParser.json());
   app.use(cors());
-  app.use(function(req, res, next) {
-    req.client = peer.clients[0];
-    next();
-  });
   app.use("/api", require("./routes/api").router);
   /// catch 404 and forward to error handler
-  app.use(function(req, res, next) {
+  app.use(function (req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
   });
-  app.use(function(err, req, res) {
+  app.use(function (err, req, res) {
     res.status(err.status || 500);
     res.json({
       'errors': {
@@ -73,8 +51,7 @@ const utils = require('./utils/util');
     });
   });
   const port = process.env.PORT || process.env.VCAP_APP_PORT || 3001;
-  app.listen(port, function() {
+  app.listen(port, function () {
     console.log('Server running on port: %d', port);
-  });*/
-  //console.log(config.rabbitmq);
+  });
 })();

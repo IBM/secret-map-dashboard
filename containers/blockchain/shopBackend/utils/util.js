@@ -3,6 +3,7 @@ import invokeFunc from '../set-up/invoke';
 import queryFunc from '../set-up/query';
 const uuidv4 = require('uuid/v4');
 const amqp = require('amqplib/callback_api');
+var redis = require("redis");
 async function invokeChaincode(type, client, params) {
   var values = typeof params !== "string" ? params : JSON.parse(params);
   if(!values.userId) {
@@ -36,7 +37,7 @@ async function enrollUser(client) {
   return client.registerAndEnroll(userId).then((user) => {
     console.log("Successfully enrolled user " + userId);
     console.log(user);
-    return invokeFunc(userId, client, config.chaincodeId, config.chaincodeVersion, "createMember", ["1"]);
+    return invokeFunc(userId, client, config.chaincodeId, config.chaincodeVersion, "createMember", [userId, "seller"]);
   }).then((result) => {
     console.log("Enrolled User");
     console.log(result);
@@ -52,10 +53,12 @@ async function enrollUser(client) {
 }
 async function getBlocks(client, params) {
   var values = typeof params !== "string" ? params : JSON.parse(params);
+  if(!values) {
+    values = {};
+  }
   if(!values.noOfLastBlocks || (values.noOfLastBlocks && isNaN(values.noOfLastBlocks))) {
     values.noOfLastBlocks = 50;
   } else {
-    //console.log("here");
     return client.getBlocks(Number(values.noOfLastBlocks)).then((results) => {
       return {
         message: "success",
@@ -118,24 +121,31 @@ export async function createConnection(clients) {
     });
   });
 }
-export async function queueRequest(params, executeEvent) {
-  var requestQueue = process.env.RABBITMQQUEUE || 'seller_queue';
+export async function queueRequest(corrId, params) {
+  var expiry = process.env.MESSAGEEXPIRY || 600;
+  var requestQueue = process.env.RABBITMQQUEUE || 'seller_queue'; //'user_queue';
   amqp.connect(config.rabbitmq, function (err, conn) {
     conn.createChannel(function (err, ch) {
       ch.assertQueue('', {
         exclusive: true
       }, function (err, q) {
-        var corr = params.corrId;
+        //var corr = params.corrId;
+        var setValue = function (key, value) {
+          var redisClient = getRedisConnection();
+          redisClient.set(key, value, 'EX', expiry, () => redisClient.quit());
+        };
+        var corr = corrId;
         params = typeof params !== "string" ? JSON.stringify(params) : params;
         console.log(' [x] Requesting %s', params);
         ch.consume(q.queue, function (msg) {
           if(msg.properties.correlationId === corr) {
-            msg.content = JSON.parse(msg.content.toString());
-            msg.content.corrId = msg.properties.correlationId;
+            //msg.content = JSON.parse(msg.content.toString());
+            //msg.content.corrId = msg.properties.correlationId;
             if(msg.content.message === "success") {
               console.log(' [.] Query Result ');
               console.log(msg.content);
-              executeEvent.emit('executionResult', msg.content);
+              setValue(msg.properties.correlationId, msg.content.toString());
+              //executeEvent.emit('executionResult', msg.content);
               setTimeout(function () {
                 conn.close();
               }, 500);
@@ -150,7 +160,8 @@ export async function queueRequest(params, executeEvent) {
                 });
               }, 20000);
             } else {
-              executeEvent.emit('executionResult', msg.content);
+              //executeEvent.emit('executionResult', msg.content);
+              setValue(msg.properties.correlationId, msg.content.toString());
               conn.close();
             }
           }
@@ -165,4 +176,9 @@ export async function queueRequest(params, executeEvent) {
       });
     });
   });
+}
+export function getRedisConnection() {
+  var redisClient = redis.createClient(config.redis);
+  redisClient.on("error", (err) => console.log("Error on redis client : " + err));
+  return redisClient;
 }

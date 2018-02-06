@@ -11,7 +11,7 @@ chmod +x docker-images.sh
 chmod +x build.sh
 chmod +x clean.sh
 ./build.sh
-docker-compose -p "fitcoin" up -d
+docker-compose -p "fitcoin" up -d blockchain-setup
 ```
 
 ###  Check the logs
@@ -61,8 +61,6 @@ ba70779b5c65        shop-ca                                                     
 
 **Command**
 ```bash
-docker rm -f fitcoin-backend
-docker rm -f shop-backend
 docker-compose -p "fitcoin" up -d
 ```
 
