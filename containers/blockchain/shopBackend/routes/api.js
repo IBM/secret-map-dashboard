@@ -1,41 +1,32 @@
 const express = require("express");
 const router = express.Router();
 const uuidv4 = require('uuid/v4');
-router.post('/enroll', function(req, res, next) {
-  var data = typeof req.body !== "string" ? req.body : JSON.parse(req.body);
-  var userId = uuidv4();
-  var client = req.client;
-  client.registerAndEnroll(userId).then(() => {
-    console.log("Successfully enrolled user " + userId);
-    res.json({
-      message: "success",
-      result: JSON.stringify({
-        user: userId,
-        orgId: data.orgId
-      })
-    });
-  }).catch(err => {
-    next(err);
+const utils = require('../utils/util');
+router.post('/execute', function (req, res) {
+  var resultId = uuidv4();
+  utils.queueRequest(resultId, req.body);
+  res.json({
+    status: "success",
+    resultId: resultId
   });
 });
-router.get('/blocks', function(req, res, next) {
-  const values = req.query;
-  if(!values.noOfLastBlocks || (values.noOfLastBlocks && isNaN(values.noOfLastBlocks))) {
-    var err = new Error('Invalid value for number of blocks');
-    err.status = 400;
-    next(err);
-  } else {
-    var client = req.client;
-    client.getBlocks(Number(values.noOfLastBlocks)).then((results) => {
+router.get('/results/:resultId', function (req, res, next) {
+  var redisClient = utils.getRedisConnection();
+  redisClient.get(req.params.resultId, function (error, result) {
+    if(error) {
+      next(error);
+    }
+    if(!result) {
       res.json({
-        message: "success",
-        result: JSON.stringify({
-          result: results
-        })
+        status: "pending"
       });
-    }).catch(err => {
-      next(err);
-    });
-  }
+    } else {
+      res.json({
+        status: "done",
+        result: result
+      });
+    }
+    redisClient.quit();
+  });
 });
 exports.router = router;

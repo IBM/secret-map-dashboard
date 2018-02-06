@@ -14,9 +14,9 @@
  * the License.
  */
 'use strict';
-//const express = require('express'); // app server
-//const bodyParser = require('body-parser'); // parser for post requests
-//const cors = require("cors");
+const express = require('express'); // app server
+const bodyParser = require('body-parser'); // parser for post requests
+const cors = require("cors");
 const peer = require('./utils/peer');
 const utils = require('./utils/util');
 (async () => {
@@ -27,8 +27,6 @@ const utils = require('./utils/util');
     console.log(e);
     process.exit(-1);
   }
-  //const apiRoute = require("./routes/api");
-  //const app = express();
   var socketPort = process.env.SOCKETPORT || 3030;
   var io = require('socket.io')(socketPort);
   var blockEvent = io.of('/block');
@@ -41,11 +39,11 @@ const utils = require('./utils/util');
       console.log('Error : Socket connection');
     });
   });
-  peer.clients[0].on('block', block => {
+  peer.clients.eventEmitter.on('block', block => {
     blockEvent.emit('block', JSON.stringify(block));
   });
-  utils.createConnection(peer.clients);
-  var executeEvent = io.of('/execute');
+  utils.createConnection(peer.clients.workers);
+  /*var executeEvent = io.of('/execute');
   executeEvent.on('connection', function (socket) {
     console.log("Connect on block");
     socket.on('disconnect', function () {
@@ -59,8 +57,9 @@ const utils = require('./utils/util');
       //console.log(params);
       utils.queueRequest(params, executeEvent);
     });
-  });
-  /*app.use(bodyParser.urlencoded({
+  });*/
+  const app = express();
+  app.use(bodyParser.urlencoded({
     extended: false
   }));
   app.use(bodyParser.json());
@@ -88,5 +87,5 @@ const utils = require('./utils/util');
   const port = process.env.PORT || process.env.VCAP_APP_PORT || 3002;
   app.listen(port, function () {
     console.log('Server running on port: %d', port);
-  });*/
+  });
 })();

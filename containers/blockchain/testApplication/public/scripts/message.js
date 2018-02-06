@@ -1,35 +1,45 @@
 /*eslint no-undef:0 */
 class ReqEvents {
-  constructor() {
-    //const socket = new WebSocket('ws://localhost:8080');;
-    //socket.on('block', (evt) => this.doSocketMessage(evt));
-    this.ws = io.connect('http://localhost:3031/execute');
+  constructor() {}
+  requestServer(params) {
     var self = this;
-    this.ws.on('connect', () => {
-      console.log("Connected");
-    });
-    this.ws.on('executionResult', (data) => {
-      //console.log(data);
-      if(self.corrIds.has(data.corrId)) {
-        self.corrIds.delete(data.corrId);
-        self.update(data);
-        //console.log(self.corrIds.size);
+    $.ajax({
+      url: "http://localhost:3002/api/execute",
+      type: "POST",
+      data: JSON.stringify(params),
+      dataType: 'json',
+      contentType: 'application/json; charset=utf-8',
+      success: function (data) {
+        data = typeof data !== "string" ? data : JSON.parse(data);
+        //console.log(" Result ID " + data.resultId);
+        self.getResults(data.resultId, 0, self);
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        console.log(errorThrown);
+        console.log(textStatus);
+        console.log(jqXHR);
       }
     });
-    self.corrIds = new Set();
   }
-  uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-      var r = Math.random() * 16 | 0,
-        v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-  }
-  requestServer(params) {
-    var corrId = this.uuidv4();
-    this.corrIds.add(corrId);
-    params.corrId = corrId;
-    this.ws.emit('exec', params);
+  getResults(resultId, attemptNo, self) {
+    if(attemptNo < 60) {
+      //console.log("Attempt no " + attemptNo);
+      $.get("http://localhost:3002/api/results/" + resultId).done(function (data) {
+        data = typeof data !== "string" ? data : JSON.parse(data);
+        //console.log(" Status  " + data.status);
+        if(data.status === "done") {
+          self.update(JSON.parse(data.result));
+        } else {
+          setTimeout(function () {
+            self.getResults(resultId, attemptNo + 1, self);
+          }, 3000);
+        }
+      }).fail(function () {
+        console.log("error");
+      });
+    } else {
+      console.error("exceeded Number of attempts");
+    }
   }
   update(eventData) {
     var rowData = "<tr class='anim highlight' style='width: 100%'><td><center>" + JSON.stringify(eventData) + "</center></td></tr>";
@@ -52,8 +62,6 @@ function amqpFunc() {
   var userId = $('#userId').val();
   var fcn = $('#fcn').val();
   var args = $('#argsValues').val().split(',');
-  console.log(args);
-  console.log(args.length);
   var input = {
     type: type,
     params: {
