@@ -64,10 +64,6 @@ const utils = require('./utils/util');
   }));
   app.use(bodyParser.json());
   app.use(cors());
-  app.use(function (req, res, next) {
-    req.client = peer.clients[0];
-    next();
-  });
   app.use("/api", require("./routes/api").router);
   /// catch 404 and forward to error handler
   app.use(function (req, res, next) {

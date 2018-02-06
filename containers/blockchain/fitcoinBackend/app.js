@@ -28,34 +28,12 @@ const utils = require('./utils/util');
     process.exit(-1);
   }
   utils.createConnection(peer.clients);
-  /*var socketPort = process.env.SOCKETPORT || 3031;
-  var io = require('socket.io')(socketPort);
-  var executeEvent = io.of('/execute');
-  executeEvent.on('connection', function (socket) {
-    console.log("Connect on block");
-    socket.on('disconnect', function () {
-      console.log('user disconnected');
-    });
-    socket.on('error', function () {
-      console.log('Error : Socket connection');
-    });
-    socket.on('exec', function (params) {
-      //console.log("received params");
-      //console.log(params);
-      utils.queueRequest(params, executeEvent);
-    });
-  });*/
-  //executeEvent.on('connection', function (socket) {});
   const app = express();
   app.use(bodyParser.urlencoded({
     extended: false
   }));
   app.use(bodyParser.json());
   app.use(cors());
-  app.use(function (req, res, next) {
-    req.client = peer.clients[0];
-    next();
-  });
   app.use("/api", require("./routes/api").router);
   /// catch 404 and forward to error handler
   app.use(function (req, res, next) {
