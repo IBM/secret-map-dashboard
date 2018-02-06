@@ -17,6 +17,7 @@
 //const express = require('express'); // app server
 //const bodyParser = require('body-parser'); // parser for post requests
 //const cors = require("cors");
+const request = require('request');
 const peer = require('./utils/peer');
 const utils = require('./utils/util');
 (async () => {
@@ -43,6 +44,7 @@ const utils = require('./utils/util');
   });
   peer.clients[0].on('block', block => {
     blockEvent.emit('block', JSON.stringify(block));
+    iotDashboard(block); // pass block contents to iot dashboard
   });
   utils.createConnection(peer.clients);
   var executeEvent = io.of('/execute');
@@ -60,6 +62,22 @@ const utils = require('./utils/util');
       utils.queueRequest(params, executeEvent);
     });
   });
+
+  // pass params to iot dashboard
+  function iotDashboard(data) {
+    var options = {
+      method: 'GET',
+      uri: 'https://secretmap.mybluemix.net/steps?message='+JSON.stringify(data)
+    }
+
+    request(options, function (error, response, body) {
+      console.log('error:', error); // null if no error occurs, else print error
+      console.log('statusCode:', response && response.statusCode); // print the response status code
+      console.log('body:', body); // print the output body on console
+    });
+
+  }
+
   /*app.use(bodyParser.urlencoded({
     extended: false
   }));
