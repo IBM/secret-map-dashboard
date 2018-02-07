@@ -14,6 +14,7 @@
  * the License.
  */
 'use strict';
+const request = require('request');
 const express = require('express'); // app server
 const bodyParser = require('body-parser'); // parser for post requests
 const cors = require("cors");
@@ -41,6 +42,7 @@ const utils = require('./utils/util');
   });
   peer.clients.eventEmitter.on('block', block => {
     blockEvent.emit('block', JSON.stringify(block));
+    sendToIoTDashboard(JSON.stringify(block));
   });
   utils.createConnection(peer.clients.workers);
   /*var executeEvent = io.of('/execute');
@@ -65,6 +67,18 @@ const utils = require('./utils/util');
   app.use(bodyParser.json());
   app.use(cors());
   app.use("/api", require("./routes/api").router);
+  // pass params to iot dashboard
+  function sendToIoTDashboard(data) {
+    var options = {
+      method: 'GET',
+      uri: 'https://secretmap.mybluemix.net/steps?message='+data
+    }
+    request(options, function (error, response, body) {
+      console.log('error:', error); // null if no error occurs, else print error
+      console.log('statusCode:', response && response.statusCode); // print the response status code
+      console.log('body:', body); // print the output body on console
+    });
+  }
   /// catch 404 and forward to error handler
   app.use(function (req, res, next) {
     var err = new Error('Not Found');
