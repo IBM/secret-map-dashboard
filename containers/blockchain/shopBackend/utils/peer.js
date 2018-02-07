@@ -3,8 +3,7 @@ import {
 } from '../set-up/client';
 import config from '../set-up/config';
 const orgId = process.env.ORGID || "org.ShopOrg";
-const numberOfClients = process.env.WORKERCLIENTS || 1;
-const workerClients = config.peers.filter(obj => obj.peer.org === orgId).map(obj => Array(numberOfClients).fill(obj)).reduce((acc, val) => acc.concat(val), []).map(obj => new OrganizationClient(config.channelName, config.orderer, obj.peer, obj.ca, obj.admin));
+const workerClients = config.peers.filter(obj => obj.peer.org === orgId).map(obj => new OrganizationClient(config.channelName, config.orderer, obj.peer, obj.ca, obj.admin));
 const eventEmitterClient = new OrganizationClient(workerClients[0]._channelName, workerClients[0]._ordererConfig, workerClients[0]._peerConfig, workerClients[0]._caConfig, workerClients[0]._admin);
 const clientArray = {
   workers: workerClients,
