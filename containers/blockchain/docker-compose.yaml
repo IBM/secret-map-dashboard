@@ -145,7 +145,7 @@ services:
     container_name: blockchain-setup
     image: blockchain-setup
     environment:
-    - PORT 3000
+    - PORT=3000
     - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
     - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.2
     - SECRETSDIR=/run/secrets
@@ -177,7 +177,6 @@ services:
     - RABBITMQQUEUE=seller_queue
     - SOCKETPORT=3030
     - MESSAGEEXPIRY=600
-    - WORKERCLIENTS=1
     ports:
     - 3002:3000
     - 3030:3030
@@ -210,7 +209,6 @@ services:
     - RABBITMQQUEUE=user_queue
     - SOCKETPORT=3030
     - MESSAGEEXPIRY=600
-    - WORKERCLIENTS=1
     ports:
     - 3001:3000
     - 3031:3030
