@@ -1,6 +1,6 @@
 'use strict';
 const TRANSACTION_TIMEOUT = 120000;
-export default async function(userId, clientObject, chaincodeId, chaincodeVersion, fcn, args) {
+export default async function (userId, clientObject, chaincodeId, chaincodeVersion, fcn, args) {
   var Transaction = require('fabric-client/lib/TransactionID.js');
   var user_from_store = await clientObject._client.getUserContext(userId, true);
   if(!(user_from_store && user_from_store.isEnrolled())) {
@@ -61,7 +61,7 @@ export default async function(userId, clientObject, chaincodeId, chaincodeVersio
           console.error('The transaction was invalid, code = ' + code);
           resolve(return_status); // we could use reject(new Error('Problem with the tranaction, event status ::'+code));
         } else {
-          console.log('The transaction has been committed on peer ' + event_hub._ep._endpoint.addr);
+          //console.log('The transaction has been committed on peer ' + event_hub._ep._endpoint.addr);
           resolve(return_status);
         }
       }, (err) => {
