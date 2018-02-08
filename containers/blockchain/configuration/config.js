@@ -4,6 +4,7 @@ var fs = require("fs");
 const basePath = resolve(__dirname, './certs');
 const readCryptoFile = filename => fs.readFileSync(resolve(basePath, filename)).toString();
 const config = {
+  iotDashUrl: 'https://secretmap.mybluemix.net/steps?message=',
   channelName: 'mychannel',
   channelConfig: fs.readFileSync(resolve(__dirname, 'channel.tx')),
   chaincodeId: 'bcfit',
@@ -76,6 +77,7 @@ if(process.env.LOCALCONFIG) {
   config.peers[1].peer.stateDBUrl = 'http://localhost:6984';
   config.rabbitmq = 'amqp://localhost:5672';
   config.redis = 'redis://localhost:6379';
+  config.iotDashUrl = 'https://secretmap.mybluemix.net/steps?message=';
 }
 //export default config;
 fs.writeFile("./config.json", JSON.stringify(config), (err) => {
