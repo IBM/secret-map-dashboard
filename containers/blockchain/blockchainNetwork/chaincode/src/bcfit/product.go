@@ -67,7 +67,7 @@ func (t *SimpleChaincode) updateProduct(stub shim.ChaincodeStubInterface, args [
 	if err != nil {
 		return shim.Error("Failed to get seller")
 	}
-	seller := Seller{}
+	var seller Seller
 	json.Unmarshal(sellerAsBytes, &seller)
 	if seller.Type != TYPE_SELLER {
 		return shim.Error("Not seller type")
@@ -126,7 +126,7 @@ func (t *SimpleChaincode) getProductByID(stub shim.ChaincodeStubInterface, args 
 	if err != nil {
 		return shim.Error("Failed to get seller")
 	}
-	seller := Seller{}
+	var seller Seller
 	json.Unmarshal(sellerAsBytes, &seller)
 	if seller.Type != TYPE_SELLER {
 		return shim.Error("Not seller type")
@@ -152,4 +152,59 @@ func (t *SimpleChaincode) getProductByID(stub shim.ChaincodeStubInterface, args 
 	productAsBytes, _ := json.Marshal(product)
 	return shim.Success(productAsBytes)
 
+}
+
+// ============================================================================================================================
+// Get all products for sale
+// Inputs - (none)
+// ============================================================================================================================
+func (t *SimpleChaincode) getProductsForSale(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	var err error
+
+	//get sellers array
+	sellerIdsBytes, err := stub.GetState("sellerIds")
+	if err != nil {
+		return shim.Error("Unable to get sellers.")
+	}
+	var sellerIds []string
+	json.Unmarshal(sellerIdsBytes, &sellerIds)
+
+	// create return object array
+	type ReturnProductSale struct {
+		SellerID  string `json:"sellerid"`
+		ProductId string `json:"productid"`
+		Name      string `json:"name"`
+		Count     int    `json:"count"`
+		Price     int    `json:"price"`
+	}
+	var returnProducts []ReturnProductSale
+
+	//go through all sellerIDs
+	for g := 0; g < len(sellerIds); g++ {
+
+		//get seller
+		sellerAsBytes, err := stub.GetState(sellerIds[g])
+		if err != nil {
+			return shim.Error("Failed to get seller")
+		}
+		var seller Seller
+		json.Unmarshal(sellerAsBytes, &seller)
+
+		for h := 0; h < len(seller.Products); h++ {
+			if seller.Products[h].Count > 0 {
+				var returnProduct ReturnProductSale
+				returnProduct.SellerID = seller.Id
+				returnProduct.ProductId = seller.Products[h].Id
+				returnProduct.Name = seller.Products[h].Name
+				returnProduct.Count = seller.Products[h].Count
+				returnProduct.Price = seller.Products[h].Price
+				//append to array
+				returnProducts = append(returnProducts, returnProduct)
+			}
+		}
+	}
+
+	//return products for sole
+	returnProductsBytes, _ := json.Marshal(returnProducts)
+	return shim.Success(returnProductsBytes)
 }

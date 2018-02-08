@@ -82,6 +82,8 @@ func (t *SimpleChaincode) makePurchase(stub shim.ChaincodeStubInterface, args []
 
 	//calculates cost and assigns to contract
 	contract.Cost = product.Price * contract.Quantity
+	//gets product name
+	contract.ProductName = product.Name
 	//assign 'Pending' state
 	contract.State = STATE_PENDING
 
