@@ -22,6 +22,12 @@ async function invokeChaincode(type, client, params) {
       func = invokeFunc;
     }
     return func(values.userId, client, config.chaincodeId, config.chaincodeVersion, values.fcn, values.args).then((result) => {
+      if(type === "query") {
+        return result;
+      } else {
+        return client.getTransactionDetails(result);
+      }
+    }).then((result) => {
       return {
         message: "success",
         result: result
@@ -32,22 +38,17 @@ async function invokeChaincode(type, client, params) {
   }
 }
 async function enrollUser(client) {
-  //var data = typeof params !== "string" ? params : JSON.parse(params);
   var userId = uuidv4();
   return client.registerAndEnroll(userId).then((user) => {
-    console.log("Successfully enrolled user " + user._name);
-    //  console.log(user);
     return invokeFunc(userId, client, config.chaincodeId, config.chaincodeVersion, "createMember", [userId, "seller"]);
   }).then((result) => {
-    //console.log("Enrolled User");
-    //console.log(result);
     result = typeof result === 'string' ? JSON.parse(result) : result;
     return {
       message: "success",
-      result: JSON.stringify({
+      result: {
         user: userId,
         txId: result.txId
-      })
+      }
     };
   }).catch(err => {
     throw err;
@@ -64,9 +65,7 @@ async function getBlocks(client, params) {
     return client.getBlocks(Number(values.noOfLastBlocks)).then((results) => {
       return {
         message: "success",
-        result: JSON.stringify({
-          result: results
-        })
+        result: results
       };
     }).catch(err => {
       throw err;
