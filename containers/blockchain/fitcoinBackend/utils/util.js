@@ -38,7 +38,7 @@ async function enrollUser(client) {
   return client.registerAndEnroll(userId).then((user) => {
     console.log("Successfully enrolled user " + user._name);
     //  console.log(user);
-    return invokeFunc(userId, client, config.chaincodeId, config.chaincodeVersion, "createMember", [userId, "seller"]);
+    return invokeFunc(userId, client, config.chaincodeId, config.chaincodeVersion, "createMember", [userId, "user"]);
   }).then((result) => {
     //console.log("Enrolled User");
     //console.log(result);
