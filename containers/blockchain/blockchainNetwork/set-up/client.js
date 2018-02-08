@@ -288,7 +288,7 @@ export class OrganizationClient extends EventEmitter {
     blockCount = blockCount.toNumber();
     const queryBlock = this._channel.queryBlock.bind(this._channel);
     const blockPromises = {};
-    blockPromises[Symbol.iterator] = function*() {
+    blockPromises[Symbol.iterator] = function* () {
       for(let i = 1; i <= blockCount; i++) {
         yield queryBlock(height.sub(i).toNumber());
       }
@@ -310,6 +310,19 @@ export class OrganizationClient extends EventEmitter {
         adminUser: adminUser,
         affiliationOrg: this._peerConfig.org
       });
+    } catch(e) {
+      throw e;
+    }
+  }
+  async getTransactionDetails(txId) {
+    try {
+      var transactionData = await this._channel.queryTransaction(txId);
+      transactionData = transactionData ? transactionData.transactionEnvelope.payload.data.actions : "";
+      var execution_response = transactionData !== "" ? transactionData[0].payload.action.proposal_response_payload.extension.response : "";
+      return {
+        txId: txId,
+        results: execution_response
+      }
     } catch(e) {
       throw e;
     }
