@@ -48,7 +48,7 @@ func (t *SimpleChaincode) createMember(stub shim.ChaincodeStubInterface, args []
 		//create user
 		var user User
 		user.Id = member_id
-		user.Type = member_type
+		user.Type = TYPE_USER
 		user.FitcoinsBalance = 0
 		user.StepsUsedForConversion = 0
 		user.TotalSteps = 0
@@ -69,7 +69,7 @@ func (t *SimpleChaincode) createMember(stub shim.ChaincodeStubInterface, args []
 		//create seller
 		var seller Seller
 		seller.Id = member_id
-		seller.Type = member_type
+		seller.Type = TYPE_SELLER
 		seller.FitcoinsBalance = 0
 
 		// store seller
@@ -78,6 +78,18 @@ func (t *SimpleChaincode) createMember(stub shim.ChaincodeStubInterface, args []
 		if err != nil {
 			return shim.Error(err.Error())
 		}
+
+		//get and update sellerIDs
+		sellerIdsBytes, err := stub.GetState("sellerIds")
+		if err != nil {
+			return shim.Error("Unable to get users.")
+		}
+		var sellerIds []string
+		// add sellerID to update sellers
+		json.Unmarshal(sellerIdsBytes, &sellerIds)
+		sellerIds = append(sellerIds, seller.Id)
+		updatedSellerIdsBytes, _ := json.Marshal(sellerIds)
+		err = stub.PutState("sellerIds", updatedSellerIdsBytes)
 
 		//return seller info
 		return shim.Success(sellerAsBytes)

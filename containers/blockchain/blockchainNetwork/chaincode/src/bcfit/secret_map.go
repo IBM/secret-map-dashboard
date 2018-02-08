@@ -20,6 +20,7 @@ under the License.
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
@@ -73,13 +74,14 @@ type Product struct {
 
 // Contract
 type Contract struct {
-	Id        string `json:"id"`
-	SellerId  string `json:"sellerId"`
-	UserId    string `json:"userId"`
-	ProductId string `json:"productId"`
-	Quantity  int    `json:"quantity"`
-	Cost      int    `json:"price"`
-	State     string `json:"state"`
+	Id          string `json:"id"`
+	SellerId    string `json:"sellerId"`
+	UserId      string `json:"userId"`
+	ProductId   string `json:"productId"`
+	ProductName string `json:"productName"`
+	Quantity    int    `json:"quantity"`
+	Cost        int    `json:"cost"`
+	State       string `json:"state"`
 }
 
 // ============================================================================================================================
@@ -96,6 +98,15 @@ func main() {
 // Init - initialize the chaincode
 // ============================================================================================================================
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
+
+	//store sellerIds
+	var sellerIds []string
+	sellerIdsBytes, err := json.Marshal(sellerIds)
+	if err != nil {
+		return shim.Error("Error initializing sellers.")
+	}
+	err = stub.PutState("sellerIds", sellerIdsBytes)
+
 	return shim.Success(nil)
 }
 
@@ -120,6 +131,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		return t.updateProduct(stub, args)
 	} else if function == "getProductByID" {
 		return t.getProductByID(stub, args)
+	} else if function == "getProductsForSale" {
+		return t.getProductsForSale(stub, args)
 	} else if function == "makePurchase" {
 		return t.makePurchase(stub, args)
 	} else if function == "transactPurchase" {
