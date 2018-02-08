@@ -4,7 +4,6 @@ var fs = require("fs");
 const basePath = resolve(__dirname, './certs');
 const readCryptoFile = filename => fs.readFileSync(resolve(basePath, filename)).toString();
 const config = {
-  iotDashUrl: 'https://secretmap.mybluemix.net/steps?message=',
   channelName: 'mychannel',
   channelConfig: fs.readFileSync(resolve(__dirname, 'channel.tx')),
   chaincodeId: 'bcfit',
@@ -12,6 +11,7 @@ const config = {
   chaincodePath: 'bcfit',
   rabbitmq: 'amqp://rabbitmq:5672',
   redis: 'redis://redis-server:6379',
+  iotDashUrl: 'https://secretmap.mybluemix.net/steps?message=',
   orderer: {
     hostname: 'orderer0',
     url: 'grpcs://orderer0:7050',
