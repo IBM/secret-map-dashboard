@@ -21,9 +21,10 @@ export default async function (userId, clientObject, chaincodeId, chaincodeVersi
         throw new Error("Error from query = ", query_responses[0].message);
       } else {
         //console.log("Query Response : " + query_responses);
-        return JSON.stringify({
+        /*return JSON.stringify({
           response: query_responses.toString('utf8')
-        });
+        });*/
+        return query_responses.toString('utf8');
       }
     } else {
       throw new Error("No payloads were returned from query");
