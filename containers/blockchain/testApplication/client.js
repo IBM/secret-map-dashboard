@@ -1,4 +1,5 @@
 var amqp = require('amqplib/callback_api');
+var start = Date.now();
 
 function requestServer(params) {
   amqp.connect('amqp://localhost:5672', function (err, conn) {
@@ -16,6 +17,8 @@ function requestServer(params) {
               console.log(' [.] Query Result ');
               console.log(msg.content);
               //conn.close();
+              var millis = Date.now() - start;
+              console.log("seconds elapsed = " + Math.floor(millis / 1000));
               setTimeout(function () {
                 conn.close();
               }, 500);
@@ -48,59 +51,43 @@ function requestServer(params) {
 function generateUuid() {
   return Math.random().toString() + Math.random().toString() + Math.random().toString();
 }
+var ids = ["c468865f-586d-4b28-8075-cccd1f43a720", "e731b569-9238-49f2-82f0-4b64bc0faeb3", "811fcd46-a14f-473e-967b-bed1f0c30ea4", "54f7544d-4153-42f7-abb1-71cc98425ce0", "69473598-4c35-41d5-b876-f52858f9b9b4"];
+var base = 1000;
 
-function getValues() {
-  requestServer({
-    type: "query",
-    params: {
-      "userId": "admin",
-      "fcn": "query",
-      "args": ["a"]
-    }
-  });
-  requestServer({
-    type: "query",
-    params: {
-      "userId": "admin",
-      "fcn": "query",
-      "args": ["b"]
-    }
-  });
+function generateCoins(ids, inc) {
+  for(var i = 0; i < ids.length; i++) {
+    requestServer({
+      type: "invoke",
+      params: {
+        "userId": ids[i],
+        "fcn": "generateFitcoins",
+        "args": [ids[i], (base + inc).toString()]
+      }
+    });
+  }
 }
-getValues();
-requestServer({
-  type: "invoke",
-  params: {
-    "userId": "admin",
-    "fcn": "move",
-    "args": ["a", "b", "10"]
+
+function getValues(ids) {
+  for(var i = 0; i < ids.length; i++) {
+    requestServer({
+      type: "query",
+      params: {
+        "userId": ids[i],
+        "fcn": "getState",
+        "args": [ids[i]]
+      }
+    });
   }
-});
-getValues();
-requestServer({
-  type: "invoke",
-  params: {
-    "userId": "admin",
-    "fcn": "move",
-    "args": ["a", "b", "10"]
-  }
-});
-getValues();
-requestServer({
-  type: "invoke",
-  params: {
-    "userId": "admin",
-    "fcn": "move",
-    "args": ["a", "b", "10"]
-  }
-});
-getValues();
-requestServer({
-  type: "invoke",
-  params: {
-    "userId": "admin",
-    "fcn": "move",
-    "args": ["a", "b", "10"]
-  }
-});
-getValues();
+}
+/*
+type:invoke
+params:{"userId" : "c468865f-586d-4b28-8075-cccd1f43a720" , "fcn" : "generateFitcoins" , "args" : ["c468865f-586d-4b28-8075-cccd1f43a720","1000"]}
+
+*/
+getValues(ids);
+generateCoins(ids, 4000);
+getValues(ids);
+generateCoins(ids, 5000);
+getValues(ids);
+generateCoins(ids, 6000);
+getValues(ids);

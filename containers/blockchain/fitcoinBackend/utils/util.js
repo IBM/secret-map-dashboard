@@ -36,16 +36,18 @@ async function enrollUser(client) {
   //var data = typeof params !== "string" ? params : JSON.parse(params);
   var userId = uuidv4();
   return client.registerAndEnroll(userId).then((user) => {
-    console.log("Successfully enrolled user " + userId);
-    console.log(user);
+    console.log("Successfully enrolled user " + user._name);
+    //  console.log(user);
     return invokeFunc(userId, client, config.chaincodeId, config.chaincodeVersion, "createMember", [userId, "user"]);
   }).then((result) => {
-    console.log("Enrolled User");
-    console.log(result);
+    //console.log("Enrolled User");
+    //console.log(result);
+    result = typeof result === 'string' ? JSON.parse(result) : result;
     return {
       message: "success",
       result: JSON.stringify({
-        user: userId
+        user: userId,
+        txId: result.txId
       })
     };
   }).catch(err => {

@@ -2,7 +2,7 @@
  * Enrolls a user with the respective CA.
  */
 var User = require('fabric-client/lib/User');
-export default async function(client, enrollmentID, enrollmentSecret, ca, {
+export default async function (client, enrollmentID, enrollmentSecret, ca, {
   mspId,
   adminUser,
   affiliationOrg
@@ -17,14 +17,14 @@ export default async function(client, enrollmentID, enrollmentSecret, ca, {
     }
     try {
       if(!enrollmentSecret || enrollmentSecret === "") {
-        console.log('Initiate member ' + enrollmentID + " registration to " + affiliationOrg);
+        //console.log('Initiate member ' + enrollmentID + " registration to " + affiliationOrg);
         enrollmentSecret = await ca.register({
           enrollmentID: enrollmentID,
           affiliation: affiliationOrg,
           maxEnrollments: 1,
           role: 'client'
         }, adminUser);
-        console.log("Successfully registered user " + enrollmentID + " with secret " + enrollmentSecret);
+        //console.log("Successfully registered user " + enrollmentID + " with secret " + enrollmentSecret);
       }
     } catch(e) {
       throw new Error(`Failed to register User. Error: ${e.message}`);
