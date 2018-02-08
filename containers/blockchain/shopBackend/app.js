@@ -14,6 +14,7 @@
  * the License.
  */
 'use strict';
+const config = require('./set-up/config');
 const request = require('request');
 const express = require('express'); // app server
 const bodyParser = require('body-parser'); // parser for post requests
@@ -71,7 +72,7 @@ const utils = require('./utils/util');
   function sendToIoTDashboard(data) {
     var options = {
       method: 'GET',
-      uri: 'https://secretmap.mybluemix.net/steps?message='+data
+      uri: config.iotDashUrl + data
     }
     request(options, function (error, response, body) {
       console.log('error:', error); // null if no error occurs, else print error
