@@ -317,8 +317,8 @@ export class OrganizationClient extends EventEmitter {
   async getTransactionDetails(txId) {
     try {
       var transactionData = await this._channel.queryTransaction(txId);
-      transactionData = transactionData.transactionEnvelope.payload.data.actions;
-      var execution_response = transactionData ? transactionData[0].payload.action.proposal_response_payload.extension.response : "";
+      transactionData = transactionData ? transactionData.transactionEnvelope.payload.data.actions : "";
+      var execution_response = transactionData !== "" ? transactionData[0].payload.action.proposal_response_payload.extension.response : "";
       return {
         txId: txId,
         results: execution_response
