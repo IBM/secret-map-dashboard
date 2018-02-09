@@ -40,7 +40,7 @@ async function invokeChaincode(type, client, params) {
 async function enrollUser(client) {
   var userId = uuidv4();
   return client.registerAndEnroll(userId).then((user) => {
-    return invokeFunc(userId, client, config.chaincodeId, config.chaincodeVersion, "createMember", [userId, "user"]);
+    return invokeFunc(user._name, client, config.chaincodeId, config.chaincodeVersion, "createMember", [userId, "user"]);
   }).then((result) => {
     //result = typeof result === 'string' ? JSON.parse(result) : result;
     return {

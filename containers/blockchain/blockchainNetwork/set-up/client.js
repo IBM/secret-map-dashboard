@@ -268,7 +268,7 @@ export class OrganizationClient extends EventEmitter {
     }
   }
   async getBlocks(currentBlock, noOfLastBlocks) {
-    if(currentBlock == 0) {
+    if(currentBlock === 0) {
       return [];
     }
     if(!currentBlock) {
@@ -331,7 +331,7 @@ export class OrganizationClient extends EventEmitter {
       return {
         txId: txId,
         results: execution_response
-      }
+      };
     } catch(e) {
       throw e;
     }
