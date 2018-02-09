@@ -30,7 +30,7 @@ describe('DashboardComponent', () => {
       HeatmapComponent],
       providers: [DashboardService, {provide: APP_BASE_HREF, useValue: '/'}],
       imports: [HttpClientModule, AppRoutingModule ]
-    })
+    });
     TestBed.compileComponents();
   }));
 
@@ -39,8 +39,8 @@ describe('DashboardComponent', () => {
     // component = fixture.componentInstance;
     // fixture.detectChanges();
   });
-  
-  describe('#initialization', ()=>{
+
+  describe('#initialization', () => {
     it('should create a Dashboard Instance', () => {
       expect(true).toEqual(true);
       // expect(component).toBeTruthy();

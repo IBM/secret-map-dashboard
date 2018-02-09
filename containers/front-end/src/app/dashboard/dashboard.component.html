@@ -1,16 +1,14 @@
 <div *ngIf="conference" class="container">
     <div  class="mainDisplay">
             <app-main-display 
-            [steps]="steps"
-            [conferenceAttendees]="conferenceAttendees"
-            [fitcoins]="fitcoins" 
             [conference]="conference">
             </app-main-display>
     </div>
     <div class="sideDisplay">
         <app-side-display 
             [steps]="steps" 
-            [calories]="calories">
+            [calories]="calories"
+            [conferenceAttendees]="conferenceAttendees">
         </app-side-display>
     </div>
 

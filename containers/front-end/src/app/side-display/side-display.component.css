@@ -2,16 +2,15 @@
     height: 33.3%;
     display: flex;
     flex-direction: column;
-    border-bottom: 0.3vh #B48E8E solid;
-    border-left: 0.25vw #B48E8E solid;
+    border-bottom: 0.3vh rgb(0, 100, 255) solid;
+    border-left: 0.25vw rgb(0, 100, 255) solid;
 }
 
 .sideBlockBottom{
   height: 33.3%;
   display: flex;
   flex-direction: column;
-  background-color: #FEFFFF;
-  border-left: 0.25vw #B48E8E solid;
+  border-left: 0.25vw rgb(0, 100, 255) solid;
 }
 
 .sideBlockPriateImage{
@@ -36,7 +35,7 @@
   align-items: center;
   align-content: center;
   justify-content: center;
-  color: #EA998C;
+  color: rgb(219, 38, 99);
   font-size: calc(0.75vw + 0.75vh + 0.75vmin);
 }
   
@@ -47,16 +46,26 @@
   align-items: center;
   align-content: center;
   justify-content: center;
-  color: #EA998C;
+  color: rgb(219, 38, 99);
   font-size: calc(0.75vw + 0.75vh + 0.75vmin);
 }
 
 .sideBlockImage{
-  height: 90%;
+  height: 60%;
   display: flex;
   flex-direction: row;
   align-items: center;
   align-content: center;
   justify-content: center;
-  color: #EA998C;
+}
+
+.sideBlockImageText{
+  height: 20%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  color: rgb(219, 38, 99);
+  font-size: calc(0.75vw + 0.75vh + 0.75vmin);
 }

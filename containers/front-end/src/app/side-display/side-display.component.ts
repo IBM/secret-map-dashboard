@@ -8,6 +8,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class SideDisplayComponent implements OnInit {
   @Input() steps: number;
   @Input() calories: number;
+  @Input() conferenceAttendees: number;
 
   constructor() {
 
@@ -15,7 +16,6 @@ export class SideDisplayComponent implements OnInit {
 
    /**
    * Initializes component
-   * @param - none
    */
   ngOnInit() {
   }
