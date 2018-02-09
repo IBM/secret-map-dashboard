@@ -12,6 +12,7 @@ import { MainDisplayComponent } from './main-display/main-display.component';
 import { MapAreaComponent } from './map-area/map-area.component';
 import { SideDisplayComponent } from './side-display/side-display.component';
 import { HomepageComponent } from './homepage/homepage.component';
+import { HeatmapComponent } from './heatmap/heatmap.component';
 // Services
 import { DashboardService } from './dashboard.service';
 // Directives
@@ -28,6 +29,7 @@ describe('AppComponent', () => {
         SideDisplayComponent,
         MapAreaDirective,
         HomepageComponent,
+        HeatmapComponent
       ],
       imports: [
         BrowserModule,
@@ -38,9 +40,13 @@ describe('AppComponent', () => {
       providers: [DashboardService, {provide: APP_BASE_HREF, useValue: '/'}],
     }).compileComponents();
   }));
-  it('should create the app', async(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
-    expect(app).toBeTruthy();
-  }));
+  
+  describe('#initialization', ()=>{
+    it('should create an AppComponent instance', async(() => {
+      const fixture = TestBed.createComponent(AppComponent);
+      const app = fixture.debugElement.componentInstance;
+      expect(app).toBeTruthy();
+    }));
+  });
+
 });

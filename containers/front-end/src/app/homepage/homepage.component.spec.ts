@@ -25,7 +25,9 @@ describe('HomepageComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+  describe('#initialization', () =>{
+    it('should create a HomepageComponent instance', () => {
+      expect(component).toBeTruthy();
+    });
+  })
 });
