@@ -267,23 +267,32 @@ export class OrganizationClient extends EventEmitter {
       throw e;
     }
   }
-  async getBlocks(noOfLastBlocks) {
-    if(typeof noOfLastBlocks !== 'number' && typeof noOfLastBlocks !== 'string') {
+  async getBlocks(currentBlock, noOfLastBlocks) {
+    if(currentBlock == 0) {
       return [];
     }
-    const {
+    if(!currentBlock) {
+      currentBlock = -1;
+    }
+    if(!noOfLastBlocks) {
+      noOfLastBlocks = 10;
+    }
+    currentBlock = typeof currentBlock !== 'number' ? Number(currentBlock) : currentBlock;
+    noOfLastBlocks = typeof noOfLastBlocks !== 'number' ? Number(noOfLastBlocks) : noOfLastBlocks;
+    var {
       height
     } = await this._channel.queryInfo();
+    if(currentBlock == -1) {
+      currentBlock = height;
+    }
+    if(height.comp(currentBlock) >= 0) {
+      height = Long.fromNumber(currentBlock, height.unsigned);
+    }
     let blockCount;
     if(height.comp(noOfLastBlocks) > 0) {
-      blockCount = noOfLastBlocks;
+      blockCount = Long.fromNumber(noOfLastBlocks, height.unsigned);
     } else {
       blockCount = height;
-    }
-    if(typeof blockCount === 'number') {
-      blockCount = Long.fromNumber(blockCount, height.unsigned);
-    } else if(typeof blockCount === 'string') {
-      blockCount = Long.fromString(blockCount, height.unsigned);
     }
     blockCount = blockCount.toNumber();
     const queryBlock = this._channel.queryBlock.bind(this._channel);

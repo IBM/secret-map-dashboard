@@ -42,12 +42,12 @@ async function enrollUser(client) {
   return client.registerAndEnroll(userId).then((user) => {
     return invokeFunc(userId, client, config.chaincodeId, config.chaincodeVersion, "createMember", [userId, "user"]);
   }).then((result) => {
-    result = typeof result === 'string' ? JSON.parse(result) : result;
+    //result = typeof result === 'string' ? JSON.parse(result) : result;
     return {
       message: "success",
       result: {
         user: userId,
-        txId: result.txId
+        txId: result
       }
     };
   }).catch(err => {
@@ -59,18 +59,20 @@ async function getBlocks(client, params) {
   if(!values) {
     values = {};
   }
-  if(!values.noOfLastBlocks || (values.noOfLastBlocks && isNaN(values.noOfLastBlocks))) {
-    values.noOfLastBlocks = 50;
-  } else {
-    return client.getBlocks(Number(values.noOfLastBlocks)).then((results) => {
-      return {
-        message: "success",
-        result: results
-      };
-    }).catch(err => {
-      throw err;
-    });
+  if(!values.currentBlock || (values.currentBlock && isNaN(values.currentBlock))) {
+    values.currentBlock = -1;
   }
+  if(!values.noOfLastBlocks || (values.noOfLastBlocks && isNaN(values.noOfLastBlocks))) {
+    values.noOfLastBlocks = 10;
+  }
+  return client.getBlocks(Number(values.currentBlock), Number(values.noOfLastBlocks)).then((results) => {
+    return {
+      message: "success",
+      result: results
+    };
+  }).catch(err => {
+    throw err;
+  });
 }
 async function execute(type, client, params) {
   try {
