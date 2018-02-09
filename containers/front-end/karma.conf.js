@@ -8,6 +8,7 @@ var configuration = {
     require("karma-chrome-launcher"),
     require("karma-jasmine-html-reporter"),
     require("karma-coverage-istanbul-reporter"),
+    require("karma-spec-reporter"),
     require("@angular/cli/plugins/karma")
   ],
   client:{
@@ -26,7 +27,7 @@ var configuration = {
   angularCli: {
     environment: "dev"
   },
-  reporters: ["progress", "kjhtml"],
+  reporters: ['spec'],
   port: 9876,
   colors: true,
   autoWatch: true,

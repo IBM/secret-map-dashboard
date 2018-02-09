@@ -1,6 +1,5 @@
 import { Component, OnInit} from '@angular/core';
 import * as d3 from 'd3';
-import * as d3Hexbin from 'd3-hexbin';
 import {setInterval} from 'timers';
 @Component({
   selector: 'app-heatmap',
@@ -9,41 +8,38 @@ import {setInterval} from 'timers';
 })
 export class HeatmapComponent implements OnInit {
 
-  heatMapInterval: any;
-  HEATMAP_ROWS = 35;
-  HEATMAP_COLUMNS = 70;
-  COLOR_INCR = 15;
+  private heatMapInterval: any;
+  private HEATMAP_ROWS = 35;
+  private HEATMAP_COLUMNS = 70;
 
   constructor() {
   }
 
   ngOnInit() {
     this.makeGrid();
-    this.colorHeatMap();
+    // this.colorHeatMap();
   }
 
   /**
-   * Makes a square grid
-   * @param {very_long_type} name           Description.
-   * @param {type}           very_long_name Description.
+   * Makes a grid with svg.rect elements
    */
-  makeGrid() {
+  public makeGrid(): void{
     const width = Math.floor(d3.select('.heatmap').property('clientWidth'));
     const height =  Math.floor(d3.select('.heatmap').property('clientHeight'));
     const gridRows = Math.floor(height / (height / this.HEATMAP_ROWS));
-    const  gridColumns = Math.floor(width / (width / this.HEATMAP_COLUMNS));
+    const gridColumns = Math.floor(width / (width / this.HEATMAP_COLUMNS));
     const svg = d3.select('.heatmap').append('g');
     const data = this.getGridCoordinates(gridRows, gridColumns);
     const cards = svg.selectAll('.cell')
-      .data(data, function(d) {return d.x + ':' + d.y; });
+      .data(data, function(d) {return d['x'] + ':' + d['y']; });
       cards.enter().append('rect')
-      .attr('x', function(d) { return (d.x - 1) * width / gridColumns; })
-      .attr('y', function(d) { return (d.y - 1) * height / gridRows; })
+      .attr('x', function(d) { return (d['x'] - 1) * width / gridColumns; })
+      .attr('y', function(d) { return (d['y'] - 1) * height / gridRows; })
       .attr('rx', 4)
       .attr('ry', 4)
       .attr('width', width / gridColumns)
       .attr('height', height / gridRows )
-      .attr('class', function(d){ return d.className; })
+      .attr('class', function(d){ return d['className']; })
       .style('stroke', '#E6E6E6')
       .style('stroke-width', '2')
       .style('fill', String(d3.rgb(255, 255, 255)));
@@ -51,31 +47,28 @@ export class HeatmapComponent implements OnInit {
 
   /**
    * Changes specified grid cell style fill to a different color
-   * @param {very_long_type} name           Description.
-   * @param {type}           very_long_name Description.
+   * @param number x
+   * @param number y
    */
 
-  changeCell(x, y) {
+  public changeGridCell(x, y): void{
     const svg = d3.select('.heatmap');
     const cell = svg.select(`.gridCell${x}-${y}`);
-    cell.each(function(d, i) {
-      const gridCell = d3.select('.' + d['className']);
-      const rgbArray = parseRGB(gridCell.style('fill'));
-      const colorValue = increaseColor(rgbArray);
-      d3.select('.' + d['className']).style('fill', String(d3.rgb(colorValue[0], colorValue[1], colorValue[2])));
-    });
+    const rgbArray = parseRGB(cell.style('fill'));
+    const colorValue = increaseColor(rgbArray);
+    cell.style('fill', String(d3.rgb(colorValue[0], colorValue[1], colorValue[2])));
   }
 
   /**
    * Creates grid coordinates for building square grid
-   * @param {very_long_type} name           Description.
-   * @param {type}           very_long_name Description.
+   * @param number rows     must be greater than 0
+   * @param number columns     must be greater than 0
    */
-  getGridCoordinates(rows, columns) {
+  public getGridCoordinates(rows, columns): Array<object>{
     const data = new Array();
     for (let x = 1; x <= columns; x++) {
       for (let y = 1; y <= rows; y++) {
-        data.push({x : x, y: y, className: `gridCell${x}-${y}`, colorValue: [0, 255, 0]});
+        data.push({x : x, y: y, className: `gridCell${x}-${y}`});
       }
     }
     return data;
@@ -83,24 +76,51 @@ export class HeatmapComponent implements OnInit {
 
   /**
    * Creates a random step and colors grid cell every second
-   * @param {very_long_type} name           Description.
-   * @param {type}           very_long_name Description.
    */
-  colorHeatMap() {
+  public colorHeatMap(): void{
     this.heatMapInterval = setInterval(() => {
       const step = randomStep(this.HEATMAP_ROWS - 1, this.HEATMAP_COLUMNS - 1);
-      this.changeCell(step.x, step.y);
+      this.changeGridCell(step['x'], step['y']);
     }, 1000);
   }
 
+  /**
+   * Returns HEATMAP_ROWS
+   */
+  public getHEATMAP_ROWS(): number {
+    return this.HEATMAP_ROWS;
+  }
+
+  /**
+   * Sets HEATMAP_ROWS
+   * @param number rows
+   */
+  public setHEATMAP_ROWS(rows: number): void{
+    this.HEATMAP_ROWS = rows;
+  }
+
+  /**
+   * Returns HEATMAP_COLUMNS
+   */
+  public getHEATMAP_COLUMNS(): number {
+    return this.HEATMAP_COLUMNS;
+  }
+
+  /**
+   * Set HEATMAP_COLUMNS
+   * @param number columns
+   */
+  public setHEATMAP_COLUMNS(columns: number): void{
+    this.HEATMAP_COLUMNS = columns;
+  }
 }
 
 /**
  * Creates a random step
- * @param {very_long_type} name           Description.
- * @param {type}           very_long_name Description.
+ * @param number rows      must be greater than 0
+ * @param number columns      must be greater than 0
  */
-function randomStep(rows, columns) {
+export function randomStep(rows, columns): object{
   return {
     x: getRandomInt(columns),
     y: getRandomInt(rows),
@@ -108,20 +128,19 @@ function randomStep(rows, columns) {
 }
 
 /**
- * Gets a random number between 0 and upper bound
- * @param {very_long_type} name           Description.
- * @param {type}           very_long_name Description.
+ * Gets a random number between 1 and upperBound
+ * @param number upperBound      must be greater than 0
  */
-function getRandomInt(max) {
-  return Math.floor(Math.random() * Math.floor(max));
+export function getRandomInt(upperBound: number): number{
+  let randomNum = Math.floor(Math.random() * Math.floor(upperBound));
+  return (randomNum > 0 ? randomNum : 1);
 }
 
 /**
  * Parses RGB string and creates a rgb array
- * @param {very_long_type} name           Description.
- * @param {type}           very_long_name Description.
+ * @param string rgbString      must in a rgb(?,?,?) formation Ex. "rgb(255,255,255)".
  */
-function parseRGB(rgbString) {
+export function parseRGB(rgbString: string): Array<number> {
   rgbString = rgbString.replace(' ', '');
   rgbString = rgbString.replace(' ', '');
   const re = /\d+,\d+,\d+/;
@@ -132,20 +151,20 @@ function parseRGB(rgbString) {
 
 /**
  * Changes cell from green to yellow to red
- * @param {very_long_type} name           Description.
- * @param {type}           very_long_name Description.
+ * @param Array<number> rgbArray    size of Array must be 3
  */
-function increaseColor(rgbArray) {
+export function increaseColor(rgbArray: Array<number>) {
+  let colorVariance = 15;
   if (rgbArray[0] === 255 && rgbArray[1] === 255 && rgbArray[2] === 255) {
     return [0, 255, 0];
   }
-  if  ( ( Math.abs(rgbArray[0]) < 255 )  && (Math.abs(rgbArray[1]) <= 255 && Math.abs(rgbArray[1]) > 0 )) {
+  if ((Math.abs(rgbArray[0]) < 255 )  && (Math.abs(rgbArray[1]) <= 255 && Math.abs(rgbArray[1]) > 0 )) {
     // change grid cell to yellow
-    rgbArray[0] += this.COLOR_INCR;
+    rgbArray[0] += colorVariance;
     return [rgbArray[0], rgbArray[1], 0];
-  } else if  ( Math.abs(rgbArray[1]) > 0 ) {
+  } else if (Math.abs(rgbArray[1]) > 0 ) {
     // change grid cell to red
-    rgbArray[1] -= this.COLOR_INCR;
+    rgbArray[1] -= colorVariance;
     return [rgbArray[0], rgbArray[1], 0];
   } else {
     return rgbArray;

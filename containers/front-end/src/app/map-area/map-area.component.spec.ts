@@ -24,7 +24,10 @@ describe('MapAreaComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  describe('#initialization', () => {
+    it('should create a MapAreaComponent Instance', () => {
+      expect(component).toBeTruthy();
+    });
   });
+
 });
