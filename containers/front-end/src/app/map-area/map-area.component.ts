@@ -19,13 +19,10 @@ export class MapAreaComponent implements OnInit {
    * @param el - HTML element
   */
   constructor(private el: ElementRef) {
-
    }
-
 
    /**
    * Initializes component
-   * @param - none
    */
   ngOnInit() {
   }

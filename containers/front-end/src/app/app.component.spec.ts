@@ -40,8 +40,8 @@ describe('AppComponent', () => {
       providers: [DashboardService, {provide: APP_BASE_HREF, useValue: '/'}],
     }).compileComponents();
   }));
-  
-  describe('#initialization', ()=>{
+
+  describe('#initialization', () => {
     it('should create an AppComponent instance', async(() => {
       const fixture = TestBed.createComponent(AppComponent);
       const app = fixture.debugElement.componentInstance;

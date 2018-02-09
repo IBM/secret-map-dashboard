@@ -23,7 +23,7 @@ export class HeatmapComponent implements OnInit {
   /**
    * Makes a grid with svg.rect elements
    */
-  public makeGrid(): void{
+  public makeGrid(): void {
     const width = Math.floor(d3.select('.heatmap').property('clientWidth'));
     const height =  Math.floor(d3.select('.heatmap').property('clientHeight'));
     const gridRows = Math.floor(height / (height / this.HEATMAP_ROWS));
@@ -51,7 +51,7 @@ export class HeatmapComponent implements OnInit {
    * @param number y
    */
 
-  public changeGridCell(x, y): void{
+  public changeGridCell(x, y): void {
     const svg = d3.select('.heatmap');
     const cell = svg.select(`.gridCell${x}-${y}`);
     const rgbArray = parseRGB(cell.style('fill'));
@@ -64,7 +64,7 @@ export class HeatmapComponent implements OnInit {
    * @param number rows     must be greater than 0
    * @param number columns     must be greater than 0
    */
-  public getGridCoordinates(rows, columns): Array<object>{
+  public getGridCoordinates(rows, columns): Array<object> {
     const data = new Array();
     for (let x = 1; x <= columns; x++) {
       for (let y = 1; y <= rows; y++) {
@@ -77,7 +77,7 @@ export class HeatmapComponent implements OnInit {
   /**
    * Creates a random step and colors grid cell every second
    */
-  public colorHeatMap(): void{
+  public colorHeatMap(): void {
     this.heatMapInterval = setInterval(() => {
       const step = randomStep(this.HEATMAP_ROWS - 1, this.HEATMAP_COLUMNS - 1);
       this.changeGridCell(step['x'], step['y']);
@@ -95,7 +95,7 @@ export class HeatmapComponent implements OnInit {
    * Sets HEATMAP_ROWS
    * @param number rows
    */
-  public setHEATMAP_ROWS(rows: number): void{
+  public setHEATMAP_ROWS(rows: number): void {
     this.HEATMAP_ROWS = rows;
   }
 
@@ -110,7 +110,7 @@ export class HeatmapComponent implements OnInit {
    * Set HEATMAP_COLUMNS
    * @param number columns
    */
-  public setHEATMAP_COLUMNS(columns: number): void{
+  public setHEATMAP_COLUMNS(columns: number): void {
     this.HEATMAP_COLUMNS = columns;
   }
 }
@@ -120,7 +120,7 @@ export class HeatmapComponent implements OnInit {
  * @param number rows      must be greater than 0
  * @param number columns      must be greater than 0
  */
-export function randomStep(rows, columns): object{
+export function randomStep(rows, columns): object {
   return {
     x: getRandomInt(columns),
     y: getRandomInt(rows),
@@ -131,8 +131,8 @@ export function randomStep(rows, columns): object{
  * Gets a random number between 1 and upperBound
  * @param number upperBound      must be greater than 0
  */
-export function getRandomInt(upperBound: number): number{
-  let randomNum = Math.floor(Math.random() * Math.floor(upperBound));
+export function getRandomInt(upperBound: number): number {
+  const randomNum = Math.floor(Math.random() * Math.floor(upperBound));
   return (randomNum > 0 ? randomNum : 1);
 }
 
@@ -154,7 +154,7 @@ export function parseRGB(rgbString: string): Array<number> {
  * @param Array<number> rgbArray    size of Array must be 3
  */
 export function increaseColor(rgbArray: Array<number>) {
-  let colorVariance = 15;
+  const colorVariance = 15;
   if (rgbArray[0] === 255 && rgbArray[1] === 255 && rgbArray[2] === 255) {
     return [0, 255, 0];
   }

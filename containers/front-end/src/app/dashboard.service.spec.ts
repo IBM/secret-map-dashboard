@@ -22,16 +22,15 @@ describe('DashboardService', () => {
     httpMock.verify();
   });
 
-  describe('#initialization', () =>{
-    it('should create a DashboardService instance', inject([DashboardService], (service: DashboardService) => {
+  describe('#initialization', () => {
+    it('should create a DashboardService instance', () => {
       expect(service).toBeTruthy();
-    }));
-  })
-
+    });
+  });
 
   describe('#getConferences', () => {
     it('should return an Observable<Conference[]>', () => {
-      const dummyConferences= [
+      const dummyConferences = [
         {
           'eventId': 'E01',
           'eventName': 'Index',
@@ -58,14 +57,14 @@ describe('DashboardService', () => {
           ]
         }
       ];
-  
+
       service.getConferences().subscribe(conferences => {
         expect(conferences.length).toBe(1);
         expect(conferences).toEqual(dummyConferences);
       });
-  
+
       const req = httpMock.expectOne(`${service.API_URL}/events`);
-      expect(req.request.method).toBe("GET");
+      expect(req.request.method).toBe('GET');
       req.flush(dummyConferences);
     });
   });
@@ -76,13 +75,11 @@ describe('DashboardService', () => {
     it('should return an Observable<Conference>', () => {
       service.getConference('index')
       .subscribe(result => {
-        expect(result.eventName).toEqual("Index");
+        expect(result.eventName).toEqual('Index');
       });
-
       const req = httpMock.expectOne(`${service.API_URL}/events/index`);
       expect(req.request.url).toBe(`${service.API_URL}/events/index`);
-      expect(req.request.method).toBe("GET");
-    
+      expect(req.request.method).toBe('GET');
       req.flush({
         'eventId': 'E01',
         'eventName': 'Index',
