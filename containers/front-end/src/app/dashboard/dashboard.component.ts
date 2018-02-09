@@ -15,7 +15,6 @@ export class DashboardComponent implements OnInit {
 
   steps: number;
   calories: number;
-  fitcoins: number;
   conferenceAttendees: number;  // Will change to an array of Conference Attendees
   sideDisplayInterval: any;
   MainDisplayInterval: any;
@@ -29,7 +28,6 @@ export class DashboardComponent implements OnInit {
   constructor(
     private dashboardService: DashboardService,
     private route: ActivatedRoute) {
-
      }
 
    /**
@@ -39,7 +37,6 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.steps = 0;
     this.calories = 0;
-    this.fitcoins = 0;
     this.conferenceAttendees = 0;  // initialization will change to getConferenceAttendees()
     this.getSideDisplayInfo();
     this.getConferenceAttendees();
@@ -48,7 +45,6 @@ export class DashboardComponent implements OnInit {
 
    /**
    * Get conference by eventId in map-api server using the Dashboard service
-   * @param - none
    */
   getConference(): void {
     const eventId = this.route.snapshot.paramMap.get('eventId');
@@ -59,20 +55,17 @@ export class DashboardComponent implements OnInit {
    /**
    * Increments the values of steps, calories and fitcoins every 2 seconds by
    * a certain value
-   * @param - none
    */
   getSideDisplayInfo(): void {
     this.sideDisplayInterval = setInterval(() => {
       this.steps += 10;
       this.calories += 2;
-      this.fitcoins += 2;
     }
     , 2000);
   }
 
    /**
    * Increments the value of conferenceAttendees every second by 4
-   * @param - none
    */
   getConferenceAttendees(): void {
     this.MainDisplayInterval = setInterval(() => {

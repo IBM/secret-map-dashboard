@@ -13,9 +13,9 @@ export class MapAreaDirective implements AfterViewChecked {
   heightRatio: number;
   widthRatio: number;
 
-  constructor(private el: ElementRef) { 
+  constructor(private el: ElementRef) {
   }
-  
+
    /**
    * Checks whether incoming data such as booth or beacon data is changing
    * @param - none

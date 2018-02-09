@@ -19,7 +19,9 @@ describe('SideDisplayComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  describe('#initialization', () => {
+    it('should create a SideDisplayComponent instance', () => {
+      expect(component).toBeTruthy();
+    });
   });
 });

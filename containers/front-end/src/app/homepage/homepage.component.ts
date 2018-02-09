@@ -14,7 +14,6 @@ export class HomepageComponent implements OnInit {
   conferences: Conference[];
 
   constructor(private dashboardService: DashboardService) {
-
    }
 
    /**
