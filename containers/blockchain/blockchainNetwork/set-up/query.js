@@ -1,5 +1,5 @@
 'use strict';
-export default async function(userId, clientObject, chaincodeId, chaincodeVersion, fcn, args) {
+export default async function (userId, clientObject, chaincodeId, chaincodeVersion, fcn, args) {
   try {
     var user_from_store = await clientObject._client.getUserContext(userId, true);
     if(!(user_from_store && user_from_store.isEnrolled())) {
@@ -18,12 +18,13 @@ export default async function(userId, clientObject, chaincodeId, chaincodeVersio
     // query_responses could have more than one  results if there multiple peers were used as targets
     if(query_responses && query_responses.length == 1) {
       if(query_responses[0] instanceof Error) {
-        throw new Error("Error from query = ", query_responses[0]);
+        throw new Error("Error from query = ", query_responses[0].message);
       } else {
         //console.log("Query Response : " + query_responses);
-        return JSON.stringify({
+        /*return JSON.stringify({
           response: query_responses.toString('utf8')
-        });
+        });*/
+        return query_responses.toString('utf8');
       }
     } else {
       throw new Error("No payloads were returned from query");

@@ -1,38 +1,71 @@
 /*eslint no-undef:0*/
 class Events {
   constructor() {
-    //const socket = new WebSocket('ws://localhost:8080');;
-    //socket.on('block', (evt) => this.doSocketMessage(evt));
-    var ws = new WebSocket('ws://localhost:8080');
     var self = this;
-    // Load initial data
-    this.xhr = new XMLHttpRequest();
-    this.xhr.addEventListener('load', () => this.loadData());
-    this.xhr.open('GET', "http://localhost:3002/api/blocks?noOfLastBlocks=15", true);
-    this.xhr.send(null);
-    ws.onmessage = function(event) {
-      //console.log("Received Event ");
-      //console.log(JSON.parse(event.data));
-      self.update(JSON.parse(event.data));
-    };
-    ws.onopen = function(event) {
-      console.log("open on " + event);
-      //  ws.send("hellow world");
-    };
-    ws.onerror = function(event) {
-      console.log("Error on" + event);
-    };
+    self.block = io.connect('http://localhost:3030/block');
+    self.block.on('block', (data) => {
+      console.log(data);
+      self.update(JSON.parse(data));
+    });
+    self.block.on('connect', () => {
+      console.log("Connected");
+    });
+    self.requestBlocks();
   }
-  //{"id":"17","fingerprint":"151e2fec76aacd117276","transactions":[{"type":"ENDORSER_TRANSACTION","timestamp":"Fri Jan 19 2018 15:38:22 GMT-0800 (PST)"}]}
+  requestBlocks() {
+    var query = {
+      type: "blocks",
+      params: {
+        "noOfLastBlocks": "20"
+      }
+    };
+    var self = this;
+    $.ajax({
+      url: "http://localhost:3002/api/execute",
+      type: "POST",
+      data: JSON.stringify(query),
+      dataType: 'json',
+      contentType: 'application/json; charset=utf-8',
+      success: function (data) {
+        data = typeof data !== "string" ? data : JSON.parse(data);
+        console.log(" Result ID " + data.resultId);
+        self.getResults(data.resultId, 0, self);
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        console.log(errorThrown);
+        console.log(textStatus);
+        console.log(jqXHR);
+      }
+    });
+  }
+  getResults(resultId, attemptNo, self) {
+    if(attemptNo < 60) {
+      //console.log("Attempt no " + attemptNo);
+      $.get("http://localhost:3002/api/results/" + resultId).done(function (data) {
+        data = typeof data !== "string" ? data : JSON.parse(data);
+        //console.log(" Status  " + data.status);
+        if(data.status === "done") {
+          self.loadBlocks(JSON.parse(data.result));
+        } else {
+          setTimeout(function () {
+            self.getResults(resultId, attemptNo + 1, self);
+          }, 3000);
+        }
+      }).fail(function () {
+        console.log("error");
+      });
+    } else {
+      console.error("exceeded Number of attempts");
+    }
+  }
   update(eventData) {
     var rowData = "<tr class='anim highlight'><td width='10%'>" + eventData["id"] + "</td><td width='20%'>" + eventData["fingerprint"] + "</td><td width='50%'>" + JSON.stringify(eventData["transactions"]) + "</td></tr>";
     $(rowData).hide().prependTo('#table_view tbody').fadeIn("slow").addClass('normal');
   }
-  loadData() {
-    var data = JSON.parse(this.xhr.responseText).result;
-    data = (JSON.parse(data).result).sort((a, b) => a.id > b.id);
-    data.forEach(function(eventData) {
-      console.log(eventData);
+  loadBlocks(data) {
+    data = data === "string" ? JSON.parse(JSON.parse(data).result) : JSON.parse(data.result);
+    data = data.result.sort((a, b) => a.id > b.id);
+    data.forEach(function (eventData) {
       var rowData = "<tr class='anim highlight'><td width='10%'>" + eventData["id"] + "</td><td width='20%'>" + eventData["fingerprint"] + "</td><td width='50%'>" + JSON.stringify(eventData["transactions"]) + "</td></tr>";
       $(rowData).hide().prependTo('#table_view tbody').fadeIn("slow").addClass('normal');
     });

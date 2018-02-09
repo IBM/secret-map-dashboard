@@ -14,10 +14,11 @@
  * the License.
  */
 'use strict';
-const express = require('express'); // app server
-const bodyParser = require('body-parser'); // parser for post requests
+const express = require('express');
+const bodyParser = require('body-parser');
 const cors = require("cors");
-const peer = require('./src/peer');
+const peer = require('./utils/peer');
+const utils = require('./utils/util');
 (async () => {
   try {
     await peer.initiateClient();
@@ -26,24 +27,21 @@ const peer = require('./src/peer');
     console.log(e);
     process.exit(-1);
   }
+  utils.createConnection(peer.clients);
   const app = express();
   app.use(bodyParser.urlencoded({
     extended: false
   }));
   app.use(bodyParser.json());
   app.use(cors());
-  app.use(function(req, res, next) {
-    req.client = peer.clients[0];
-    next();
-  });
   app.use("/api", require("./routes/api").router);
   /// catch 404 and forward to error handler
-  app.use(function(req, res, next) {
+  app.use(function (req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
   });
-  app.use(function(err, req, res) {
+  app.use(function (err, req, res) {
     res.status(err.status || 500);
     res.json({
       'errors': {
@@ -53,7 +51,7 @@ const peer = require('./src/peer');
     });
   });
   const port = process.env.PORT || process.env.VCAP_APP_PORT || 3001;
-  app.listen(port, function() {
+  app.listen(port, function () {
     console.log('Server running on port: %d', port);
   });
 })();

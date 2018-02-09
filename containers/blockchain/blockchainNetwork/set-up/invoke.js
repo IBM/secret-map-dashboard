@@ -1,6 +1,6 @@
 'use strict';
 const TRANSACTION_TIMEOUT = 120000;
-export default async function(userId, clientObject, chaincodeId, chaincodeVersion, fcn, args) {
+export default async function (userId, clientObject, chaincodeId, chaincodeVersion, fcn, args) {
   var Transaction = require('fabric-client/lib/TransactionID.js');
   var user_from_store = await clientObject._client.getUserContext(userId, true);
   if(!(user_from_store && user_from_store.isEnrolled())) {
@@ -61,7 +61,7 @@ export default async function(userId, clientObject, chaincodeId, chaincodeVersio
           console.error('The transaction was invalid, code = ' + code);
           resolve(return_status); // we could use reject(new Error('Problem with the tranaction, event status ::'+code));
         } else {
-          console.log('The transaction has been committed on peer ' + event_hub._ep._endpoint.addr);
+          //console.log('The transaction has been committed on peer ' + event_hub._ep._endpoint.addr);
           resolve(return_status);
         }
       }, (err) => {
@@ -72,20 +72,16 @@ export default async function(userId, clientObject, chaincodeId, chaincodeVersio
     var results = await Promise.all(promises);
     //console.log('Send transaction promise and event listener promise have completed');
     // check the results in the order the promises were added to the promise all list
-    if(results && results[0] && results[0].status === 'SUCCESS') {
-      console.log('Successfully sent transaction to the orderer.');
-    } else {
+    if(!(results && results[0] && results[0].status === 'SUCCESS')) {
+      //console.log('Successfully sent transaction to the orderer.');
       throw new Error('Failed to order the transaction. Error code: ' + results.status);
     }
     if(results && results[1] && results[1].event_status === 'VALID') {
-      //console.log('Successfully committed the change to the ledger by the peer');
-      //console.log("Transaction Id " + results[1].tx_id);
+      console.log('Successfully committed the change to the ledger by the peer');
+      return results[1].tx_id;
     } else {
       throw new Error('Transaction failed to be committed to the ledger due to ::' + results[1].event_status);
     }
-    return JSON.stringify({
-      txId: results[1].tx_id
-    });
   } catch(e) {
     throw e;
   }

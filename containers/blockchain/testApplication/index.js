@@ -16,13 +16,11 @@
 'use strict';
 const express = require('express'); // app server
 const bodyParser = require('body-parser'); // parser for post requests
-const server = express();
-//const request = require('request');
+var server = express();
 // Bootstrap application settings
 server.use(express.static('./public')); // load UI from public folder
 server.use(bodyParser.json());
 const port = process.env.PORT || 8000;
-//function
-server.listen(port, function() {
+server.listen(port, function () {
   console.log('Server running on port: %d', port);
 });
