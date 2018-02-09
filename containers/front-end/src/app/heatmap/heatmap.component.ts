@@ -23,11 +23,7 @@ export class HeatmapComponent implements OnInit {
   /**
    * Makes a grid with svg.rect elements
    */
-<<<<<<< HEAD
   public makeGrid(): void {
-=======
-  public makeGrid(): void{
->>>>>>> 4bb57bae0d0a455e71321505e365853c926ef03a
     const width = Math.floor(d3.select('.heatmap').property('clientWidth'));
     const height =  Math.floor(d3.select('.heatmap').property('clientHeight'));
     const gridRows = Math.floor(height / (height / this.HEATMAP_ROWS));
@@ -55,11 +51,7 @@ export class HeatmapComponent implements OnInit {
    * @param number y
    */
 
-<<<<<<< HEAD
   public changeGridCell(x, y): void {
-=======
-  public changeGridCell(x, y): void{
->>>>>>> 4bb57bae0d0a455e71321505e365853c926ef03a
     const svg = d3.select('.heatmap');
     const cell = svg.select(`.gridCell${x}-${y}`);
     const rgbArray = parseRGB(cell.style('fill'));
@@ -72,11 +64,7 @@ export class HeatmapComponent implements OnInit {
    * @param number rows     must be greater than 0
    * @param number columns     must be greater than 0
    */
-<<<<<<< HEAD
   public getGridCoordinates(rows, columns): Array<object> {
-=======
-  public getGridCoordinates(rows, columns): Array<object>{
->>>>>>> 4bb57bae0d0a455e71321505e365853c926ef03a
     const data = new Array();
     for (let x = 1; x <= columns; x++) {
       for (let y = 1; y <= rows; y++) {
@@ -89,11 +77,7 @@ export class HeatmapComponent implements OnInit {
   /**
    * Creates a random step and colors grid cell every second
    */
-<<<<<<< HEAD
   public colorHeatMap(): void {
-=======
-  public colorHeatMap(): void{
->>>>>>> 4bb57bae0d0a455e71321505e365853c926ef03a
     this.heatMapInterval = setInterval(() => {
       const step = randomStep(this.HEATMAP_ROWS - 1, this.HEATMAP_COLUMNS - 1);
       this.changeGridCell(step['x'], step['y']);
@@ -111,11 +95,7 @@ export class HeatmapComponent implements OnInit {
    * Sets HEATMAP_ROWS
    * @param number rows
    */
-<<<<<<< HEAD
   public setHEATMAP_ROWS(rows: number): void {
-=======
-  public setHEATMAP_ROWS(rows: number): void{
->>>>>>> 4bb57bae0d0a455e71321505e365853c926ef03a
     this.HEATMAP_ROWS = rows;
   }
 
@@ -130,11 +110,7 @@ export class HeatmapComponent implements OnInit {
    * Set HEATMAP_COLUMNS
    * @param number columns
    */
-<<<<<<< HEAD
   public setHEATMAP_COLUMNS(columns: number): void {
-=======
-  public setHEATMAP_COLUMNS(columns: number): void{
->>>>>>> 4bb57bae0d0a455e71321505e365853c926ef03a
     this.HEATMAP_COLUMNS = columns;
   }
 }
