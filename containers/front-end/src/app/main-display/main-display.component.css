@@ -3,32 +3,24 @@
   height: 15%;
   display: flex;
   flex-direction: column;
-  border-bottom: 0.3vh #B48E8E solid;
+  border-bottom: 0.3vh rgb(0, 100, 255) solid;
 }
 .mainDisplayMapContainer{
   margin: auto;
-  height: 70%;
+  height: 85%;
   display: flex;
   flex-direction: column;
   background-color: #FEFFFF;
-}
-
-.mainDisplayFooterContainer{
-  margin: auto;
-  height: 15%;
-  display: flex;
-  flex-direction: column;
-  border-top: 0.3vh #B48E8E solid;
 }
 
 .mainDisplayEventName{
   margin-right: auto;
   margin-top: auto;
   margin-bottom: auto;
-  margin-left: 1.5em;
+  margin-left: 2em;
   display: flex;
   flex-direction: row;
-  color:  #EC5133;
+  color: rgb(219, 38, 99);
   font-size: calc(1vw + 1vh + 1vmin);
 }
 
@@ -39,16 +31,4 @@
   align-items: center;
   align-content: center;
   justify-content: center;
-  color:  #723936;
-}
-
-.mainDisplayFooter{
-  margin-right: auto;
-  margin-top: auto;
-  margin-bottom: auto;
-  margin-left: 1.5em;
-  display: flex;
-  flex-direction: row;
-  color:  #723936;
-  font-size: calc(1vw + 1vh + 1vmin);
 }

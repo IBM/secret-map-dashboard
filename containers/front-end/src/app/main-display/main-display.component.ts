@@ -8,14 +8,8 @@ import { Conference } from '../conference';
   styleUrls: ['./main-display.component.css']
 })
 export class MainDisplayComponent implements OnInit {
-
-  @Input() steps: number;
-  @Input() conferenceAttendees: number;
-  @Input() fitcoins: number;
   @Input() conference: Conference;
-
   constructor() {
-
   }
 
    /**
@@ -23,7 +17,6 @@ export class MainDisplayComponent implements OnInit {
    * @param - none
    */
   ngOnInit() {
-
   }
 
 }
