@@ -4,11 +4,18 @@ const uuidv4 = require('uuid/v4');
 const utils = require('../utils/util');
 router.post('/execute', function (req, res) {
   var resultId = uuidv4();
-  utils.queueRequest(resultId, req.body);
-  res.json({
-    status: "success",
-    resultId: resultId
-  });
+  if(!req.body.queue) {
+    res.json({
+      status: "failed",
+      resultId: "Invalid Request. Missing queue name"
+    });
+  } else {
+    utils.queueRequest(resultId, req.body.queue, req.body);
+    res.json({
+      status: "success",
+      resultId: resultId
+    });
+  }
 });
 router.get('/results/:resultId', function (req, res, next) {
   var redisClient = utils.getRedisConnection();

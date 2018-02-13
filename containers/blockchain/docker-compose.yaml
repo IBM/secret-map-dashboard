@@ -145,7 +145,6 @@ services:
     container_name: blockchain-setup
     image: blockchain-setup
     environment:
-    - PORT=3000
     - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
     - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.2
     - SECRETSDIR=/run/secrets
@@ -167,29 +166,19 @@ services:
 
   shop-backend :
     container_name: shop-backend
-    image: shop-backend
+    image: backend
     environment:
-    - PORT=3000
     - ORGID=org.ShopOrg
     - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
     - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.2
     - SECRETSDIR=/run/secrets
     - RABBITMQQUEUE=seller_queue
     - SOCKETPORT=3030
-    - MESSAGEEXPIRY=600
-    ports:
-    - 3002:3000
-    - 3030:3030
+    - MESSAGEEXPIRY=300
+    - EVENTEMITTER=true
     volumes:
     - /var/run/:/host/var/run/
     depends_on:
-    - orderer0
-    - shop-ca
-    - shop-peer
-    - fitcoin-ca
-    - fitcoin-peer
-    - couchdb0
-    - couchdb1
     - blockchain-setup
     - rabbitmq
     - redis-server
@@ -199,30 +188,32 @@ services:
 
   fitcoin-backend :
     container_name: fitcoin-backend
-    image: fitcoin-backend
+    image: backend
     environment:
-    - PORT=3000
     - ORGID=org.FitCoinOrg
     - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
     - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.2
     - SECRETSDIR=/run/secrets
     - RABBITMQQUEUE=user_queue
-    - SOCKETPORT=3030
-    - MESSAGEEXPIRY=600
-    ports:
-    - 3001:3000
-    - 3031:3030
+    - MESSAGEEXPIRY=300
     volumes:
     - /var/run/:/host/var/run/
     depends_on:
-    - orderer0
-    - shop-ca
-    - shop-peer
-    - fitcoin-ca
-    - fitcoin-peer
-    - couchdb0
-    - couchdb1
     - blockchain-setup
+    - rabbitmq
+    - redis-server
+    secrets:
+      - config
+      - channel
+
+  rabbit-client :
+    container_name: rabbit-client
+    image: rabbit-client
+    environment:
+    - SECRETSDIR=/run/secrets
+    ports:
+    - 3000:3000
+    depends_on:
     - rabbitmq
     - redis-server
     secrets:

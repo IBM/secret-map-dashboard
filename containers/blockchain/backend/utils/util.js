@@ -40,9 +40,8 @@ async function invokeChaincode(type, client, params) {
 async function enrollUser(client) {
   var userId = uuidv4();
   return client.registerAndEnroll(userId).then((user) => {
-    return invokeFunc(user._name, client, config.chaincodeId, config.chaincodeVersion, "createMember", [userId, "user"]);
+    return invokeFunc(user._name, client, config.chaincodeId, config.chaincodeVersion, "createMember", [userId, client._peerConfig.userType]);
   }).then((result) => {
-    //result = typeof result === 'string' ? JSON.parse(result) : result;
     return {
       message: "success",
       result: {
@@ -92,10 +91,16 @@ async function execute(type, client, params) {
   }
 }
 export async function createConnection(clients) {
+  var expiry = process.env.MESSAGEEXPIRY || 300;
   clients.map(peerClient => {
     amqp.connect(config.rabbitmq, function (err, conn) {
       conn.createChannel(function (err, ch) {
         var q = process.env.RABBITMQQUEUE || 'user_queue';
+        var setValue = function (key, value) {
+          var redisClient = getRedisConnection();
+          redisClient.set(key, value, 'EX', expiry, () => redisClient.quit());
+        };
+        console.log("creating server queue connection " + q);
         ch.assertQueue(q, {
           durable: true
         });
@@ -104,77 +109,19 @@ export async function createConnection(clients) {
         ch.consume(q, function reply(msg) {
           var input = JSON.parse(msg.content.toString());
           var reply = (ch, msg, data) => {
-            ch.sendToQueue(msg.properties.replyTo, new Buffer(data), {
-              correlationId: msg.properties.correlationId,
-              messageId: msg.properties.messageId,
-              content_type: 'application/json'
-            });
+            setValue(msg.properties.correlationId, data);
             ch.ack(msg);
           };
+          console.log("Processing request : " + JSON.stringify(input.params));
           execute(input.type, peerClient, input.params).then(function (value) {
             reply(ch, msg, JSON.stringify(value));
           }).catch(err => {
+            console.log("Failed message  : " + err.message);
             reply(ch, msg, JSON.stringify({
               message: "failed",
               error: err.message
             }));
           });
-        });
-      });
-    });
-  });
-}
-export async function queueRequest(corrId, params) {
-  var expiry = process.env.MESSAGEEXPIRY || 600;
-  var requestQueue = process.env.RABBITMQQUEUE || 'user_queue';
-  amqp.connect(config.rabbitmq, function (err, conn) {
-    conn.createChannel(function (err, ch) {
-      ch.assertQueue('', {
-        exclusive: true
-      }, function (err, q) {
-        //var corr = params.corrId;
-        var setValue = function (key, value) {
-          var redisClient = getRedisConnection();
-          redisClient.set(key, value, 'EX', expiry, () => redisClient.quit());
-        };
-        var corr = corrId;
-        params = typeof params !== "string" ? JSON.stringify(params) : params;
-        console.log(' [x] Requesting %s', params);
-        ch.consume(q.queue, function (msg) {
-          if(msg.properties.correlationId === corr) {
-            //msg.content = JSON.parse(msg.content.toString());
-            //msg.content.corrId = msg.properties.correlationId;
-            if(msg.content.message === "success") {
-              console.log(' [.] Query Result ');
-              console.log(msg.content);
-              setValue(msg.properties.correlationId, msg.content.toString());
-              //executeEvent.emit('executionResult', msg.content);
-              setTimeout(function () {
-                conn.close();
-              }, 500);
-            } else if(msg.content.message === "failed" && msg.content.error.includes('READ_CONFLICT') && parseInt(msg.properties.messageId) < 3) {
-              console.log("Error in query. Request Attempt No : " + (parseInt(msg.properties.messageId) + 1));
-              console.log(' [x] Requesting %s', params);
-              setTimeout(() => {
-                ch.sendToQueue(requestQueue, new Buffer(params), {
-                  correlationId: msg.properties.correlationId,
-                  messageId: (parseInt(msg.properties.messageId) + 1).toString(),
-                  replyTo: q.queue
-                });
-              }, 20000);
-            } else {
-              //executeEvent.emit('executionResult', msg.content);
-              setValue(msg.properties.correlationId, msg.content.toString());
-              conn.close();
-            }
-          }
-        }, {
-          noAck: true
-        });
-        ch.sendToQueue(requestQueue, new Buffer(params), {
-          correlationId: corr,
-          messageId: "1",
-          replyTo: q.queue
         });
       });
     });

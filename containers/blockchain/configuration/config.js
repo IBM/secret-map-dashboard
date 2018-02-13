@@ -27,7 +27,8 @@ const config = {
       userKeystoreDBUrl: 'http://couchdb0:5984',
       stateDBName: 'member_state_db',
       stateDBUrl: 'http://couchdb0:5984',
-      org: 'org.ShopOrg'
+      org: 'org.ShopOrg',
+      userType: 'seller'
     },
     ca: {
       hostname: 'shop-ca',
@@ -49,7 +50,8 @@ const config = {
       stateDBName: 'member_state_db',
       stateDBUrl: 'http://couchdb1:5984',
       eventHubUrl: 'grpcs://fitcoin-peer:7053',
-      org: 'org.FitCoinOrg'
+      org: 'org.FitCoinOrg',
+      userType: 'user'
     },
     ca: {
       hostname: 'fitcoin-ca',
