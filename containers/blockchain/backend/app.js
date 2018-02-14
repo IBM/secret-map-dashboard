@@ -16,9 +16,9 @@
 'use strict';
 const config = require('./set-up/config');
 const request = require('request');
-const express = require('express'); // app server
-const bodyParser = require('body-parser'); // parser for post requests
-const cors = require("cors");
+//const express = require('express'); // app server
+//const bodyParser = require('body-parser'); // parser for post requests
+//const cors = require("cors");
 const peer = require('./utils/peer');
 const utils = require('./utils/util');
 (async () => {
@@ -45,20 +45,20 @@ const utils = require('./utils/util');
     });
     peer.clients.eventEmitter.on('block', block => {
       blockEvent.emit('block', JSON.stringify(block));
-      //sendToIoTDashboard(JSON.stringify(block));
+      sendToIoTDashboard(JSON.stringify(block));
     });
-    // pass params to iot dashboard
-    function sendToIoTDashboard(data) {
-      var options = {
-        method: 'GET',
-        uri: config.iotDashUrl + data
-      };
-      request(options, function (error, response, body) {
-        console.log('error:', error); // null if no error occurs, else print error
-        console.log('statusCode:', response && response.statusCode); // print the response status code
-        console.log('body:', body); // print the output body on console
-      });
-    }
   }
   utils.createConnection(peer.clients.workers);
+  // pass params to iot dashboard
+  function sendToIoTDashboard(data) {
+    var options = {
+      method: 'GET',
+      uri: config.iotDashUrl + data
+    };
+    request(options, function (error, response, body) {
+      console.log('error:', error); // null if no error occurs, else print error
+      console.log('statusCode:', response && response.statusCode); // print the response status code
+      console.log('body:', body); // print the output body on console
+    });
+  }
 })();
