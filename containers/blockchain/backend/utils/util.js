@@ -3,7 +3,6 @@ import invokeFunc from '../set-up/invoke';
 import queryFunc from '../set-up/query';
 const uuidv4 = require('uuid/v4');
 const amqp = require('amqplib/callback_api');
-//const amqp = require('amqplib');
 var redis = require("redis");
 async function invokeChaincode(type, client, values) {
   values = typeof values !== "string" ? values : JSON.parse(values);
@@ -91,60 +90,61 @@ async function execute(type, client, params) {
     throw err;
   }
 }
-export async function createConnection(clients) {
+export async function createConnection(client) {
   var expiry = process.env.MESSAGEEXPIRY || 300;
-  clients.map(peerClient => {
-    var rabbitServerConnection = function (clientWorker) {
-      amqp.connect(config.rabbitmq, function (err, conn) {
-        console.log("connected to the server");
-        var reconnect = function (clientWorker) {
-          setTimeout(function () {
-            console.log('now attempting reconnect ...');
-            rabbitServerConnection(clientWorker);
-          }, 10000);
-        };
-        conn.on('error', function () {
-          console.log('Connection failed');
-          reconnect(clientWorker);
-        });
-        if(err) {
-          console.log('connection failed', err);
-          reconnect(clientWorker);
-        } else {
-          conn.createChannel(function (err, ch) {
-            var q = process.env.RABBITMQQUEUE || 'user_queue';
-            var setValue = function (key, value) {
-              var redisClient = getRedisConnection();
-              redisClient.set(key, value, 'EX', expiry, () => redisClient.quit());
-            };
-            console.log("creating server queue connection " + q);
-            ch.assertQueue(q, {
-              durable: true
-            });
-            ch.prefetch(1);
-            console.log(' [x] Awaiting RPC requests');
-            ch.consume(q, function reply(msg) {
-              var input = JSON.parse(msg.content.toString());
-              var reply = (ch, msg, data) => {
-                setValue(msg.properties.correlationId, data);
-                ch.ack(msg);
-              };
-              console.log("Processing request : " + JSON.stringify(input.params));
-              execute(input.type, clientWorker, input.params).then(function (value) {
-                reply(ch, msg, JSON.stringify(value));
-              }).catch(err => {
-                console.log("Failed message  : " + err.message);
-                reply(ch, msg, JSON.stringify({
-                  message: "failed",
-                  error: err.message
-                }));
-              });
-            });
-          });
-        }
+  amqp.connect(config.rabbitmq, function (err, conn) {
+    console.log("connected to the server");
+    if(err) {
+      console.log('connection failed', err);
+      setTimeout(function () {
+        console.log('now attempting reconnect ...');
+        createConnection(client);
+      }, 5000);
+    } else {
+      conn.on('error', function () {
+        console.log('Connection failed event');
+        setTimeout(function () {
+          console.log('now attempting reconnect ...');
+          createConnection(client);
+        }, 5000);
+        conn.close();
       });
-    };
-    rabbitServerConnection(peerClient);
+      conn.createChannel(function (err, ch) {
+        var q = process.env.RABBITMQQUEUE || 'user_queue';
+        var setValue = function (key, value) {
+          var redisClient = getRedisConnection();
+          redisClient.set(key, value, 'EX', expiry, () => redisClient.quit());
+        };
+        console.log("creating server queue connection " + q);
+        ch.assertQueue(q, {
+          durable: true
+        });
+        ch.prefetch(1);
+        console.log(' [x] Awaiting RPC requests');
+        ch.consume(q, function reply(msg) {
+          var input = JSON.parse(msg.content.toString());
+          var reply = (ch, msg, data) => {
+            ch.sendToQueue(msg.properties.replyTo, new Buffer("Execution completed"), {
+              correlationId: msg.properties.correlationId,
+              messageId: msg.properties.messageId,
+              content_type: 'application/json'
+            });
+            setValue(msg.properties.correlationId, data);
+            ch.ack(msg);
+          };
+          console.log("Processing request : " + JSON.stringify(input.params));
+          execute(input.type, client, input.params).then(function (value) {
+            reply(ch, msg, JSON.stringify(value));
+          }).catch(err => {
+            console.log("Failed message  : " + err.message);
+            reply(ch, msg, JSON.stringify({
+              message: "failed",
+              error: err.message
+            }));
+          });
+        });
+      });
+    }
   });
 }
 /*function connect(clientWorker) {

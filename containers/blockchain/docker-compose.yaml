@@ -2,6 +2,7 @@ version: "3.1"
 
 services:
   rabbitmq1:
+    container_name: rabbitmq1
     image: rabbitmq:3-management
     hostname: rabbitmq1
     environment:
@@ -11,6 +12,7 @@ services:
       - RABBITMQ_DEFAULT_VHOST=/
 
   rabbitmq2:
+    container_name: rabbitmq2
     image: rabbitmq:3-management
     hostname: rabbitmq2
     depends_on:
@@ -22,6 +24,7 @@ services:
     entrypoint: /usr/local/bin/cluster-entrypoint.sh
 
   rabbitmq3:
+    container_name: rabbitmq3
     image: rabbitmq:3-management
     hostname: rabbitmq3
     depends_on:
@@ -34,6 +37,7 @@ services:
 
   rabbitmq:
     container_name: rabbitmq
+    hostname: rabbitmq
     image: haproxy:1.7
     volumes:
       - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
@@ -202,8 +206,6 @@ services:
     - fitcoin-peer
     - couchdb0
     - couchdb1
-    - rabbitmq
-    - redis-server
     secrets:
       - config
       - channel
