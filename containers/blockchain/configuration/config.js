@@ -10,7 +10,9 @@ const config = {
   chaincodeVersion: '1',
   chaincodePath: 'bcfit',
   rabbitmq: 'amqp://rabbitmq:5672',
-  redis: 'redis://redis-server:6379',
+  //redis: 'redis-server:7000',
+  redisHost: 'redis-server',
+  redisPort: 7000,
   iotDashUrl: 'https://secretmap.mybluemix.net/steps?message=',
   orderer: {
     hostname: 'orderer0',
@@ -78,7 +80,7 @@ if(process.env.LOCALCONFIG) {
   config.peers[1].peer.userKeystoreDBUrl = 'http://localhost:6984';
   config.peers[1].peer.stateDBUrl = 'http://localhost:6984';
   config.rabbitmq = 'amqp://localhost:5672';
-  config.redis = 'redis://localhost:6379';
+  config.redisHost = 'localhost';
   config.iotDashUrl = 'https://secretmap.mybluemix.net/steps?message=';
 }
 //export default config;

@@ -1,6 +1,6 @@
 import config from './config';
 const amqp = require('amqplib/callback_api');
-var redis = require("redis");
+var RedisClustr = require('redis-clustr');
 export async function queueRequest(corrId, requestQueue, params, count) {
   if(!count) {
     count = 1;
@@ -59,8 +59,10 @@ export async function queueRequest(corrId, requestQueue, params, count) {
   });
 }
 export function getRedisConnection() {
-  var redisClient = redis.createClient(config.redis);
-  //var redisClient = redis.createClient('redis://localhost:6379');
-  redisClient.on("error", (err) => console.log("Error on redis client : " + err));
-  return redisClient;
+  return new RedisClustr({
+    servers: [{
+      host: config.redisHost,
+      port: config.redisPort
+    }]
+  });
 }

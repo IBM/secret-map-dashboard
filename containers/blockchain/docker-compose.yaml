@@ -49,12 +49,17 @@ services:
       - 15672:15672
       - 5672:5672
 
+#  redis-server:
+#    container_name: redis-server
+#    image: redis:4.0.5-alpine
+#    command: ["redis-server", "--appendonly", "yes"]
+#    ports:
+#      - 6379:6379
   redis-server:
-    container_name: redis-server
-    image: redis:4.0.5-alpine
-    command: ["redis-server", "--appendonly", "yes"]
-    ports:
-      - 6379:6379
+     hostname: redis-server
+     image: redis-server
+     ports:
+       - '7000-7007:7000-7007'
 
   shop-ca:
     container_name: shop-ca

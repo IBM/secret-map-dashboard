@@ -16,9 +16,6 @@
 'use strict';
 const config = require('./set-up/config');
 const request = require('request');
-//const express = require('express'); // app server
-//const bodyParser = require('body-parser'); // parser for post requests
-//const cors = require("cors");
 const peer = require('./utils/peer');
 const utils = require('./utils/util');
 (async () => {
