@@ -5,6 +5,7 @@
 export FABRIC_CFG_PATH=$(pwd)
 chmod +x cryptogen
 chmod +x configtxgen
+chmod +x ./rabbitCluster/cluster-entrypoint.sh 
 chmod +x generate-certs.sh
 chmod +x generate-cfgtx.sh
 chmod +x docker-images.sh
