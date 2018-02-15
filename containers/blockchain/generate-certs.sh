@@ -55,12 +55,7 @@ cp $PEERS/fitcoin-org/users/Admin@fitcoin-org/msp/signcerts/* $WEBCERTS/
 
 WEBCERTS=$PROJPATH/blockchainNetwork
 
-BACKEND=$PROJPATH/fitcoinBackend
-rm -rf $BACKEND/set-up
-mkdir -p $BACKEND/set-up
-cp -r $WEBCERTS/set-up/* $BACKEND/set-up/
-
-BACKEND=$PROJPATH/shopBackend
+BACKEND=$PROJPATH/backend
 rm -rf $BACKEND/set-up
 mkdir -p $BACKEND/set-up
 cp -r $WEBCERTS/set-up/* $BACKEND/set-up/

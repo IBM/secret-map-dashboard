@@ -62,7 +62,10 @@ if [ $BUILD ];
     docker build -t shop-ca:latest shopCertificateAuthority/
     docker build -t fitcoin-ca:latest fitcoinCertificateAuthority/
     docker build -t blockchain-setup:latest blockchainNetwork/
-    docker build -t fitcoin-backend:latest fitcoinBackend/
-    docker build -t shop-backend:latest shopBackend/
+    #docker build -t fitcoin-backend:latest fitcoinBackend/
+    #docker build -t shop-backend:latest shopBackend/
+    docker build -t rabbit-client:latest rabbitClient/
+    docker build -t redis-server:latest redisCluster/
+    docker build -t backend:latest backend/
 fi
 #docker-compose -p "fitcoin" up -d
