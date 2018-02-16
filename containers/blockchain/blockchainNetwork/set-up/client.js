@@ -4,7 +4,7 @@ var resolve = require('path').resolve;
 var EventEmitter = require('events').EventEmitter;
 var hfc = require('fabric-client');
 var CAClient = require('fabric-ca-client');
-var CouchDBKeyValueStore = require('fabric-client/lib/impl/CouchDBKeyValueStore.js');
+var CouchDBKeyValueStore = require('./CouchDBKeyValueStore.js');
 var CKS = require('fabric-client/lib/impl/CryptoKeyStore.js');
 import enrollUser from './enroll';
 var utils = require('./utils.js');
