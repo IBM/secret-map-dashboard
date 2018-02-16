@@ -63,7 +63,8 @@ class Events {
     $(rowData).hide().prependTo('#table_view tbody').fadeIn("slow").addClass('normal');
   }
   loadBlocks(data) {
-    data = data === "string" ? JSON.parse(JSON.parse(data).result) : JSON.parse(data.result);
+    //console.log(data);
+    data = data === "string" ? JSON.parse(data) : data;
     data = data.result.sort((a, b) => a.id > b.id);
     data.forEach(function (eventData) {
       var rowData = "<tr class='anim highlight'><td width='10%'>" + eventData["id"] + "</td><td width='20%'>" + eventData["fingerprint"] + "</td><td width='50%'>" + JSON.stringify(eventData["transactions"]) + "</td></tr>";

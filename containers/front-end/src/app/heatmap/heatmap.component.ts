@@ -141,7 +141,7 @@ export function randomStep(rows, columns): object {
  * @param number upperBound      must be greater than 0
  */
 export function getRandomInt(upperBound: number): number {
-  const  randomNum = Math.floor( Math.random() * Math.floor(upperBound));
+  const randomNum = Math.floor(Math.random() * Math.floor(upperBound));
   return (randomNum > 0 ? randomNum : 1);
 }
 
