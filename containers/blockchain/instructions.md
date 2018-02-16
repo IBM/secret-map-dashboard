@@ -5,14 +5,13 @@
 export FABRIC_CFG_PATH=$(pwd)
 chmod +x cryptogen
 chmod +x configtxgen
-chmod +x ./rabbitCluster/cluster-entrypoint.sh 
+chmod +x ./rabbitCluster/cluster-entrypoint.sh
 chmod +x generate-certs.sh
 chmod +x generate-cfgtx.sh
 chmod +x docker-images.sh
 chmod +x build.sh
 chmod +x clean.sh
 ./build.sh
-docker-compose -p "fitcoin" up -d blockchain-setup
 ```
 
 ###  Check the logs
@@ -46,47 +45,59 @@ docker ps
 ```
 **Output:**
 ```bash
-CONTAINER ID        IMAGE                                                                                    COMMAND                  CREATED             STATUS              PORTS                                            NAMES
-66f65a353e58        fitcoin-backend                                                                          "node index.js"          20 seconds ago      Up 23 seconds       0.0.0.0:3001->3000/tcp                           fitcoin-backend
-a8bba26cf3d4        shop-backend                                                                             "node index.js"          20 seconds ago      Up 24 seconds       0.0.0.0:3002->3000/tcp                           shop-backend
-4d8bd8e6e5cf        dev-shop-peer-bcfit-1-0e0d4e71de9ac7df4d0d20dfcf583e3e63227edda600fe338485053387e09c50   "chaincode -peer.add…"   4 minutes ago       Up 4 minutes                                                         dev-shop-peer-bcfit-1
-2eb73e45a372        blockchain-setup                                                                         "node index.js"          5 minutes ago       Up 5 minutes        3000/tcp                                         blockchain-setup
-2cd17faea02c        fitcoin-peer                                                                             "peer node start"        5 minutes ago       Up 5 minutes        0.0.0.0:8051->7051/tcp, 0.0.0.0:8053->7053/tcp   fitcoin-peer
-ef97bd92a3bc        shop-peer                                                                                "peer node start"        5 minutes ago       Up 5 minutes        0.0.0.0:7051->7051/tcp, 0.0.0.0:7053->7053/tcp   shop-peer
-877033a93f5c        hyperledger/fabric-couchdb:x86_64-1.0.2                                                  "tini -- /docker-ent…"   5 minutes ago       Up 5 minutes        4369/tcp, 9100/tcp, 0.0.0.0:5984->5984/tcp       couchdb0
-474edd5b491f        fitcoin-ca                                                                               "fabric-ca-server st…"   5 minutes ago       Up 5 minutes        0.0.0.0:8054->7054/tcp                           fitcoin-ca
-52e78c89a130        orderer-peer                                                                             "orderer"                5 minutes ago       Up 5 minutes        0.0.0.0:7050->7050/tcp                           orderer0
-704be331bbbb        hyperledger/fabric-couchdb:x86_64-1.0.2                                                  "tini -- /docker-ent…"   5 minutes ago       Up 5 minutes        4369/tcp, 9100/tcp, 0.0.0.0:6984->5984/tcp       couchdb1
-ba70779b5c65        shop-ca                                                                                  "fabric-ca-server st…"   5 minutes ago       Up 5 minutes        0.0.0.0:7054->7054/tcp                           shop-ca
+80de48d4f372        dev-fitcoin-peer-bcfit-1-7df93f2b75a05e9e7896ce92dcb057539e271722e43eba5ff9c75aae902fdcce   "chaincode -peer.add…"   3 hours ago         Up 3 hours                                                                dev-fitcoin-peer-bcfit-1
+0bb401fe44b9        backend                                                                                     "node index.js"          3 hours ago         Up 3 hours                                                                fitcoin_fitcoin-backend_1
+f873f201e99c        backend                                                                                     "node index.js"          3 hours ago         Up 3 hours                                                                fitcoin_shop-backend_1
+c7fdf4341ee9        rabbit-client                                                                               "node index.js"          3 hours ago         Up 3 hours          0.0.0.0:3000->3000/tcp                                rabbit-client
+499cf8d837ea        redis-server                                                                                "/docker-entrypoint.…"   3 hours ago         Up 3 hours          6379/tcp, 0.0.0.0:7000-7007->7000-7007/tcp            fitcoin_redis-server_1
+febba02cc941        dev-shop-peer-bcfit-1-0e0d4e71de9ac7df4d0d20dfcf583e3e63227edda600fe338485053387e09c50      "chaincode -peer.add…"   3 hours ago         Up 3 hours                                                                dev-shop-peer-bcfit-1
+03141f47f646        haproxy:1.7                                                                                 "/docker-entrypoint.…"   3 hours ago         Up 3 hours          0.0.0.0:5672->5672/tcp, 0.0.0.0:15672->15672/tcp      rabbitmq
+5ada66d99be3        rabbitmq:3-management                                                                       "/usr/local/bin/clus…"   3 hours ago         Up 3 hours          4369/tcp, 5671-5672/tcp, 15671-15672/tcp, 25672/tcp   rabbitmq3
+f51d8f5d7fc7        rabbitmq:3-management                                                                       "/usr/local/bin/clus…"   3 hours ago         Up 3 hours          4369/tcp, 5671-5672/tcp, 15671-15672/tcp, 25672/tcp   rabbitmq2
+172cabad39b4        rabbitmq:3-management                                                                       "docker-entrypoint.s…"   3 hours ago         Up 3 hours          4369/tcp, 5671-5672/tcp, 15671-15672/tcp, 25672/tcp   rabbitmq1
+5ffcf480fbb6        blockchain-setup                                                                            "node index.js"          3 hours ago         Up 3 hours          3000/tcp                                              blockchain-setup
+f58e488b23da        fitcoin-peer                                                                                "peer node start"        3 hours ago         Up 3 hours          0.0.0.0:8051->7051/tcp, 0.0.0.0:8053->7053/tcp        fitcoin-peer
+8e4facc6fd4a        shop-peer                                                                                   "peer node start"        3 hours ago         Up 3 hours          0.0.0.0:7051->7051/tcp, 0.0.0.0:7053->7053/tcp        shop-peer
+4297f9e1f45c        hyperledger/fabric-couchdb:x86_64-1.0.2                                                     "tini -- /docker-ent…"   3 hours ago         Up 3 hours          4369/tcp, 9100/tcp, 0.0.0.0:6984->5984/tcp            couchdb1
+e0fdc5312585        orderer-peer                                                                                "orderer"                3 hours ago         Up 3 hours          0.0.0.0:7050->7050/tcp                                orderer0
+56c209a37bed        shop-ca                                                                                     "fabric-ca-server st…"   3 hours ago         Up 3 hours          0.0.0.0:7054->7054/tcp                                shop-ca
+1db6a6ca3a6f        fitcoin-ca                                                                                  "fabric-ca-server st…"   3 hours ago         Up 3 hours          0.0.0.0:8054->7054/tcp                                fitcoin-ca
+c90b289a10e6        hyperledger/fabric-couchdb:x86_64-1.0.2                                                     "tini -- /docker-ent…"   3 hours ago         Up 3 hours          4369/tcp, 9100/tcp, 0.0.0.0:5984->5984/tcp            couchdb0
 ```
 
 **Command**
 ```bash
-docker-compose -p "fitcoin" up -d
-```
-
-**Command**
-```bash
-docker logs fitcoin-backend
+docker logs fitcoin_fitcoin-backend_1
 ```
 **Output:**
 ```
 Register CA fitcoin-org
 CA registration complete  FabricCAServices : {hostname: fitcoin-ca, port: 7054}
-info: [EventHub.js]: _connect - options {"grpc.ssl_target_name_override":"fitcoin-peer","grpc.default_authority":"fitcoin-peer"}
-Server running on port: 3000
+Register CA fitcoin-org
+CA registration complete  FabricCAServices : {hostname: fitcoin-ca, port: 7054}
+info: [EventHub.js]: _connect - options {"grpc.ssl_target_name_override":"fitcoin-peer","grpc.default_authority":"fitcoin-peer","grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1}
+info: [EventHub.js]: _connect - options {"grpc.ssl_target_name_override":"fitcoin-peer","grpc.default_authority":"fitcoin-peer","grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1}
+connected to the server
+creating server queue connection user_queue
+ [x] Awaiting RPC requests
 ```
 
 **Command**
 ```bash
-docker logs shop-backend
+docker logs fitcoin_shop-backend_1
 ```
 **Output:**
 ```
 Register CA shop-org
 CA registration complete  FabricCAServices : {hostname: shop-ca, port: 7054}
-info: [EventHub.js]: _connect - options {"grpc.ssl_target_name_override":"shop-peer","grpc.default_authority":"shop-peer"}
-Server running on port: 3000
+Register CA shop-org
+CA registration complete  FabricCAServices : {hostname: shop-ca, port: 7054}
+info: [EventHub.js]: _connect - options {"grpc.ssl_target_name_override":"shop-peer","grpc.default_authority":"shop-peer","grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1}
+info: [EventHub.js]: _connect - options {"grpc.ssl_target_name_override":"shop-peer","grpc.default_authority":"shop-peer","grpc.max_receive_message_length":-1,"grpc.max_send_message_length":-1}
+Starting socker server
+connected to the server
+creating server queue connection seller_queue
+ [x] Awaiting RPC requests
 ```
 
 **To view the Blockchain Events**

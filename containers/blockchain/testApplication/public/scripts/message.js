@@ -4,7 +4,7 @@ class ReqEvents {
   requestServer(params) {
     var self = this;
     $.ajax({
-      url: "http://localhost:3002/api/execute",
+      url: "http://localhost:3000/api/execute",
       type: "POST",
       data: JSON.stringify(params),
       dataType: 'json',
@@ -24,7 +24,7 @@ class ReqEvents {
   getResults(resultId, attemptNo, self) {
     if(attemptNo < 60) {
       //console.log("Attempt no " + attemptNo);
-      $.get("http://localhost:3002/api/results/" + resultId).done(function (data) {
+      $.get("http://localhost:3000/api/results/" + resultId).done(function (data) {
         data = typeof data !== "string" ? data : JSON.parse(data);
         //console.log(" Status  " + data.status);
         if(data.status === "done") {
@@ -64,6 +64,7 @@ function amqpFunc() {
   var args = $('#argsValues').val().split(',');
   var input = {
     type: type,
+    queue: "user_queue",
     params: {
       userId: userId,
       fcn: fcn,
