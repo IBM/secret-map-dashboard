@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, HostListener} from '@angular/core';
 import * as d3 from 'd3';
 import {setInterval} from 'timers';
 @Component({
@@ -10,14 +10,14 @@ export class HeatmapComponent implements OnInit {
 
   private heatMapInterval: any;
   private HEATMAP_ROWS = 35;
-  private HEATMAP_COLUMNS = 70;
+  private HEATMAP_COLUMNS = 60;
 
   constructor() {
   }
 
   ngOnInit() {
     this.makeGrid();
-    // this.colorHeatMap();
+    this.colorHeatMap();
   }
 
   /**
@@ -81,7 +81,7 @@ export class HeatmapComponent implements OnInit {
     this.heatMapInterval = setInterval(() => {
       const step = randomStep(this.HEATMAP_ROWS - 1, this.HEATMAP_COLUMNS - 1);
       this.changeGridCell(step['x'], step['y']);
-    }, 1000);
+    }, 250);
   }
 
   /**
@@ -113,6 +113,15 @@ export class HeatmapComponent implements OnInit {
   public setHEATMAP_COLUMNS(columns: number): void {
     this.HEATMAP_COLUMNS = columns;
   }
+
+    /**
+   * Checks when browser changes in size and will make the maparea responsive
+   * @param - none
+   */
+    @HostListener('window:resize')
+    onResize() {
+      this.makeGrid();
+    }
 }
 
 /**
@@ -122,8 +131,8 @@ export class HeatmapComponent implements OnInit {
  */
 export function randomStep(rows, columns): object {
   return {
-    x: getRandomInt(columns),
-    y: getRandomInt(rows),
+    x: getRandomCols(columns),
+    y: getRandomRows(rows),
   };
 }
 
@@ -132,9 +141,45 @@ export function randomStep(rows, columns): object {
  * @param number upperBound      must be greater than 0
  */
 export function getRandomInt(upperBound: number): number {
-  const randomNum = Math.floor(Math.random() * Math.floor(upperBound));
+  const  randomNum = Math.floor( Math.random() * Math.floor(upperBound));
   return (randomNum > 0 ? randomNum : 1);
 }
+
+
+/**
+ * Gets a random number between 1 and upperBound
+ * @param number upperBound      must be greater than 0
+ */
+export function getRandomRows(upperBound: number): number {
+  let prob = Math.random();
+  if(prob <= 0.8){
+    let max = upperBound * 0.2;
+    let min =  upperBound * 0.4;
+    let randomNum =  Math.floor(Math.random() * (max - min) + min);
+    return (randomNum > 0 ? randomNum : 1);
+  }
+  else{
+    return getRandomInt(upperBound);
+  }
+}
+
+/**
+ * Gets a random number between 1 and upperBound
+ * @param number upperBound      must be greater than 0
+ */
+export function getRandomCols(upperBound: number): number {
+  let prob = Math.random();
+  if(prob <= 0.8){
+    let max = upperBound * 0.1;
+    let min =  upperBound * 0.9;
+    let randomNum =  Math.floor(Math.random() * (max - min) + min);
+    return (randomNum > 0 ? randomNum : 1);
+  }
+  else{
+    return getRandomInt(upperBound);
+  }
+}
+
 
 /**
  * Parses RGB string and creates a rgb array
@@ -154,7 +199,7 @@ export function parseRGB(rgbString: string): Array<number> {
  * @param Array<number> rgbArray    size of Array must be 3
  */
 export function increaseColor(rgbArray: Array<number>) {
-  const colorVariance = 15;
+  const colorVariance = 85;
   if (rgbArray[0] === 255 && rgbArray[1] === 255 && rgbArray[2] === 255) {
     return [0, 255, 0];
   }
