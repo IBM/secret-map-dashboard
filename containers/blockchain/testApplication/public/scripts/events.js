@@ -15,13 +15,14 @@ class Events {
   requestBlocks() {
     var query = {
       type: "blocks",
+      queue: "seller_queue",
       params: {
         "noOfLastBlocks": "20"
       }
     };
     var self = this;
     $.ajax({
-      url: "http://localhost:3002/api/execute",
+      url: "http://localhost:3000/api/execute",
       type: "POST",
       data: JSON.stringify(query),
       dataType: 'json',
@@ -41,7 +42,7 @@ class Events {
   getResults(resultId, attemptNo, self) {
     if(attemptNo < 60) {
       //console.log("Attempt no " + attemptNo);
-      $.get("http://localhost:3002/api/results/" + resultId).done(function (data) {
+      $.get("http://localhost:3000/api/results/" + resultId).done(function (data) {
         data = typeof data !== "string" ? data : JSON.parse(data);
         //console.log(" Status  " + data.status);
         if(data.status === "done") {
