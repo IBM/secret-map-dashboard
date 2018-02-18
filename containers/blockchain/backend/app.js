@@ -42,7 +42,9 @@ const utils = require('./utils/util');
     });
     peer.clients.eventEmitter.on('block', block => {
       blockEvent.emit('block', JSON.stringify(block));
-      sendToIoTDashboard(JSON.stringify(block));
+      if(process.env.SENDTOIOT === "true") {
+        sendToIoTDashboard(JSON.stringify(block));
+      }
     });
   }
   for(var i = 0; i < peer.clients.workers.length; i++) {
