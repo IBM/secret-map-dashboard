@@ -1,6 +1,24 @@
 version: "3.1"
 
 services:
+
+  rabbit-client :
+    container_name: rabbit-client
+    image: rabbit-client
+    environment:
+    - SECRETSDIR=/host/run/secrets
+    ports:
+    - 3000:3000
+    volumes:
+    - /home/linux1/secret-map-dashboard/containers/blockchain/configuration/channel.tx:/host/run/secrets/channel
+    - /home/linux1/secret-map-dashboard/containers/blockchain/configuration/config.json:/host/run/secrets/config
+    depends_on:
+    - rabbitmq
+    - redis-server
+    # secrets:
+    #   - config
+    #   - channel
+
   rabbitmq1:
     container_name: rabbitmq1
     image: rabbitmq:3-management
