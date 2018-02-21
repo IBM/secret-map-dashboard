@@ -129,11 +129,11 @@ export async function createConnection(client) {
         ch.consume(q, function reply(msg) {
           var input = JSON.parse(msg.content.toString());
           var reply = (ch, msg, data) => {
-            ch.sendToQueue(msg.properties.replyTo, new Buffer("Execution completed"), {
+            /*ch.sendToQueue(msg.properties.replyTo, new Buffer("Execution completed"), {
               correlationId: msg.properties.correlationId,
               messageId: msg.properties.messageId,
               content_type: 'application/json'
-            });
+            });*/
             setValue(msg.properties.correlationId, data);
             ch.ack(msg);
           };
