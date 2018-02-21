@@ -93,21 +93,21 @@ async function execute(type, client, params) {
 export async function createConnection(client) {
   var expiry = process.env.MESSAGEEXPIRY || 300;
   amqp.connect(config.rabbitmq, function (err, conn) {
-    console.log("connected to the server");
     if(err) {
       console.log('connection failed', err);
       setTimeout(function () {
         console.log('now attempting reconnect ...');
         createConnection(client);
-      }, 5000);
+      }, 3000);
     } else {
+      console.log("connected to the server");
       conn.on('error', function () {
         console.log('Connection failed event');
         setTimeout(function () {
           console.log('now attempting reconnect ...');
           createConnection(client);
-        }, 5000);
-        conn.close();
+        }, 3000);
+        //conn.close();
       });
       conn.createChannel(function (err, ch) {
         var q = process.env.RABBITMQQUEUE || 'user_queue';

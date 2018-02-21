@@ -7,7 +7,7 @@ import config from './config';
 import {
   RabbitClient
 } from './channel';
-const amqp = require('amqplib/callback_api');
+//const amqp = require('amqplib/callback_api');
 var RedisClustr = require('redis-clustr');
 const rabbitClient = new RabbitClient(config);
 (async () => {
@@ -20,7 +20,7 @@ const rabbitClient = new RabbitClient(config);
     process.exit(-1);
   }
 })();
-export async function queueRequest(corrId, requestQueue, params, count) {
+export async function queueRequest(corrId, requestQueue, params) {
   params = typeof params !== "string" ? JSON.stringify(params) : params;
   console.log(' [x] Requesting %s', params);
   rabbitClient._channel.sendToQueue(requestQueue, new Buffer(params), {
