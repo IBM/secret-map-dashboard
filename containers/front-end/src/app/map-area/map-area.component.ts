@@ -13,6 +13,7 @@ export class MapAreaComponent implements OnInit {
 
   @Input() booths: Booth[];
   @Input() beacons: Beacon[];
+  @Input() eventName: string;
 
   /**
    * Constructor for the map-area component

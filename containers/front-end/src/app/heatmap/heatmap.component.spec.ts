@@ -53,8 +53,8 @@ describe('HeatmapComponent', () => {
       const colorYellow = [255, 255, 0];
       const colorRed = [255, 0, 0];
       const colorWhite = [255, 255, 255];
-      expect(increaseColor(colorGreen)).toEqual([15, 255, 0]);
-      expect(increaseColor(colorYellow)).toEqual([255, 240, 0]);
+      expect(increaseColor(colorGreen)).toEqual([85, 255, 0]);
+      expect(increaseColor(colorYellow)).toEqual([255, 170, 0]);
       expect(increaseColor(colorRed)).toEqual([255, 0, 0]);
       expect(increaseColor(colorWhite)).toEqual([0, 255, 0]);
     });
@@ -100,7 +100,7 @@ describe('HeatmapComponent', () => {
       component.changeGridCell(1, 1);
       expect(cell.style('fill')).toEqual('rgb(0, 255, 0)');
       component.changeGridCell(1, 1);
-      expect(cell.style('fill')).toEqual('rgb(15, 255, 0)');
+      expect(cell.style('fill')).toEqual('rgb(85, 255, 0)');
     });
 
     it('should check if n x m grid was created', () => {

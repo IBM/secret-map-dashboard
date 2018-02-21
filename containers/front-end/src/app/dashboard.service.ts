@@ -9,7 +9,8 @@ import {Conference} from './conference';
 @Injectable()
 export class DashboardService {
   // IP address where map api server is being served
-  readonly API_URL = 'http://169.46.74.117';
+  // readonly API_URL = 'http://169.46.74.117';
+  readonly API_URL = 'http://169.48.220.218';
 
   constructor(private http: HttpClient) { }
 

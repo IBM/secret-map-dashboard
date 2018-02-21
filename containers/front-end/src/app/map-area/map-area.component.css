@@ -1,21 +1,27 @@
 .eventBlock {
-  fill: rgb(219, 38, 99);
+  fill: #3064A5;
   stroke-width: 2px;
-  stroke: rgb(0,59,201);
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  stroke: rgb(50,50,50);
 }
 
 .beaconBlock {
   fill: rgb(255, 0, 0);
   stroke-width: 2px;
-  stroke: rgb(0,59,201);
+  stroke: rgb(255, 0, 0);
+}
+
+.radiusBlock {
+  fill: rgb(255, 0, 0);
+  stroke-width: 4px;
+  stroke: rgb(255, 0, 0);
+  opacity: 0.2;
 }
 
 .boothText{
-  fill: rgb(0,59,201);
-  stroke-width: 0;
-  stroke: rgb(0,59,201);
-  font-size: calc(0.30vw + 0.30vh + 0.30vmin);
+  fill: rgb(235,235,235);
+  stroke-width: 1px;
+  stroke: rgb(50,50,50);
+  font-size: calc(0.39vw + 0.39vh + 0.39vmin);
 }
 
 .mapArea {
@@ -29,7 +35,7 @@
   justify-content: center;
   z-index: 4;
   position: absolute;
-  opacity: 0.95;
+  opacity: 0.85;
 }
 
 .heatmapArea {

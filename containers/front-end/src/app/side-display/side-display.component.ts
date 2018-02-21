@@ -9,6 +9,7 @@ export class SideDisplayComponent implements OnInit {
   @Input() steps: number;
   @Input() calories: number;
   @Input() conferenceAttendees: number;
+  @Input() totalDistance: number;
 
   constructor() {
 

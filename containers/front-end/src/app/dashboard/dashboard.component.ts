@@ -16,6 +16,7 @@ export class DashboardComponent implements OnInit {
   steps: number;
   calories: number;
   conferenceAttendees: number;  // Will change to an array of Conference Attendees
+  totalDistance: number;
   sideDisplayInterval: any;
   MainDisplayInterval: any;
   conference: Conference;
@@ -38,6 +39,7 @@ export class DashboardComponent implements OnInit {
     this.steps = 0;
     this.calories = 0;
     this.conferenceAttendees = 0;  // initialization will change to getConferenceAttendees()
+    this.totalDistance = 0;
     this.getSideDisplayInfo();
     this.getConferenceAttendees();
     this.getConference();
@@ -58,10 +60,11 @@ export class DashboardComponent implements OnInit {
    */
   getSideDisplayInfo(): void {
     this.sideDisplayInterval = setInterval(() => {
-      this.steps += 10;
-      this.calories += 2;
+      this.steps += (4 * this.conferenceAttendees);
+      this.calories = Math.floor(this.steps / 20);
+      this.totalDistance = Math.floor(this.steps / 1320);
     }
-    , 2000);
+    , 1000);
   }
 
    /**
@@ -69,7 +72,9 @@ export class DashboardComponent implements OnInit {
    */
   getConferenceAttendees(): void {
     this.MainDisplayInterval = setInterval(() => {
-      this.conferenceAttendees += 4;
+      if(this.conferenceAttendees < 500){
+        this.conferenceAttendees += 1;
+      }
     }, 1000);
   }
 

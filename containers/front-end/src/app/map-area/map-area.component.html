@@ -1,12 +1,13 @@
-<svg class="mapArea" appMapArea [booths]="booths" [beacons]="beacons">
+<svg class="mapArea" appMapArea [booths]="booths" [beacons]="beacons" [eventName]="eventName">
 
-    <g *ngFor="let booth of booths">
+    <g *ngFor="let booth of booths;let i = index">
         <rect *ngIf="booth.shape['type'] === 'rectangle'"
           [attr.x]="booth.shape['x']"
           [attr.y]="booth.shape['y']"
           [attr.width]="booth.shape['width']"
           [attr.height]="booth.shape['height']"
           class="eventBlock"
+          [id]="'eventBlock' + i"
           name="rectangle">
         </rect>
 
@@ -15,6 +16,7 @@
           [attr.cy]="booth.shape['cy']"
           [attr.r]="booth.shape['radius']"
           class="eventBlock"
+          [id]="'eventBlock' + i"
           name="circle">
         </circle>
 
@@ -24,30 +26,44 @@
           [attr.rx]="booth.shape['rx']"
           [attr.ry]="booth.shape['ry']"
           class="eventBlock"
+          [id]="'eventBlock' + i"
           name="ellipse">
         </ellipse>
 
         <polygon *ngIf="booth.shape['type'] === 'polygon'"
           [attr.points]="booth.shape['points']"
           class="eventBlock"
+          [id]="'eventBlock' + i"
           name="polygon">
         </polygon>
     </g>
 
     <g>
-      <circle *ngFor="let beacon of beacons"
+      <circle *ngFor="let beacon of beacons; let i = index"
       [attr.cx]="beacon.x"
       [attr.cy]="beacon.y"
       [attr.r]= 4
-      class="beaconBlock">
+      class="beaconBlock"
+      [id]="'beaconBlock' + i">
       </circle>
     </g>
 
-    <g *ngFor="let booth of booths">
+    <g *ngFor="let booth of booths; let i = index">
       <text
-        class="boothText"> 
+        class="boothText"
+        [id]="'boothText' + i"> 
         {{booth.description}}
       </text>
+    </g>
+
+    <g>
+      <circle *ngFor="let beacon of beacons; let i = index"
+      [attr.cx]="beacon.x"
+      [attr.cy]="beacon.y"
+      [attr.r]= 250
+      class="radiusBlock"
+      [id]="'radiusBlock' + i">
+      </circle>
     </g>
 </svg>
 

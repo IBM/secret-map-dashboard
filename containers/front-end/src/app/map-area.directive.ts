@@ -1,6 +1,7 @@
-import { Directive, Input, ElementRef, AfterViewChecked, HostListener, OnInit} from '@angular/core';
+import { Directive, Input, ElementRef, AfterViewChecked, HostListener} from '@angular/core';
 import { forEach } from '@angular/router/src/utils/collection';
 import { interceptingHandler } from '@angular/common/http/src/module';
+import * as d3 from 'd3';
 // Objects
 import { Booth, Beacon} from './conferenceItems';
 @Directive({
@@ -10,6 +11,7 @@ export class MapAreaDirective implements AfterViewChecked {
 
   @Input() booths: Booth[];
   @Input() beacons: Beacon[];
+  @Input() eventName: string;
   heightRatio: number;
   widthRatio: number;
 
@@ -21,64 +23,55 @@ export class MapAreaDirective implements AfterViewChecked {
    * @param - none
    */
   ngAfterViewChecked() {
-    this.changeEventBlockSize(this.el.nativeElement);
-    this.changeBeaconBlockSize(this.el.nativeElement);
-    this.changeBoothTextSize(this.el.nativeElement);
+    this.changeEventBlockSize();
+    this.changeBeaconBlockSize();
+    this.changeBoothTextSize();
+    this.changeRadiusBlockSize();
   }
 
    /**
    * Changes booth blocks in proporation to the window size
    * @param parent - HTML Element
    */
-  changeEventBlockSize(parent: HTMLElement) {
-    if (!parent) {
+  changeEventBlockSize() {
+    const mapArea = d3.select('.mapArea');
+    const ratio = this.eventName === 'Index' ? 25 : 50;
+    if (mapArea.size() ===  0) {
       return;
     }
+    const eventBlocks = mapArea.selectAll('.eventBlock');
+    this.widthRatio = Math.floor(mapArea.property('clientWidth')) / ratio;
+    this.heightRatio = Math.floor(mapArea.property('clientHeight')) / ratio;
 
-    const children = parent.getElementsByClassName('eventBlock');
-
-    if (children.length === 0) {
-      return;
-    }
-
-    this.heightRatio = parent.getBoundingClientRect().height / 50; // 25 is the height dimension reference in mongodb
-    this.widthRatio =  parent.getBoundingClientRect().width / 50; //  25 is the width dimenstion  reference in mongodb
-
-    let counter  = 0;
-
-    const eventBlocks = Array.from(children).map(eventBlock => eventBlock.attributes);
-
-    Array.from(eventBlocks)
-    .map(eventBlock => {
-      if (eventBlock.getNamedItem('name').value === 'circle') {
-        eventBlock.setNamedItem(this.updateAttributes('cx', this.booths[counter].shape['cx'] * this.widthRatio));
-        eventBlock.setNamedItem(this.updateAttributes('cy', this.booths[counter].shape['cy'] * this.heightRatio));
-        eventBlock.setNamedItem(this.updateAttributes('r', this.booths[counter].shape['radius']
-          * ( (this.widthRatio + this.heightRatio) / 4)));
-      } else if (eventBlock.getNamedItem('name').value === 'ellipse') {
-        eventBlock.setNamedItem(this.updateAttributes('cx', this.booths[counter].shape['cx'] * this.widthRatio));
-        eventBlock.setNamedItem(this.updateAttributes('cy', this.booths[counter].shape['cy'] * this.heightRatio));
-        eventBlock.setNamedItem(this.updateAttributes('rx', this.booths[counter].shape['rx'] * this.widthRatio));
-        eventBlock.setNamedItem(this.updateAttributes('ry', this.booths[counter].shape['ry'] * this.heightRatio));
-      } else if (eventBlock.getNamedItem('name').value === 'polygon') {
-        const integers = this.booths[counter].shape['points'].split(/[\s,]+/);
+    eventBlocks.each((d, i) => {
+      const eventBlock = d3.select(`#eventBlock${i}`);
+      const index = i;
+      if (eventBlock.attr('name') === 'circle') {
+        eventBlock.attr('cx', this.booths[index].shape['cx'] * this.widthRatio);
+        eventBlock.attr('cy', this.booths[index].shape['cy'] * this.heightRatio);
+        eventBlock.attr('r', this.booths[index].shape['radius'] * ((this.widthRatio + this.heightRatio) / 4));
+      } else if (eventBlock.attr('name') === 'ellipse') {
+        eventBlock.attr('cx', this.booths[index].shape['cx'] * this.widthRatio);
+        eventBlock.attr('cy', this.booths[index].shape['cy'] * this.heightRatio);
+        eventBlock.attr('rx', this.booths[index].shape['rx'] * this.widthRatio);
+        eventBlock.attr('ry', this.booths[index].shape['ry'] * this.heightRatio);
+      } else if (eventBlock.attr('name') === 'polygon') {
+        const points = this.booths[index].shape['points'].split(/[\s,]+/);
         let scaledPoints = '';
-        let i;
-        for (i in integers) {
-          if ( i % 2 === 0) {
-            scaledPoints += integers[i] * this.widthRatio + ',';
+        for (let index = 0; index < points.length; index++) {
+          if ( index % 2 === 0) {
+            scaledPoints += points[index] * this.widthRatio + ',';
           } else {
-            scaledPoints += integers[i] * this.heightRatio + ' ';
+            scaledPoints += points[index] * this.heightRatio + ' ';
           }
         }
-        eventBlock.setNamedItem(this.updateAttributes('points', scaledPoints));
+        eventBlock.attr('points', scaledPoints);
       } else {
-        eventBlock.setNamedItem(this.updateAttributes('width', this.booths[counter].shape['width'] * this.widthRatio));
-        eventBlock.setNamedItem(this.updateAttributes('height', this.booths[counter].shape['height'] * this.heightRatio));
-        eventBlock.setNamedItem(this.updateAttributes('x', this.booths[counter].shape['x'] * this.widthRatio));
-        eventBlock.setNamedItem(this.updateAttributes('y', this.booths[counter].shape['y'] * this.heightRatio));
+        eventBlock.attr('width', this.booths[index].shape['width'] * this.widthRatio);
+        eventBlock.attr('height', this.booths[index].shape['height'] * this.heightRatio);
+        eventBlock.attr('x', this.booths[index].shape['x'] * this.widthRatio);
+        eventBlock.attr('y', this.booths[index].shape['y'] * this.heightRatio);
       }
-      counter += 1;
     });
   }
 
@@ -86,29 +79,44 @@ export class MapAreaDirective implements AfterViewChecked {
    * Changes Beacon location in proporation to the window size
    * @param parent - HTML Element
    */
-  changeBeaconBlockSize(parent: HTMLElement) {
-    if (!parent) {
+  changeBeaconBlockSize() {
+    const mapArea = d3.select('.mapArea');
+    const ratio = this.eventName === 'Index' ? 25 : 50;
+    if (mapArea.size() ===  0) {
       return;
     }
+    const beaconBlocks = mapArea.selectAll('.beaconBlock');
+    this.widthRatio = Math.floor(mapArea.property('clientWidth')) / ratio;
+    this.heightRatio = Math.floor(mapArea.property('clientHeight')) / ratio;
 
-    const children = parent.getElementsByClassName('beaconBlock');
+    beaconBlocks.each((d, i) => {
+      const beaconBlock = d3.select(`#beaconBlock${i}`);
+      const index = i;
+      beaconBlock.attr('cy', this.beacons[index].y * this.heightRatio);
+      beaconBlock.attr('cx', this.beacons[index].x * this.widthRatio);
+    });
+  }
 
-    if (children.length === 0) {
+
+     /**
+   * Changes Beacon location in proporation to the window size
+   * @param parent - HTML Element
+   */
+  changeRadiusBlockSize() {
+    const mapArea = d3.select('.mapArea');
+    const ratio = this.eventName === 'Index' ? 25 : 50;
+    if (mapArea.size() ===  0) {
       return;
     }
+    const radiusBlocks = mapArea.selectAll('.radiusBlock');
+    this.widthRatio = Math.floor(mapArea.property('clientWidth')) / ratio;
+    this.heightRatio = Math.floor(mapArea.property('clientHeight')) / ratio;
 
-    this.heightRatio = parent.getBoundingClientRect().height / 25; // 25 is the height dimension reference in mongodb
-    this.widthRatio =  parent.getBoundingClientRect().width / 25; //  25 is the width dimenstion  reference in mongodb
-
-    let counter = 0;
-
-    const beaconsBlocks = Array.from(children).map(beaconBlock => beaconBlock.attributes);
-
-    Array.from(beaconsBlocks)
-    .map(beaconsBlock => {
-      beaconsBlock.setNamedItem(this.updateAttributes('cy', this.beacons[counter].y * this.heightRatio));
-      beaconsBlock.setNamedItem(this.updateAttributes('cx', this.beacons[counter].x * this.widthRatio));
-      counter += 1;
+    radiusBlocks.each((d, i) => {
+      const radiusBlock = d3.select(`#radiusBlock${i}`);
+      const index = i;
+      radiusBlock.attr('cy', this.beacons[index].y * this.heightRatio);
+      radiusBlock.attr('cx', this.beacons[index].x * this.widthRatio);
     });
   }
 
@@ -116,56 +124,45 @@ export class MapAreaDirective implements AfterViewChecked {
    * Centers booth description
    * @param parent - HTML Element
    */
-  changeBoothTextSize(parent: HTMLElement) {
-    if (!parent) {
+  changeBoothTextSize() {
+    const mapArea = d3.select('.mapArea');
+    if (mapArea.size() ===  0) {
       return;
     }
-
-    const boothTexts = parent.getElementsByClassName('boothText');
-    const eventBlocks = parent.getElementsByClassName('eventBlock');
-
-    if (boothTexts.length === 0 || eventBlocks.length === 0) {
+    const boothTexts = mapArea.selectAll('.boothText');
+    const eventBlocks = mapArea.selectAll('.eventBlock');
+    if (boothTexts.size() === 0 || eventBlocks.size() === 0) {
       return;
     }
-
-    this.heightRatio = parent.getBoundingClientRect().height / 50; // 25 is the height dimension reference in mongodb
-    this.widthRatio =  parent.getBoundingClientRect().width / 50; //  25 is the width dimenstion  reference in mongodb
-
-    let counter  = 0;
     let centerEventBlockHeight = 0;
     let centerEventBlockWidth = 0;
 
-    Array.from(boothTexts)
-    .map(boothText => {
-      if ( eventBlocks[counter].attributes.getNamedItem('name').value === 'circle' ) {
-        centerEventBlockHeight = Number(eventBlocks[counter].attributes.getNamedItem('cy').value) +
-          Number(eventBlocks[counter].attributes.getNamedItem('r').value) / 2;
-        centerEventBlockWidth = Number(eventBlocks[counter].attributes.getNamedItem('cx').value) +
-          Number(eventBlocks[counter].attributes.getNamedItem('r').value) / 2 ;
-        boothText.attributes.setNamedItem(this.updateAttributes('x', centerEventBlockWidth - boothText.getBoundingClientRect().width / 2 ));
-        boothText.attributes.setNamedItem(this.updateAttributes('y', centerEventBlockHeight));
-      } else if ( eventBlocks[counter].attributes.getNamedItem('name').value === 'ellipse' ) {
-        centerEventBlockHeight = Number(eventBlocks[counter].attributes.getNamedItem('cy').value) +
-          Number(eventBlocks[counter].attributes.getNamedItem('ry').value) / 2;
-        centerEventBlockWidth = Number(eventBlocks[counter].attributes.getNamedItem('cx').value) +
-          Number(eventBlocks[counter].attributes.getNamedItem('rx').value) / 2 ;
-        boothText.attributes.setNamedItem(this.updateAttributes('x', centerEventBlockWidth - boothText.getBoundingClientRect().width ));
-        boothText.attributes.setNamedItem(this.updateAttributes('y', centerEventBlockHeight));
-      } else if ( eventBlocks[counter].attributes.getNamedItem('name').value === 'polygon' ) {
-        centerEventBlockHeight = eventBlocks[counter].getBoundingClientRect().top ;
-        centerEventBlockWidth = eventBlocks[counter].getBoundingClientRect().left + eventBlocks[counter].getBoundingClientRect().width / 2;
-        boothText.attributes.setNamedItem(this.updateAttributes('x', centerEventBlockWidth ));
-        boothText.attributes.setNamedItem(this.updateAttributes('y', centerEventBlockHeight ));
+    for (let i = 0; i < boothTexts.size(); i++ ) {
+      const boothText = d3.select(`#boothText${ i }`);
+      const eventBlock = d3.select(`#eventBlock${ i }`);
+      if (eventBlock.attr('name') === 'circle' ) {
+        centerEventBlockHeight = Number(eventBlock.attr('cy')) + Number(eventBlock.attr('r')) / 2;
+        centerEventBlockWidth = Number(eventBlock.attr('cx')) + Number(eventBlock.attr('r')) / 2 ;
+        boothText.attr('x', centerEventBlockWidth -  boothTexts['_groups'][0][i].getBoundingClientRect().width / 2);
+        boothText.attr('y', centerEventBlockHeight);
+      } else if ( eventBlock.attr('name') === 'ellipse' ) {
+        centerEventBlockHeight = Number(eventBlock.attr('cy')) + Number(eventBlock.attr('ry')) / 2;
+        centerEventBlockWidth = Number(eventBlock.attr('cx')) + Number(eventBlock.attr('rx')) / 2 ;
+        boothText.attr('x', centerEventBlockWidth - boothTexts['_groups'][0][i].getBoundingClientRect().width);
+        boothText.attr('y', centerEventBlockHeight);
+      } else if ( eventBlock.attr('name') === 'polygon' ) {
+        centerEventBlockHeight = eventBlocks['_groups'][0][i].getBoundingClientRect().top;
+        centerEventBlockWidth = eventBlocks['_groups'][0][i].getBoundingClientRect().left +
+        eventBlocks['_groups'][0][i].getBoundingClientRect().width / 2;
+        boothText.attr('x', centerEventBlockWidth );
+        boothText.attr('y', centerEventBlockHeight );
       } else {
-        centerEventBlockHeight = Number(eventBlocks[counter].attributes.getNamedItem('y').value) +
-          Number(eventBlocks[counter].attributes.getNamedItem('height').value) / 2;
-        centerEventBlockWidth = Number(eventBlocks[counter].attributes.getNamedItem('x').value) +
-          Number(eventBlocks[counter].attributes.getNamedItem('width').value) / 2 ;
-        boothText.attributes.setNamedItem(this.updateAttributes('x', centerEventBlockWidth - boothText.getBoundingClientRect().width / 2 ));
-        boothText.attributes.setNamedItem(this.updateAttributes('y', centerEventBlockHeight));
+        centerEventBlockHeight = Number(eventBlock.attr('y')) + Number(eventBlock.attr('height')) / 2;
+        centerEventBlockWidth = Number(eventBlock.attr('x')) + Number(eventBlock.attr('width')) / 2 ;
+        boothText.attr('x', centerEventBlockWidth - boothTexts['_groups'][0][i].getBoundingClientRect().width / 2 );
+        boothText.attr('y', centerEventBlockHeight);
       }
-      counter += 1;
-    });
+    }
   }
 
    /**
@@ -174,20 +171,10 @@ export class MapAreaDirective implements AfterViewChecked {
    */
   @HostListener('window:resize')
   onResize() {
-    this.changeEventBlockSize(this.el.nativeElement);
-    this.changeBeaconBlockSize(this.el.nativeElement);
-    this.changeBoothTextSize(this.el.nativeElement);
-  }
-
-   /**
-   * Centers booth description
-   * @param attribute - attribute name that will change value
-   * @param attributeValue - value that you wish to change the attribute to
-   */
-  updateAttributes(attributeName: string, attributeValue: any ): Attr {
-    const attr = document.createAttribute(attributeName);
-    attr.value = String(attributeValue);
-    return attr;
+    this.changeEventBlockSize();
+    this.changeBeaconBlockSize();
+    this.changeBoothTextSize();
+    this.changeRadiusBlockSize();
   }
 
 }

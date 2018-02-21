@@ -3,8 +3,9 @@
   height: 15%;
   display: flex;
   flex-direction: column;
-  border-bottom: 0.3vh rgb(0, 100, 255) solid;
+  border-bottom: 0.3vh rgb(0, 0, 0) solid;
 }
+
 .mainDisplayMapContainer{
   margin: auto;
   height: 85%;
@@ -20,7 +21,7 @@
   margin-left: 2em;
   display: flex;
   flex-direction: row;
-  color: rgb(219, 38, 99);
+  color: rgb(0, 0, 0);
   font-size: calc(1vw + 1vh + 1vmin);
 }
 
