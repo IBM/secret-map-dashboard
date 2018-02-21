@@ -7,53 +7,69 @@ export class RabbitClient {
     this._queue = null;
   }
   async configureClient() {
-    console.log("connecting to rabbit server : " + this._config.rabbitmq);
     var self = this;
-    this._connection = await new Promise(function (resolve, reject) {
-      amqp.connect(self._config.rabbitmq, function (err, conn) {
-        if(err) {
-          console.log("Error in connecting rabbit queueserver");
-          reject(err);
-        } else {
-          console.log("printing Connection in func");
-          resolve(conn);
-        }
+    try {
+      //console.log("connecting to rabbit server : " + this._config.rabbitmq);
+      self._connection = await new Promise(function (resolve, reject) {
+        amqp.connect(self._config.rabbitmq, function (err, conn) {
+          if(err) {
+            console.log("Error in connecting rabbit queueserver");
+            reject(err);
+          } else {
+            resolve(conn);
+          }
+        });
       });
-    });
-    this._connection.on('error', function () {
-      console.log('Connection failed');
-      self.stop();
-      self.configureClient();
-    });
-    this._channel = await new Promise(function (resolve, reject) {
-      self._connection.createChannel(function (err, ch) {
-        if(err) {
-          console.log("Error in creating rabbit channel");
-          reject(err);
-        } else {
-          resolve(ch);
-        }
+      self._connection.on('error', function () {
+        console.log('Connection failed');
+        self.stop().then(function () {
+          self._connection = null;
+          return self.configureClient();
+        }).then(function () {
+          console.log('Channel reconfigured');
+        }).catch(err => {
+          console.log(err);
+        });
       });
-    });
-    this._queue = await new Promise(function (resolve, reject) {
-      self._channel.assertQueue('', {
-        exclusive: true
-      }, function (err, q) {
-        if(err) {
-          console.log("Error in creating queue");
-          reject(err);
-        } else {
-          resolve(q);
-        }
+      self._channel = await new Promise(function (resolve, reject) {
+        self._connection.createChannel(function (err, ch) {
+          if(err) {
+            console.log("Error in creating rabbit channel");
+            reject(err);
+          } else {
+            resolve(ch);
+          }
+        });
       });
-    });
+      self._queue = await new Promise(function (resolve, reject) {
+        self._channel.assertQueue('', {
+          exclusive: true
+        }, function (err, q) {
+          if(err) {
+            console.log("Error in creating queue");
+            reject(err);
+          } else {
+            resolve(q);
+          }
+        });
+      });
+    } catch(err) {
+      console.log("Error in channel setup");
+      console.log(err.message);
+      await self.configureClient();
+    }
   }
   async stop() {
-    console.log('stop');
-    if(this._channel) {
-      return await this._channel.close();
-    } else {
-      console.warn('stopping but channel was not opened');
+    //console.log('stop');
+    try {
+      if(this._channel) {
+        return await this._channel.close();
+      } else {
+        //console.warn('stopping but channel was not opened');
+        return Promise.resolve();
+      }
+    } catch(e) {
+      console.log("Error in closing channel");
     }
   }
 }
