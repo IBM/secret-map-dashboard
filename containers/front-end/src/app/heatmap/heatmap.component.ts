@@ -8,12 +8,11 @@ import {setInterval} from 'timers';
 })
 export class HeatmapComponent implements OnInit {
 
-  private HEATMAP_INTERVAL = 1000;
+  private HEATMAP_INTERVAL = 1100;
   private DEGRADED_INTERVAL = 2000;
   private HEATMAP_ROWS = 35;
   private HEATMAP_COLUMNS = 60;
   private degradedCells: Array<object>;
-  readonly COLOR_TRANSITION = 1000;
 
   constructor() {
     this.degradedCells = [];
@@ -70,8 +69,7 @@ export class HeatmapComponent implements OnInit {
     } else {
       colorValue = increaseColor(rgbArray);
     }
-    cell.transition().duration(this.COLOR_TRANSITION)
-    .style('fill', String(d3.rgb(colorValue[0], colorValue[1], colorValue[2])));
+    cell.style('fill', String(d3.rgb(colorValue[0], colorValue[1], colorValue[2])));
   }
 
   /**

@@ -91,7 +91,6 @@ describe('HeatmapComponent', () => {
   });
 
   describe('#componentFunctions', () => {
-
     it('should return an array of grid coordinates', () => {
       let rows = 1;
       let columns = 1;
@@ -109,13 +108,9 @@ describe('HeatmapComponent', () => {
     it('should change grid cell\'s color', () => {
       const cell = d3.select('.heatmap').select('.gridCell1-1');
       component.changeGridCell(1, 1, false);
-      setTimeout(() => {
-        expect(cell.style('fill')).toEqual('rgb(0, 255, 0)');
-      }, component.COLOR_TRANSITION);
+      expect(cell.style('fill')).toEqual('rgb(0, 255, 0)');
       component.changeGridCell(1, 1, false);
-      setTimeout(() => {
-        expect(cell.style('fill')).toEqual('rgb(85, 255, 0)');
-      }, component.COLOR_TRANSITION);
+      expect(cell.style('fill')).toEqual('rgb(85, 255, 0)');
     });
 
     it('should check if n x m grid was created', () => {
