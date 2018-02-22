@@ -52,14 +52,14 @@ const utils = require('./utils/util');
   }
   // pass params to iot dashboard
   function sendToIoTDashboard(data) {
-    var options = {
-      method: 'GET',
-      uri: config.iotDashUrl + data
-    };
-    request(options, function (error, response, body) {
+    var url = config.iotDashUrl + data;
+    request.get(url).on('error', function (err) {
+      console.log(err);
+    });
+    /*request(options, function (error, response, body) {
       console.log('error:', error); // null if no error occurs, else print error
       console.log('statusCode:', response && response.statusCode); // print the response status code
       console.log('body:', body); // print the output body on console
-    });
+    });*/
   }
 })();

@@ -40,7 +40,7 @@ services:
     hostname: rabbitmq
     image: haproxy:1.7
     volumes:
-      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - ./rabbitServerClusterHAProxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
     depends_on:
       - rabbitmq1
       - rabbitmq2
@@ -59,7 +59,7 @@ services:
      hostname: redis-server
      image: redis-server
      ports:
-       - '7000-7007:7000-7007'
+       - '7000-7005:7000-7005'
 
   shop-ca:
     container_name: shop-ca
@@ -261,19 +261,66 @@ services:
       - config
       - channel
 
-  rabbit-client :
-    container_name: rabbit-client
+  rabbitclient1 :
+    container_name: rabbitclient1
     image: rabbit-client
+    hostname: rabbitclient1
     environment:
     - SECRETSDIR=/run/secrets
+    - PORT=3000
     ports:
-    - 3000:3000
+    - 3001:3000
     depends_on:
-    - rabbitmq
     - redis-server
+    - rabbitmq
     secrets:
       - config
       - channel
+
+  rabbitclient2 :
+    container_name: rabbitclient2
+    image: rabbit-client
+    hostname: rabbitclient2
+    environment:
+    - SECRETSDIR=/run/secrets
+    - PORT=3000
+    ports:
+    - 3002:3000
+    depends_on:
+    - redis-server
+    - rabbitmq
+    secrets:
+      - config
+      - channel
+
+  rabbitclient3 :
+    container_name: rabbitclient3
+    image: rabbit-client
+    hostname: rabbitclient3
+    environment:
+    - SECRETSDIR=/run/secrets
+    - PORT=3000
+    ports:
+    - 3003:3000
+    depends_on:
+    - redis-server
+    - rabbitmq
+    secrets:
+      - config
+      - channel
+
+  rabbitclient:
+    container_name: rabbitclient
+    hostname: rabbitclient
+    image: haproxy:1.7
+    volumes:
+      - ./rabbitClientHAProxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    depends_on:
+      - rabbitclient1
+      - rabbitclient2
+      - rabbitclient3
+    ports:
+      - 3000:3000
 
 secrets:
   config:
