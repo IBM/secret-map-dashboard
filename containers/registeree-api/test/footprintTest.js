@@ -2,10 +2,9 @@ process.env.UNIT_TEST = "test";
 
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const server = require('../app');
-const should = chai.should();
-
-const Footprint = require('../models/registeree');
+// const server = require('../app');
+// const should = chai.should();
+// const Footprint = require('../models/registeree');
 
 chai.use(chaiHttp);
 //Our parent block

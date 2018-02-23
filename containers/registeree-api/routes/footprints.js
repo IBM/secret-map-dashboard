@@ -15,15 +15,13 @@ router.get("/:footprintId", function(req, res) {
 router.post("/add", function(req, res) {
   // JSON in req.body
   // Insert input validation
-  let addFootprint = new Footprints(req.body);
   res.send("Saved Footprint.");
 });
 
 router.post("/remove/:footprintId", function(req, res) {
-    // JSON in req.body
-    // Insert input validation
-    let removeFootprint = new Footprints(req.body);
-    res.send("Removed Footprint.");
+  // JSON in req.body
+  // Insert input validation
+  res.send("Removed Footprint.");
 });
 
 module.exports = router;

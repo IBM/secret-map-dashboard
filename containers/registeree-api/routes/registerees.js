@@ -23,7 +23,6 @@ router.get("/totalSteps", function(req, res) {
 router.post("/add", function(req, res) {
   // JSON in req.body
   // Insert input validation
-  let addRegisteree = new Registerees(req.body);
   res.send("Saved Registeree.");
 });
 
