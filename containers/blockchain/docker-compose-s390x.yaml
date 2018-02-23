@@ -1,24 +1,6 @@
 version: "3.1"
 
 services:
-
-  rabbit-client :
-    container_name: rabbit-client
-    image: rabbit-client
-    environment:
-    - SECRETSDIR=/host/run/secrets
-    ports:
-    - 3000:3000
-    volumes:
-    - /home/linux1/secret-map-dashboard/containers/blockchain/configuration/channel.tx:/host/run/secrets/channel
-    - /home/linux1/secret-map-dashboard/containers/blockchain/configuration/config.json:/host/run/secrets/config
-    depends_on:
-    - rabbitmq
-    - redis-server
-    # secrets:
-    #   - config
-    #   - channel
-
   rabbitmq1:
     container_name: rabbitmq1
     image: rabbitmq:3-management
@@ -58,7 +40,7 @@ services:
     hostname: rabbitmq
     image: haproxy:1.7
     volumes:
-      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - ./rabbitServerClusterHAProxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
     depends_on:
       - rabbitmq1
       - rabbitmq2
@@ -71,7 +53,7 @@ services:
     hostname: redis-server
     image: redis-server
     ports:
-      - '7000-7007:7000-7007'
+      - '7000-7005:7000-7005'
 
   shop-ca:
     container_name: shop-ca
@@ -284,6 +266,78 @@ services:
     - blockchain-setup
     - rabbitmq
     - redis-server
+    # secrets:
+    #   - config
+    #   - channel
+
+  rabbitclient1 :
+    container_name: rabbitclient1
+    image: rabbit-client
+    hostname: rabbitclient1
+    environment:
+    - SECRETSDIR=/host/run/secrets
+    - PORT=3000
+    ports:
+    - 3001:3000
+    volumes:
+    - /home/linux1/secret-map-dashboard/containers/blockchain/configuration/channel.tx:/host/run/secrets/channel
+    - /home/linux1/secret-map-dashboard/containers/blockchain/configuration/config.json:/host/run/secrets/config
+    depends_on:
+    - redis-server
+    - rabbitmq
+    # secrets:
+    #   - config
+    #   - channel
+
+  rabbitclient2 :
+    container_name: rabbitclient2
+    image: rabbit-client
+    hostname: rabbitclient2
+    environment:
+    - SECRETSDIR=/host/run/secrets
+    - PORT=3000
+    ports:
+    - 3002:3000
+    volumes:
+    - /home/linux1/secret-map-dashboard/containers/blockchain/configuration/channel.tx:/host/run/secrets/channel
+    - /home/linux1/secret-map-dashboard/containers/blockchain/configuration/config.json:/host/run/secrets/config
+    depends_on:
+    - redis-server
+    - rabbitmq
+    # secrets:
+    #   - config
+    #   - channel
+
+  rabbitclient3 :
+    container_name: rabbitclient3
+    image: rabbit-client
+    hostname: rabbitclient3
+    environment:
+    - SECRETSDIR=/host/run/secrets
+    - PORT=3000
+    ports:
+    - 3003:3000
+    volumes:
+    - /home/linux1/secret-map-dashboard/containers/blockchain/configuration/channel.tx:/host/run/secrets/channel
+    - /home/linux1/secret-map-dashboard/containers/blockchain/configuration/config.json:/host/run/secrets/config
+    depends_on:
+    - redis-server
+    - rabbitmq
+    # secrets:
+    #   - config
+    #   - channel
+
+  rabbitclient :
+    container_name: rabbitclient
+    image: haproxy:1.7
+    volumes:
+      - ./rabbitClientHAProxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    ports:
+    - 3000:3000
+    depends_on:
+    - rabbitclient1
+    - rabbitclient2
+    - rabbitclient3
     # secrets:
     #   - config
     #   - channel
