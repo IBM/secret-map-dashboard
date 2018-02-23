@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const Footprints = require("../models/footprint");
+// const Footprints = require("../models/footprint");
 
 // endpoints for booth
 router.get("/", function(req, res) {

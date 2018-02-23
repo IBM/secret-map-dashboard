@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const Registerees = require("../models/registeree");
+// const Registerees = require("../models/registeree");
 
 // endpoints for booth
 router.get("/", function(req, res) {
