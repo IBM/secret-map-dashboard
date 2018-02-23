@@ -132,10 +132,15 @@ describe('HeatmapComponent', () => {
         component.colorHeatMap();
       }
       expect(component.getDegradedCellsSize()).toEqual(runSize);
-      for (let y = 0; y < runSize; y++ ) {
-        component.changeDegradedCell();
+      component.changeDegradedCell();
+      expect(component.getDegradedCellsSize()).toEqual(10);
+      const runSize2 = 500;
+      for (let x = 0; x < runSize2; x++ ) {
+        component.colorHeatMap();
       }
-      expect(component.getDegradedCellsSize()).toEqual(0);
+      component.changeDegradedCell();
+      expect(component.getDegradedCellsSize()).toEqual((runSize2+runSize)-1);
+
     });
 
   });

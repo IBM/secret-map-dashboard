@@ -8,8 +8,8 @@ import {setInterval} from 'timers';
 })
 export class HeatmapComponent implements OnInit {
 
-  private HEATMAP_INTERVAL = 1100;
-  private DEGRADED_INTERVAL = 2000;
+  private HEATMAP_INTERVAL = 100;
+  private DEGRADED_INTERVAL = 100;
   private HEATMAP_ROWS = 35;
   private HEATMAP_COLUMNS = 60;
   private degradedCells: Array<object>;
@@ -100,9 +100,11 @@ export class HeatmapComponent implements OnInit {
    * Creates a random step and colors grid cell every second
    */
   public changeDegradedCell(): void {
-    const step = this.retrieveDegradedCell();
-    if (step) {
-      this.changeGridCell(step['x'], step['y'], true);
+    if(this.getDegradedCellsSize() > 500){
+      const step = this.retrieveDegradedCell();
+      if (step) {
+        this.changeGridCell(step['x'], step['y'], true);
+      }
     }
   }
 
