@@ -38,7 +38,7 @@ app.use(function (err, req, res) {
     }
   });
 });
-const port = process.env.PORT || process.env.VCAP_APP_PORT || 3000;
+const port = process.env.PORT || process.env.VCAP_APP_PORT || 3005;
 app.listen(port, function () {
   console.log('Server running on port: %d', port);
 });
