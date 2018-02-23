@@ -1,6 +1,8 @@
 ## Application Setup
 
-* Install maven and mongodb on system.
+* Install **maven** and **mongodb** on system.
+* Verify the **executionURL**, **resultURL** urls from **ExecutionApp.java** and **ResultGenerator.java**.
+* Make your are connecting to correct **mongodb** instance.
 * Open terminal and run the following commands to setup the project
 ```bash
 mvn compile
@@ -13,5 +15,4 @@ mvn exec:java -Dexec.mainClass="secretApp.testApp.ExecutionApp"
 ```bash
 mvn exec:java -Dexec.mainClass="secretApp.testApp.ResultGenerator"
 ```
-
 >Note: To view the results you can download robomongo/ Robo 3T

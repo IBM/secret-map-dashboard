@@ -67,7 +67,7 @@ public class ExecutionApp {
 		try {
 			mongo = new MongoClient("localhost", 27017);
 			DB database = mongo.getDB("testResults");
-			DBCollection collection = Task.getDBCollection(database, "userDB");
+			DBCollection collection = Task.getDBCollection(database, "users");
 			DBCursor cursor = collection.find();
 			while (cursor.hasNext()) {
 				users.add(cursor.next());

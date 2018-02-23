@@ -100,6 +100,17 @@ creating server queue connection seller_queue
  [x] Awaiting RPC requests
 ```
 
+**Scale the fictoin-backend**
+
+To scale the fitcoin-backend use the following command:
+```bash
+docker-compose -p "fitcoin" up -d --scale fitcoin-backend=<No of conatiners>
+```
+
+**To run the load test application**
+
+Check the instructions from [start.md](https://github.com/IBM/secret-map-dashboard/blob/master/containers/blockchain/cliLoadTester/start.md)
+
 **To view the Blockchain Events**
 
 In a separate terminal navigate to testApplication folder and run the following command:
