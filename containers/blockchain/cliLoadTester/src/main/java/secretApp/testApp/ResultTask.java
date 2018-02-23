@@ -29,7 +29,7 @@ public class ResultTask extends Task {
 		MongoClient mongo;
 		try {
 			mongo = new MongoClient("localhost", 27017);
-			DB database = mongo.getDB("testResults1");
+			DB database = mongo.getDB("testResults");
 			DBCollection collection = Task.getDBCollection(database, "results");
 			DBCursor cursor = collection.find();
 			List<DBObject> removelist = new ArrayList<>();

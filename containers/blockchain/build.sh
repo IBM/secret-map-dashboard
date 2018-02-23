@@ -6,7 +6,7 @@ sh ./docker-images.sh
 docker-compose -p "fitcoin" up -d blockchain-setup
 sleep 30s
 docker-compose -p "fitcoin" up -d rabbitmq
-sleep 30s
+sleep 50s
 docker exec rabbitmq1 /bin/sh -c "rabbitmqctl set_policy ha-all '.' \"{'ha-mode':'all','ha-sync-mode':'automatic'}\""
 sleep 10s
 docker-compose -p "fitcoin" up -d --scale fitcoin-backend=3
