@@ -14,12 +14,10 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
-/**
- *
- *
- */
 public class ExecutionApp {
 	private static String executionURL = "http://localhost:3000/api/execute";
+	private static String dbName = "testResults";
+	private static int count = 0;
 
 	public static void main(String[] args) {
 		try {
@@ -38,12 +36,15 @@ public class ExecutionApp {
 					switch (number) {
 					case 1:
 						enrollUsers(scan, executorService);
+						System.out.println("Total number of request : " + count);
 						break;
 					case 2:
 						performInvokeOpertion(scan, executorService);
+						System.out.println("Total number of request : " + count);
 						break;
 					case 3:
 						performQueryOpertion(scan, executorService);
+						System.out.println("Total number of request : " + count);
 						break;
 					default:
 						break;
@@ -66,7 +67,7 @@ public class ExecutionApp {
 		MongoClient mongo;
 		try {
 			mongo = new MongoClient("localhost", 27017);
-			DB database = mongo.getDB("testResults");
+			DB database = mongo.getDB(dbName);
 			DBCollection collection = Task.getDBCollection(database, "users");
 			DBCursor cursor = collection.find();
 			while (cursor.hasNext()) {
@@ -82,11 +83,12 @@ public class ExecutionApp {
 	private static void performQueryOpertion(Scanner scan, ExecutorService executorService) {
 		List<DBObject> users = getUserObjects();
 		for (DBObject dbObject : users) {
+			count++;
 			String userId = dbObject.get("user").toString();
 			String query = "type=query&queue=user_queue&params={\"userId\":\"" + userId
 					+ "\" , \"fcn\":\"getState\" ,\"args\":[\"" + userId + "\"]}";
-			System.out.println(query);
-			executorService.execute(new ExecutionTask(query, executionURL));
+			//System.out.println(query);
+			executorService.execute(new ExecutionTask(query, executionURL, dbName));
 		}
 	}
 
@@ -95,11 +97,12 @@ public class ExecutionApp {
 		String steps = scan.next();
 		List<DBObject> users = getUserObjects();
 		for (DBObject dbObject : users) {
+			count++;
 			String userId = dbObject.get("user").toString();
 			String query = "type=invoke&queue=user_queue&params={ \"userId\":\"" + userId
 					+ "\",\"fcn\":\"generateFitcoins\",\"args\":[\"" + userId + "\",\"" + steps + "\"]}";
-			System.out.println(query);
-			executorService.execute(new ExecutionTask(query, executionURL));
+			//System.out.println(query);
+			executorService.execute(new ExecutionTask(query, executionURL, dbName));
 		}
 	}
 
@@ -107,7 +110,8 @@ public class ExecutionApp {
 		System.out.println("Enter number of users");
 		int number = scan.nextInt();
 		for (int i = 0; i < number; i++) {
-			executorService.execute(new ExecutionTask("type=enroll&queue=user_queue&params={}", executionURL));
+			count++;
+			executorService.execute(new ExecutionTask("type=enroll&queue=user_queue&params={}", executionURL, dbName));
 		}
 	}
 }
