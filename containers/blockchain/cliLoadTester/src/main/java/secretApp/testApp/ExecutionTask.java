@@ -15,26 +15,23 @@ import com.mongodb.MongoClient;
 public class ExecutionTask extends Task {
 	String data;
 	String url;
+	String dbName;
 
-	public ExecutionTask(String data, String url) {
-		// TODO Auto-generated constructor stub
+	public ExecutionTask(String data, String url, String dbName) {
 		this.data = data;
 		this.url = url;
+		this.dbName = dbName;
 	}
 
 	@Override
 	public void run() {
-		// System.out.println("Executing Execution Task At " +
-		// System.nanoTime());
 		String body;
 		try {
 			body = post(this.url, this.data);
 			JsonObject jsonObj = new JsonParser().parse(body).getAsJsonObject();
-			// System.out.println(jsonObj.get("resultId") + " " +
-			// jsonObj.get("status"));
 			if (jsonObj.get("status").toString().equals("\"success\"")) {
 				MongoClient mongo = new MongoClient("localhost", 27017);
-				DB database = mongo.getDB("testResults1");
+				DB database = mongo.getDB(this.dbName);
 				DBCollection collection = Task.getDBCollection(database, "results");
 				List<DBObject> list = new ArrayList<>();
 				BasicDBObject dataObject = new BasicDBObject();
@@ -47,7 +44,5 @@ public class ExecutionTask extends Task {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
-
 }
