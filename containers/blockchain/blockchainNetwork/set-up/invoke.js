@@ -2,7 +2,21 @@
 const TRANSACTION_TIMEOUT = 120000;
 export default async function (userId, clientObject, chaincodeId, chaincodeVersion, fcn, args) {
   var Transaction = require('fabric-client/lib/TransactionID.js');
-  var user_from_store = await clientObject._client.getUserContext(userId, true);
+  //var user_from_store = await clientObject._client.getUserContext(userId, true);
+  var getUser = async function (clientObject, userId, count) {
+    try {
+      var user = await clientObject._client.getUserContext(userId, true);
+      return user;
+    } catch(e) {
+      if(count > 2) {
+        count++;
+        return getUser(clientObject, userId, count);
+      } else {
+        throw new Error('Failed to get user : ' + userId + ' from persistence. Error: ' + e.message);
+      }
+    }
+  };
+  var user_from_store = await getUser(clientObject, userId, 1);
   if(!(user_from_store && user_from_store.isEnrolled())) {
     throw new Error('Failed to get user : ' + userId + ' from persistence');
   }

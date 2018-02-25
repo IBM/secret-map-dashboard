@@ -1,7 +1,20 @@
 'use strict';
 export default async function (userId, clientObject, chaincodeId, chaincodeVersion, fcn, args) {
   try {
-    var user_from_store = await clientObject._client.getUserContext(userId, true);
+    //var user_from_store = await clientObject._client.getUserContext(userId, true);
+    var getUser = async function (clientObject, userId, count) {
+      try {
+        return clientObject._client.getUserContext(userId, true);
+      } catch(e) {
+        if(count > 2) {
+          count++;
+          return getUser(clientObject, userId, count);
+        } else {
+          throw new Error('Failed to get user : ' + userId + ' from persistence. Error: ' + e.message);
+        }
+      }
+    };
+    var user_from_store = await getUser(clientObject, userId, 1);
     if(!(user_from_store && user_from_store.isEnrolled())) {
       throw new Error('Failed to get user : ' + userId + ' from persistence');
     }
