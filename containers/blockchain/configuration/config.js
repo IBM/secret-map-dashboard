@@ -13,7 +13,7 @@ const config = {
   //redis: 'redis-server:7000',
   redisHost: 'redis-server',
   redisPort: 7000,
-  iotDashUrl: 'https://secretmap.mybluemix.net/steps?message=',
+  iotDashUrl: 'https://secretmap-iot.mybluemix.net/steps?message=',
   orderer: {
     hostname: 'orderer0',
     url: 'grpcs://orderer0:7050',
@@ -81,7 +81,7 @@ if(process.env.LOCALCONFIG) {
   config.peers[1].peer.stateDBUrl = 'http://localhost:6984';
   config.rabbitmq = 'amqp://localhost:5672';
   config.redisHost = 'localhost';
-  config.iotDashUrl = 'https://secretmap.mybluemix.net/steps?message=';
+  config.iotDashUrl = 'https://secretmap-iot.mybluemix.net/steps?message=';
 }
 //export default config;
 fs.writeFile("./config.json", JSON.stringify(config), (err) => {
