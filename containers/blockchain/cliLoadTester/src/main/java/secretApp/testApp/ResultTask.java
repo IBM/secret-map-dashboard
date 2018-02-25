@@ -17,10 +17,12 @@ import com.mongodb.MongoClient;
 
 public class ResultTask extends Task {
 	String url;
+	String dbName;
 
-	public ResultTask(String url) {
+	public ResultTask(String url, String dbName) {
 		// TODO Auto-generated constructor stub
 		this.url = url;
+		this.dbName = dbName;
 	}
 
 	@Override
@@ -29,7 +31,7 @@ public class ResultTask extends Task {
 		MongoClient mongo;
 		try {
 			mongo = new MongoClient("localhost", 27017);
-			DB database = mongo.getDB("testResults1");
+			DB database = mongo.getDB(this.dbName);
 			DBCollection collection = Task.getDBCollection(database, "results");
 			DBCursor cursor = collection.find();
 			List<DBObject> removelist = new ArrayList<>();

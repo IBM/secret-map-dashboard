@@ -11,7 +11,19 @@ export default async function (client, enrollmentID, enrollmentSecret, ca, {
     if(!enrollmentID && enrollmentID === "") {
       throw new Error(`Invalid User Id`);
     }
-    let user = await client.getUserContext(enrollmentID, true);
+    var getUser = async function (client, userId, count) {
+      try {
+        return client.getUserContext(userId, true);
+      } catch(e) {
+        if(count > 2) {
+          count++;
+          return getUser(client, userId, count);
+        } else {
+          return null;
+        }
+      }
+    };
+    let user = await getUser(client, enrollmentID, 1);
     if(user && user.isEnrolled()) {
       return user;
     }
