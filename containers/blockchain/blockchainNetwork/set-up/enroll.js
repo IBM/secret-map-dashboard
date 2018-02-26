@@ -15,8 +15,9 @@ export default async function (client, enrollmentID, enrollmentSecret, ca, {
       try {
         return client.getUserContext(userId, true);
       } catch(e) {
-        if(count > 2) {
+        if(count > 3) {
           count++;
+          await new Promise(res => setTimeout(() => res(), 500));
           return getUser(client, userId, count);
         } else {
           return null;
