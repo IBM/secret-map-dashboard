@@ -2,3 +2,9 @@ node_modules/
 .gitignore
 README.md
 package-lock.json
+e2e/
+protractor.conf.js
+.editorconfig
+.DS_Store
+karma.conf.js
+tslint.json
