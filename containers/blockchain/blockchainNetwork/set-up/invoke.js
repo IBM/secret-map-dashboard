@@ -79,6 +79,7 @@ export default async function (userId, clientObject, chaincodeId, chaincodeVersi
           resolve(return_status);
         }
       }, (err) => {
+        clearTimeout(handle);
         reject(new Error('There was a problem with the eventhub ::' + err));
       });
     });
