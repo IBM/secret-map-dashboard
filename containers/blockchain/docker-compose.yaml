@@ -228,6 +228,7 @@ services:
     - MESSAGEEXPIRY=300
     - EVENTEMITTER=true
     - SENDTOIOT=false
+    - SCALECLIENT=1
     ports:
     - 3030:3030
     volumes:
@@ -251,6 +252,7 @@ services:
     - RABBITMQQUEUE=user_queue
     - MESSAGEEXPIRY=300
     - SENDTOIOT=false
+    - SCALECLIENT=5
     volumes:
     - /var/run/:/host/var/run/
     depends_on:

@@ -90,27 +90,28 @@ async function execute(type, client, params) {
     throw err;
   }
 }
-export async function createConnection(client) {
+export async function createConnection(client, clientNo) {
   var expiry = process.env.MESSAGEEXPIRY || 300;
+  var q = process.env.RABBITMQQUEUE || 'user_queue';
   amqp.connect(config.rabbitmq, function (err, conn) {
     if(err) {
       console.log('connection failed', err);
       setTimeout(function () {
         console.log('now attempting reconnect ...');
-        createConnection(client);
+        createConnection(client, clientNo);
       }, 3000);
     } else {
-      console.log("connected to the server");
+      //console.log("connected to the server");
       conn.on('error', function () {
-        console.log('Connection failed event');
+        console.log('Connection failed event on client' + clientNo);
         setTimeout(function () {
-          console.log('now attempting reconnect ...');
-          createConnection(client);
+          console.log('client' + clientNo + ' now attempting reconnect ...');
+          createConnection(client, clientNo);
         }, 3000);
         //conn.close();
       });
       conn.createChannel(function (err, ch) {
-        var q = process.env.RABBITMQQUEUE || 'user_queue';
+        //var q = process.env.RABBITMQQUEUE || 'user_queue';
         var setValue = function (key, value) {
           try {
             var redisClient = getRedisConnection();
@@ -120,12 +121,12 @@ export async function createConnection(client) {
             console.log("Error on redis client : " + err);
           }
         };
-        console.log("creating server queue connection " + q);
+        //console.log("creating server queue connection " + q);
         ch.assertQueue(q, {
           durable: true
         });
         ch.prefetch(1);
-        console.log(' [x] Awaiting RPC requests');
+        console.log('[x] Awaiting RPC requests on client' + clientNo);
         ch.consume(q, function reply(msg) {
           var input = JSON.parse(msg.content.toString());
           var reply = (ch, msg, data) => {
@@ -137,7 +138,7 @@ export async function createConnection(client) {
             setValue(msg.properties.correlationId, data);
             ch.ack(msg);
           };
-          console.log("Processing request : " + JSON.stringify(input.params));
+          console.log("client" + clientNo + " processing request : " + JSON.stringify(input.params));
           execute(input.type, client, input.params).then(function (value) {
             reply(ch, msg, JSON.stringify(value));
           }).catch(err => {

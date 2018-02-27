@@ -5,7 +5,8 @@ var User = require('fabric-client/lib/User');
 export default async function (client, enrollmentID, enrollmentSecret, ca, {
   mspId,
   adminUser,
-  affiliationOrg
+  affiliationOrg,
+  noOfAttempts
 }) {
   try {
     if(!enrollmentID && enrollmentID === "") {
@@ -15,8 +16,9 @@ export default async function (client, enrollmentID, enrollmentSecret, ca, {
       try {
         return client.getUserContext(userId, true);
       } catch(e) {
-        if(count > 2) {
+        if(count > noOfAttempts) {
           count++;
+          await new Promise(res => setTimeout(() => res(), 1000));
           return getUser(client, userId, count);
         } else {
           return null;

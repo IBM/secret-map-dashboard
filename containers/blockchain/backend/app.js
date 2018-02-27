@@ -48,7 +48,7 @@ const utils = require('./utils/util');
     });
   }
   for(var i = 0; i < peer.clients.workers.length; i++) {
-    await utils.createConnection(peer.clients.workers[i]);
+    await utils.createConnection(peer.clients.workers[i], i);
   }
   // pass params to iot dashboard
   function sendToIoTDashboard(data) {

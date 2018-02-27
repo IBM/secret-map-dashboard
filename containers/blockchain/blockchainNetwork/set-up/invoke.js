@@ -52,36 +52,45 @@ export default async function (userId, clientObject, chaincodeId, chaincodeVersi
     var sendPromise = clientObject._channel.sendTransaction(request);
     promises.push(sendPromise);
     let event_hub = clientObject._eventHubs[0];
-    let txPromise = new Promise((resolve, reject) => {
-      let handle = setTimeout(() => {
-        event_hub.disconnect();
-        resolve({
-          event_status: 'TIMEOUT'
+    var getTxPromise = function (count) {
+      return new Promise((resolve, reject) => {
+        let handle = setTimeout(() => {
+          event_hub.disconnect();
+          resolve({
+            event_status: 'TIMEOUT'
+          });
+        }, TRANSACTION_TIMEOUT);
+        event_hub.connect();
+        event_hub.registerTxEvent(transaction_id_string, (tx, code) => {
+          // this is the callback for transaction event status
+          // first some clean up of event listener
+          clearTimeout(handle);
+          event_hub.unregisterTxEvent(transaction_id_string);
+          event_hub.disconnect();
+          // now let the application know what happened
+          var return_status = {
+            event_status: code,
+            tx_id: transaction_id_string
+          };
+          if(code !== 'VALID') {
+            console.error('The transaction was invalid, code = ' + code);
+            resolve(return_status); // we could use reject(new Error('Problem with the tranaction, event status ::'+code));
+          } else {
+            //console.log('The transaction has been committed on peer ' + event_hub._ep._endpoint.addr);
+            resolve(return_status);
+          }
+        }, (err) => {
+          clearTimeout(handle);
+          if(count > 3) {
+            reject(new Error('There was a problem with the eventhub ::' + err));
+          } else {
+            count++;
+            getTxPromise(count);
+          }
         });
-      }, TRANSACTION_TIMEOUT);
-      event_hub.connect();
-      event_hub.registerTxEvent(transaction_id_string, (tx, code) => {
-        // this is the callback for transaction event status
-        // first some clean up of event listener
-        clearTimeout(handle);
-        event_hub.unregisterTxEvent(transaction_id_string);
-        event_hub.disconnect();
-        // now let the application know what happened
-        var return_status = {
-          event_status: code,
-          tx_id: transaction_id_string
-        };
-        if(code !== 'VALID') {
-          console.error('The transaction was invalid, code = ' + code);
-          resolve(return_status); // we could use reject(new Error('Problem with the tranaction, event status ::'+code));
-        } else {
-          //console.log('The transaction has been committed on peer ' + event_hub._ep._endpoint.addr);
-          resolve(return_status);
-        }
-      }, (err) => {
-        reject(new Error('There was a problem with the eventhub ::' + err));
       });
-    });
+    };
+    let txPromise = getTxPromise(1);
     promises.push(txPromise);
     var results = await Promise.all(promises);
     //console.log('Send transaction promise and event listener promise have completed');
