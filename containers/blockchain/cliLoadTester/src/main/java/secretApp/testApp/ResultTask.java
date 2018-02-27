@@ -27,7 +27,6 @@ public class ResultTask extends Task {
 
 	@Override
 	public void run() {
-		// System.out.println("Executing Result Task At " + System.nanoTime());
 		MongoClient mongo;
 		try {
 			mongo = new MongoClient("localhost", 27017);
@@ -37,7 +36,6 @@ public class ResultTask extends Task {
 			List<DBObject> removelist = new ArrayList<>();
 			while (cursor.hasNext()) {
 				DBObject object = cursor.next();
-				// System.out.println(object);
 				String resultId = object.get("resultId").toString();
 				// System.out.println(this.url + resultId);
 				String resultsData = this.get(this.url + resultId);
@@ -87,8 +85,6 @@ public class ResultTask extends Task {
 						list.add(dataObject);
 						resultCollection.insert(list);
 					}
-
-					// collection.remove(object);
 					removelist.add(object);
 				}
 

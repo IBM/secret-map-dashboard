@@ -90,14 +90,14 @@ async function execute(type, client, params) {
     throw err;
   }
 }
-export async function createConnection(client) {
+export async function createConnection(client, q) {
   var expiry = process.env.MESSAGEEXPIRY || 300;
   amqp.connect(config.rabbitmq, function (err, conn) {
     if(err) {
       console.log('connection failed', err);
       setTimeout(function () {
         console.log('now attempting reconnect ...');
-        createConnection(client);
+        createConnection(client, q);
       }, 3000);
     } else {
       console.log("connected to the server");
@@ -105,12 +105,12 @@ export async function createConnection(client) {
         console.log('Connection failed event');
         setTimeout(function () {
           console.log('now attempting reconnect ...');
-          createConnection(client);
+          createConnection(client, q);
         }, 3000);
         //conn.close();
       });
       conn.createChannel(function (err, ch) {
-        var q = process.env.RABBITMQQUEUE || 'user_queue';
+        //var q = process.env.RABBITMQQUEUE || 'user_queue';
         var setValue = function (key, value) {
           try {
             var redisClient = getRedisConnection();
