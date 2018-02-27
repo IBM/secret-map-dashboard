@@ -61,7 +61,8 @@ export class OrganizationClient extends EventEmitter {
       this._adminUser = await enrollUser(this._client, "admin", "adminpw", this._ca, {
         mspId: this._caConfig.mspId,
         adminUser: null,
-        affiliationOrg: this._peerConfig.org
+        affiliationOrg: this._peerConfig.org,
+        noOfAttempts: 5
       });
       //await this._client.setUserContext(this._adminUser);
       //await this.createOrgAdmin();
@@ -316,7 +317,8 @@ export class OrganizationClient extends EventEmitter {
       return enrollUser(this._client, enrollmentID, "", this._ca, {
         mspId: this._caConfig.mspId,
         adminUser: adminUser,
-        affiliationOrg: this._peerConfig.org
+        affiliationOrg: this._peerConfig.org,
+        noOfAttempts: 3
       });
     } catch(e) {
       throw e;

@@ -12,19 +12,16 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
-/**
- *
- *
- */
 public class ExecutionApp {
 	private static String executionURL = "http://localhost:3000/api/execute";
 	private static String dbName = "testResults";
 	private static int count = 0;
 	private static int steps = 100;
-	private static int fixOperations = 100;
+	private static int fixOperations = 50;
 	private static int totalUsers = 10000;
 	private static int queuedOperations = 5000;
 
+	@SuppressWarnings("static-access")
 	public static void main(String[] args) {
 		try {
 			ExecutorService executorService = Executors.newFixedThreadPool(10);
@@ -56,7 +53,6 @@ public class ExecutionApp {
 		}
 	}
 
-	//
 	private static Set<DBObject> getUserObjects(String collectionName) {
 		Set<DBObject> users = new HashSet<>();
 		MongoClient mongo;
@@ -84,7 +80,6 @@ public class ExecutionApp {
 			String userId = dbObject.get("user").toString();
 			String query = "type=query&queue=user_queue&params={\"userId\":\"" + userId
 					+ "\" , \"fcn\":\"getState\" ,\"args\":[\"" + userId + "\"]}";
-			// System.out.println(query);
 			executorService.execute(new ExecutionTask(query, executionURL, dbName));
 			if (temp >= number) {
 				break;
