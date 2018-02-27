@@ -1,7 +1,7 @@
 #!/bin/bash
 
 docker rm -f $(docker ps -aq)
-images = ( blockchain-setup fitcoin-ca shop-ca orderer-peer fitcoin-peer shop-peer backend redis-server rabbit-client )
+images=(blockchain-setup fitcoin-ca shop-ca orderer-peer fitcoin-peer shop-peer backend redis-server rabbit-client)
 for i in "${images[@]}"
 do
 	echo Removing image : $i
