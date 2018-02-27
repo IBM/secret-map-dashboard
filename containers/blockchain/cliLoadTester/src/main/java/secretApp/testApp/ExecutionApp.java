@@ -12,12 +12,16 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
+/**
+ *
+ *
+ */
 public class ExecutionApp {
 	private static String executionURL = "http://localhost:3000/api/execute";
-	private static String dbName = "testResult2";
+	private static String dbName = "testResults";
 	private static int count = 0;
 	private static int steps = 100;
-	private static int fixOperations = 50;
+	private static int fixOperations = 100;
 	private static int totalUsers = 10000;
 	private static int queuedOperations = 5000;
 
@@ -28,11 +32,12 @@ public class ExecutionApp {
 			while (true) {
 				Set<DBObject> dbobj = getUserObjects("results");
 				if (dbobj.size() > queuedOperations) {
-					System.out.println("Wait for 10 min to finsh execution of queued request");
-					Thread.currentThread().sleep(600000);
+					System.out.println("Wait for 5 min to finsh execution of queued request");
+					Thread.currentThread().sleep(300000);
 				} else {
 					dbobj = getUserObjects("users");
 					if (dbobj.size() < totalUsers) {
+						System.out.println("Enrolling users");
 						enrollUsers(fixOperations, executorService);
 					}
 					Thread.currentThread().sleep(30000);
@@ -105,8 +110,7 @@ public class ExecutionApp {
 	private static void enrollUsers(int number, ExecutorService executorService) {
 		for (int i = 0; i < number; i++) {
 			count++;
-			executorService
-					.execute(new ExecutionTask("type=enroll&queue=user_queue&params={}", executionURL, dbName));
+			executorService.execute(new ExecutionTask("type=enroll&queue=user_queue&params={}", executionURL, dbName));
 		}
 	}
 }

@@ -3,7 +3,9 @@ import {
 } from '../set-up/client';
 import config from '../set-up/config';
 const orgId = process.env.ORGID || "org.FitCoinOrg";
-const workerClients = config.peers.filter(obj => obj.peer.org === orgId).map(obj => new OrganizationClient(config.channelName, config.orderer, obj.peer, obj.ca, obj.admin));
+const numberOfClients = process.env.SCALECLIENT ? Number(process.env.SCALECLIENT) : 1;
+const workerClients = config.peers.filter(obj => obj.peer.org === orgId).map(obj => Array(numberOfClients).fill(obj)).reduce((acc, val) => acc.concat(val), []).map(obj => new OrganizationClient(config.channelName, config.orderer, obj.peer, obj.ca, obj.admin));
+//const workerClients = config.peers.filter(obj => obj.peer.org === orgId).map(obj => new OrganizationClient(config.channelName, config.orderer, obj.peer, obj.ca, obj.admin));
 var eventEmitterClient = null;
 var clientArray = {
   workers: workerClients,

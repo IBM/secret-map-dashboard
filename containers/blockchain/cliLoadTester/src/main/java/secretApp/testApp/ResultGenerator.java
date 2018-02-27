@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ResultGenerator {
 	private static String resultURL = "http://localhost:3000/api/results/";
-	private static String dbName = "testResult2";
+	private static String dbName = "testResults";
 
 	public static void main(String[] args) {
 		ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(5);

@@ -47,9 +47,8 @@ const utils = require('./utils/util');
       }
     });
   }
-  var q = process.env.RABBITMQQUEUE || 'user_queue';
   for(var i = 0; i < peer.clients.workers.length; i++) {
-    await utils.createConnection(peer.clients.workers[i], q);
+    await utils.createConnection(peer.clients.workers[i], i);
   }
   // pass params to iot dashboard
   function sendToIoTDashboard(data) {

@@ -252,7 +252,7 @@ services:
     - RABBITMQQUEUE=user_queue
     - MESSAGEEXPIRY=300
     - SENDTOIOT=false
-    - SCALECLIENT=3
+    - SCALECLIENT=5
     volumes:
     - /var/run/:/host/var/run/
     depends_on:
