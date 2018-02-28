@@ -1,12 +1,57 @@
 version: "3.1"
 
 services:
+  ca-datastore:
+    container_name: ca-datastore
+    image: hyperledger/fabric-couchdb:x86_64-1.0.2
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 5984:5984
+
+  fitcoin-ledger:
+    container_name: fitcoin-ledger
+    image: hyperledger/fabric-couchdb:x86_64-1.0.2
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 6984:5984
+
+  shop-ledger:
+    container_name: shop-ledger
+    image: hyperledger/fabric-couchdb:x86_64-1.0.2
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 7984:5984
+
+  fitcoin-statedb:
+    container_name: fitcoin-statedb
+    image: hyperledger/fabric-couchdb:x86_64-1.0.2
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 8984:5984
+
+  shop-statedb:
+    container_name: shop-statedb
+    image: hyperledger/fabric-couchdb:x86_64-1.0.2
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    ports:
+      - 9984:5984
+
   rabbitmq1:
     container_name: rabbitmq1
     image: rabbitmq:3-management
     hostname: rabbitmq1
     environment:
-      - RABBITMQ_ERLANG_COOKIE=12345
+      - RABBITMQ_ERLANG_COOKIE=6ad0a617cb89413daa0a
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
       - RABBITMQ_DEFAULT_VHOST=/
@@ -18,7 +63,7 @@ services:
     depends_on:
       - rabbitmq1
     environment:
-      - RABBITMQ_ERLANG_COOKIE=12345
+      - RABBITMQ_ERLANG_COOKIE=6ad0a617cb89413daa0a
     volumes:
       - ./rabbitCluster/cluster-entrypoint.sh:/usr/local/bin/cluster-entrypoint.sh
     entrypoint: /usr/local/bin/cluster-entrypoint.sh
@@ -30,7 +75,7 @@ services:
     depends_on:
       - rabbitmq1
     environment:
-      - RABBITMQ_ERLANG_COOKIE=12345
+      - RABBITMQ_ERLANG_COOKIE=6ad0a617cb89413daa0a
     volumes:
       - ./rabbitCluster/cluster-entrypoint.sh:/usr/local/bin/cluster-entrypoint.sh
     entrypoint: /usr/local/bin/cluster-entrypoint.sh
@@ -49,12 +94,6 @@ services:
       - 15672:15672
       - 5672:5672
 
-#  redis-server:
-#    container_name: redis-server
-#    image: redis:4.0.5-alpine
-#    command: ["redis-server", "--appendonly", "yes"]
-#    ports:
-#      - 6379:6379
   redis-server:
      hostname: redis-server
      image: redis-server
@@ -78,31 +117,6 @@ services:
     command: fabric-ca-server start
     ports:
       - 8054:7054
-
-  couchdb0:
-    container_name: couchdb0
-    image: hyperledger/fabric-couchdb:x86_64-1.0.2
-    environment:
-      - COUCHDB_USER=
-      - COUCHDB_PASSWORD=
-    ports:
-      - 5984:5984
-
-  couchdb1:
-    container_name: couchdb1
-    image: hyperledger/fabric-couchdb:x86_64-1.0.2
-    environment:
-      - COUCHDB_USER=
-      - COUCHDB_PASSWORD=
-    ports:
-      - 6984:5984
-
-#  rabbitmq:
-#    container_name: rabbitmq
-#    image: rabbitmq:management
-#    ports:
-#      - "5672:5672"
-#      - "15672:15672"
 
   orderer0:
     container_name: orderer0
@@ -132,7 +146,7 @@ services:
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=shop-peer:7051
       - CORE_PEER_LOCALMSPID=ShopOrgMSP
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb0:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=shop-ledger:5984
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
@@ -156,7 +170,9 @@ services:
     - 7053:7053
     depends_on:
     - orderer0
-    - couchdb0
+    - ca-datastore
+    - shop-ledger
+    - shop-statedb
 
   fitcoin-peer:
     container_name: fitcoin-peer
@@ -167,7 +183,7 @@ services:
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=fitcoin-peer:7051
       - CORE_PEER_LOCALMSPID=FitCoinOrgMSP
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb1:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=fitcoin-ledger:5984
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
@@ -192,7 +208,9 @@ services:
     depends_on:
       - orderer0
       - shop-peer
-      - couchdb1
+      - ca-datastore
+      - fitcoin-ledger
+      - fitcoin-statedb
 
   blockchain-setup :
     container_name: blockchain-setup
@@ -209,8 +227,11 @@ services:
     - shop-peer
     - fitcoin-ca
     - fitcoin-peer
-    - couchdb0
-    - couchdb1
+    - ca-datastore
+    - shop-ledger
+    - shop-statedb
+    - fitcoin-ledger
+    - fitcoin-statedb
     secrets:
       - config
       - channel
