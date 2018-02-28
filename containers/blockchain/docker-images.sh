@@ -66,4 +66,3 @@ if [ $BUILD ];
     docker build -t redis-server:latest redisCluster/
     docker build -t backend:latest backend/
 fi
-#docker-compose -p "fitcoin" up -d

@@ -170,6 +170,7 @@ services:
     - 7053:7053
     depends_on:
     - orderer0
+    - shop-ca
     - ca-datastore
     - shop-ledger
     - shop-statedb
@@ -207,6 +208,7 @@ services:
       - 8053:7053
     depends_on:
       - orderer0
+      - fitcoin-ca
       - shop-peer
       - ca-datastore
       - fitcoin-ledger
@@ -246,7 +248,7 @@ services:
     - SECRETSDIR=/run/secrets
     - RABBITMQQUEUE=seller_queue
     - SOCKETPORT=3030
-    - MESSAGEEXPIRY=300
+    - MESSAGEEXPIRY=400
     - EVENTEMITTER=true
     - SENDTOIOT=false
     - SCALECLIENT=1
@@ -271,7 +273,7 @@ services:
     - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.2
     - SECRETSDIR=/run/secrets
     - RABBITMQQUEUE=user_queue
-    - MESSAGEEXPIRY=300
+    - MESSAGEEXPIRY=400
     - SENDTOIOT=false
     - SCALECLIENT=5
     volumes:
