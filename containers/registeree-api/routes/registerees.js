@@ -5,26 +5,26 @@ const Registerees = require("../models/registeree");
 
 // endpoints for registeree
 router.get("/", function(req, res) {
-  Registerees.find(function(err, registerees){
-    if(err){
+  Registerees.find(function(err, registerees) {
+    if (err) {
       res.send(err);
     }
-    else{
+    else {
       res.send(registerees);
     }
-  })
+  });
 });
 
 router.get("/info/:registereeId", function(req, res) {
   Registerees.findOne(req.params, function(err, registeree) {
-    if(err){
+    if (err){
       res.send(err);
-    } else if(registeree){
+    } else if (registeree) {
       res.send(registeree);
     } else {
-      res.send('Registeree not found...')
+      res.send('Registeree not found...');
     }
-  })
+  });
 });
 
 router.get("/totalCalories", function(req, res) {
@@ -36,11 +36,11 @@ router.get("/totalCalories", function(req, res) {
     } 
   }], function(err, totalCalories) {
     if(err) {
-      res.send(err)
-    } else if(totalCalories){
+      res.send(err);
+    } else if (totalCalories) {
       res.send(totalCalories);
     } else {
-      res.send("Registeree.calories not found")
+      res.send("Registeree.calories not found");
     }
   });
 });
@@ -53,12 +53,12 @@ router.get("/totalSteps", function(req, res) {
       }  
     } 
   }], function(err, totalSteps) {
-    if(err) {
-      res.send(err)
-    } else if(totalSteps){
+    if (err) {
+      res.send(err);
+    } else if (totalSteps) {
       res.send(totalSteps);
     } else {
-      res.send("Registeree.steps not found")
+      res.send("Registeree.steps not found");
     }
   });
 });
@@ -69,7 +69,7 @@ router.post("/add", function(req, res) {
   let addRegisteree = new Registerees(req.body);
 
   addRegisteree.save( function(err) {
-    if(err){
+    if (err) {
       res.send(err);
     }
     else {

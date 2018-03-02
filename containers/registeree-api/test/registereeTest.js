@@ -1,3 +1,4 @@
+/*global should:false*/
 process.env.UNIT_TEST = "test";
 
 const chai = require('chai');
@@ -11,8 +12,8 @@ chai.use(chaiHttp);
 describe('Registerees', () => {
   beforeEach((done) => { //Before each test we empty the database
     Registeree.remove({}, () => {
-      done()
-    })
+      done();
+    });
   });
   /*
   * Test the /GET route
@@ -36,20 +37,24 @@ describe('Registerees', () => {
         registereeId: "R1",
         calories: 123,
         steps: 1000
-      })
+      });
       addRegisteree.save((err) =>{
-        chai.request(server)
-        .get('/registerees/info/R1')
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a('object');
-          res.body.should.have.property('registereeId');
-          res.body.should.have.property('registereeId').eql('R1');
-          res.body.should.have.property('calories');
-          res.body.should.have.property('steps');
+        if (err) {
           done();
-        });
-      })
+          throw err;
+        }
+        chai.request(server)
+          .get('/registerees/info/R1')
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('object');
+            res.body.should.have.property('registereeId');
+            res.body.should.have.property('registereeId').eql('R1');
+            res.body.should.have.property('calories');
+            res.body.should.have.property('steps');
+            done();
+          });
+      });
     });
   });
 
@@ -59,19 +64,23 @@ describe('Registerees', () => {
         registereeId: "R1",
         calories: 123,
         steps: 1000
-      })
+      });
       addRegisteree.save((err) => {
-        chai.request(server)
-        .get('/registerees/totalSteps')
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a('array');
-          res.body[0].should.be.a('object');
-          res.body[0].should.have.property('_id');
-          res.body[0].should.have.property('count');
-          res.body[0].should.have.property('count').eql(1000);
+        if (err) {
           done();
-        });
+          throw err;
+        }
+        chai.request(server)
+          .get('/registerees/totalSteps')
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('array');
+            res.body[0].should.be.a('object');
+            res.body[0].should.have.property('_id');
+            res.body[0].should.have.property('count');
+            res.body[0].should.have.property('count').eql(1000);
+            done();
+          });
       });
     });
   });
@@ -82,19 +91,23 @@ describe('Registerees', () => {
         registereeId: "R1",
         calories: 123,
         steps: 1000
-      })
+      });
       addRegisteree.save((err) => {
-        chai.request(server)
-        .get('/registerees/totalCalories')
-        .end((err, res) => {
-          res.should.have.status(200);
-          res.body.should.be.a('array');
-          res.body[0].should.be.a('object');
-          res.body[0].should.have.property('_id');
-          res.body[0].should.have.property('count');
-          res.body[0].should.have.property('count').eql(123);
+        if (err) {
           done();
-        });
+          throw err;
+        }
+        chai.request(server)
+          .get('/registerees/totalCalories')
+          .end((err, res) => {
+            res.should.have.status(200);
+            res.body.should.be.a('array');
+            res.body[0].should.be.a('object');
+            res.body[0].should.have.property('_id');
+            res.body[0].should.have.property('count');
+            res.body[0].should.have.property('count').eql(123);
+          done();
+          });
       });
     });
   });
@@ -104,12 +117,12 @@ describe('Registerees', () => {
   */
   describe('POST /registerees/add', () => {
     it('it should POST a registeree', (done) => {
-    const registeree = {
+      const registeree = {
         registereeId: "R1",
         calories: 123,
         steps: 1000
       };
-    chai.request(server)
+      chai.request(server)
         .post('/registerees/add')
         .send(registeree)
         .end((err, res) => {

@@ -23,7 +23,7 @@ router.get("/:footprintId", function(req, res) {
     } else {
       res.send("Footprint not found.");
     }
-  })
+  });
 });
 
 router.post("/add", function(req, res) {
@@ -34,7 +34,7 @@ router.post("/add", function(req, res) {
     } else {
       res.send('Saved footprint.');
     }
-  })
+  });
 });
 
 router.post("/remove/:footprintId", function(req, res) {
@@ -43,7 +43,7 @@ router.post("/remove/:footprintId", function(req, res) {
       res.send(err);
     }
     else{
-      res.send('Delete footprint.')
+      res.send('Delete footprint.');
     }
   });
 });
