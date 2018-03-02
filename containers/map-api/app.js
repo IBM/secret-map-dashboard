@@ -11,6 +11,7 @@ const eventRoute = require("./routes/events");
 const svgRoute = require("./routes/svg");
 const pageRoute = require("./routes/pages");
 const renderRoute = require("./routes/renderSvg");
+const triggerRoute = require("./routes/trigger");
 
 const mongoDbUrl = process.env.MONGODB_URL;
 
@@ -63,6 +64,7 @@ app.use("/booths", boothRoute);
 app.use("/events", eventRoute);
 app.use("/svg", svgRoute.main);
 app.use("/pages", pageRoute);
+app.use("/triggers", triggerRoute);
 
 let port = process.env.PORT || 8080;
 app.listen(port, function() {

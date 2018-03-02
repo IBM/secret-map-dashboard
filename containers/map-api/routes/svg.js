@@ -14,15 +14,20 @@ router.get("/:eventId", function(req, res) {
     } else if (event) {
 
       // Get SVG Content
-      let SVGContent = svgContent(event.map,25);
-      let svg = svgTemplate(event.x,event.y,SVGContent,25);
+      let SVGContent = svgContent(event.map,1);
+      let svg = svgTemplate(event.x,event.y,SVGContent,1);
       
       // If .pdf is present, send a pdf version of the svg
       if (req.params.eventId.split(".").pop() == "pdf") {
 
-        const pdfPointRatio = 3/4;
-        let pdfX = pdfPointRatio * event.x * 25;
-        let pdfY = pdfPointRatio * event.y * 25;
+        // scale up for 1:1 svg point to pdf point
+        SVGContent = svgContent(event.map,(4/3));
+        svg = svgTemplate(event.x,event.y,SVGContent,(4/3));
+
+        // we already scaled up svg points so no need to scale pdf points
+        const pdfPointRatio = 1;
+        let pdfX = pdfPointRatio * event.x * 1;
+        let pdfY = pdfPointRatio * event.y * 1;
 
         // Start making PDF
         let doc = new PDFDocument({ size: [pdfX,pdfY]}); // Fixed to 1000 for now.
@@ -120,7 +125,7 @@ function rectangleTemplate(booth, scale) {
   let svg = "<rect x='" + elem.x + "' y='" + elem.y + "' width='" +
     elem.width + "' height='" + elem.height + "' fill='#CCB3B3' />";
   svg += "<text x='" + xCentroid + "' y='" +
-    yCentroid + "' alignment-baseline='middle' text-anchor='middle'\
+    yCentroid + "' transform='rotate(-45 " + xCentroid + "," + yCentroid + ")' alignment-baseline='middle' text-anchor='middle'\
     fill='blue' font-size='0.75vw' font-family='sans-serif'>" +
     booth.unit + "</text>";
   return svg;
@@ -143,7 +148,7 @@ function circleTemplate(booth, scale) {
   let svg = "<circle cx='" + elem.cx + "' cy='" + elem.cy + "' r='" +
     elem.radius + "' fill='#CCB3B3' />";
   svg += "<text x='" + elem.cx + "' y='" +
-    elem.cy + "' alignment-baseline='middle' text-anchor='middle'\
+    elem.cy + "' transform='rotate(-45 " + elem.cx + "," + elem.cy + ")' alignment-baseline='middle' text-anchor='middle'\
     fill='blue' font-size='0.75vw' font-family='sans-serif'>" +
     booth.unit + "</text>";
   return svg;
@@ -168,7 +173,7 @@ function ellipseTemplate(booth, scale) {
   let svg = "<ellipse cx='" + elem.cx + "' cy='" + elem.cy + "' rx='" +
     elem.rx + "' ry='" + elem.ry + "' fill='#CCB3B3' />";
   svg += "<text x='" + elem.cx + "' y='" +
-    elem.cy + "' alignment-baseline='middle' text-anchor='middle'\
+    elem.cy + "' transform='rotate(-45 " + elem.cx + "," + elem.cy + ")' alignment-baseline='middle' text-anchor='middle'\
     fill='blue' font-size='0.75vw' font-family='sans-serif'>" +
     booth.unit + "</text>";
   return svg;

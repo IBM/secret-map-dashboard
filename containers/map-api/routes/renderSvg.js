@@ -12,8 +12,8 @@ router.get("/:eventId", function(req, res) {
     } else if (event) {
 
       // Get SVG Content
-      let SVGContent = svgRoute.functions.svgContent(event.map,25);
-      let svg = svgRoute.functions.svgTemplate(event.x,event.y,SVGContent,25);
+      let SVGContent = svgRoute.functions.svgContent(event.map,1);
+      let svg = svgRoute.functions.svgTemplate(event.x,event.y,SVGContent,1);
       
       // Send SVG
       res.render('main', {svg: svg, name: event.eventName, list: []});
