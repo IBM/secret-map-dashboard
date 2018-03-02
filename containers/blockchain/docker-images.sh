@@ -38,8 +38,8 @@ else
 fi
 # 1.0.6
 if [ $DOWNLOAD ]; then
-    : ${CA_TAG:="x86_64-1.0.2"}
-    : ${FABRIC_TAG:="x86_64-1.0.2"}
+    : ${CA_TAG:="x86_64-1.0.6"}
+    : ${FABRIC_TAG:="x86_64-1.0.6"}
 
     echo "===> Pulling fabric Images"
     dockerFabricPull ${FABRIC_TAG}
