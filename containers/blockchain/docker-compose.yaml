@@ -3,7 +3,7 @@ version: "3.1"
 services:
   ca-datastore:
     container_name: ca-datastore
-    image: hyperledger/fabric-couchdb:x86_64-1.0.2
+    image: hyperledger/fabric-couchdb:x86_64-1.0.6
     environment:
       - COUCHDB_USER=
       - COUCHDB_PASSWORD=
@@ -12,7 +12,7 @@ services:
 
   fitcoin-ledger:
     container_name: fitcoin-ledger
-    image: hyperledger/fabric-couchdb:x86_64-1.0.2
+    image: hyperledger/fabric-couchdb:x86_64-1.0.6
     environment:
       - COUCHDB_USER=
       - COUCHDB_PASSWORD=
@@ -21,7 +21,7 @@ services:
 
   shop-ledger:
     container_name: shop-ledger
-    image: hyperledger/fabric-couchdb:x86_64-1.0.2
+    image: hyperledger/fabric-couchdb:x86_64-1.0.6
     environment:
       - COUCHDB_USER=
       - COUCHDB_PASSWORD=
@@ -30,7 +30,7 @@ services:
 
   fitcoin-statedb:
     container_name: fitcoin-statedb
-    image: hyperledger/fabric-couchdb:x86_64-1.0.2
+    image: hyperledger/fabric-couchdb:x86_64-1.0.6
     environment:
       - COUCHDB_USER=
       - COUCHDB_PASSWORD=
@@ -39,7 +39,7 @@ services:
 
   shop-statedb:
     container_name: shop-statedb
-    image: hyperledger/fabric-couchdb:x86_64-1.0.2
+    image: hyperledger/fabric-couchdb:x86_64-1.0.6
     environment:
       - COUCHDB_USER=
       - COUCHDB_PASSWORD=
@@ -219,7 +219,7 @@ services:
     image: blockchain-setup
     environment:
     - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
-    - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.2
+    - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.6
     - SECRETSDIR=/run/secrets
     volumes:
     - /var/run/:/host/var/run/
@@ -244,7 +244,7 @@ services:
     environment:
     - ORGID=org.ShopOrg
     - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
-    - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.2
+    - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.6
     - SECRETSDIR=/run/secrets
     - RABBITMQQUEUE=seller_queue
     - SOCKETPORT=3030
@@ -270,7 +270,7 @@ services:
     environment:
     - ORGID=org.FitCoinOrg
     - DOCKER_SOCKET_PATH=/host/var/run/docker.sock
-    - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.2
+    - DOCKER_CCENV_IMAGE=hyperledger/fabric-ccenv:x86_64-1.0.6
     - SECRETSDIR=/run/secrets
     - RABBITMQQUEUE=user_queue
     - MESSAGEEXPIRY=400
