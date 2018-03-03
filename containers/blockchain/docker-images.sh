@@ -36,10 +36,10 @@ else
             fi
     done
 fi
-
+# 1.0.6
 if [ $DOWNLOAD ]; then
-    : ${CA_TAG:="x86_64-1.0.2"}
-    : ${FABRIC_TAG:="x86_64-1.0.2"}
+    : ${CA_TAG:="x86_64-1.0.6"}
+    : ${FABRIC_TAG:="x86_64-1.0.6"}
 
     echo "===> Pulling fabric Images"
     dockerFabricPull ${FABRIC_TAG}
@@ -62,10 +62,7 @@ if [ $BUILD ];
     docker build -t shop-ca:latest shopCertificateAuthority/
     docker build -t fitcoin-ca:latest fitcoinCertificateAuthority/
     docker build -t blockchain-setup:latest blockchainNetwork/
-    #docker build -t fitcoin-backend:latest fitcoinBackend/
-    #docker build -t shop-backend:latest shopBackend/
     docker build -t rabbit-client:latest rabbitClient/
     docker build -t redis-server:latest redisCluster/
     docker build -t backend:latest backend/
 fi
-#docker-compose -p "fitcoin" up -d
