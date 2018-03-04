@@ -142,6 +142,14 @@ function getAdminOrgs() {
     console.log(e);
     process.exit(-1);
   }
+  try {
+    await clients[1].registerAndEnroll("sampleUser");
+    console.log('Blockchain newtork setup complete.');
+  } catch(e) {
+    console.log('Fatal error instantiating chaincode on some(all) peers!');
+    console.log(e);
+    process.exit(-1);
+  }
 })();
 // Export organization clients
 /*export {
