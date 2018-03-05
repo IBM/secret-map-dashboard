@@ -95,20 +95,26 @@ export async function createConnection(client, clientNo) {
   var q = process.env.RABBITMQQUEUE || 'user_queue';
   amqp.connect(config.rabbitmq, function (err, conn) {
     if(err) {
-      console.log('connection failed', err);
+      console.error('connection failed', err);
       setTimeout(function () {
-        console.log('now attempting reconnect ...');
+        console.error(clientNo + 'now attempting reconnect ...');
         createConnection(client, clientNo);
       }, 3000);
     } else {
       //console.log("connected to the server");
       conn.on('error', function () {
-        console.log('Connection failed event on client' + clientNo);
+        console.error('Connection failed event on ' + clientNo);
         setTimeout(function () {
-          console.log('client' + clientNo + ' now attempting reconnect ...');
+          console.error(clientNo + ' now attempting reconnect ...');
           createConnection(client, clientNo);
         }, 3000);
-        //conn.close();
+      });
+      conn.on("close", function () {
+        console.error('Connection close event on ' + clientNo);
+        setTimeout(function () {
+          console.error(clientNo + ' now attempting reconnect ...');
+          createConnection(client, clientNo);
+        }, 3000);
       });
       conn.createChannel(function (err, ch) {
         //var q = process.env.RABBITMQQUEUE || 'user_queue';
@@ -118,7 +124,7 @@ export async function createConnection(client, clientNo) {
             redisClient.set(key, value, 'EX', expiry, () => redisClient.quit());
             //redisClient.set(key, value);
           } catch(err) {
-            console.log("Error on redis client : " + err);
+            console.error("Error on redis client : " + err);
           }
         };
         //console.log("creating server queue connection " + q);
@@ -138,11 +144,13 @@ export async function createConnection(client, clientNo) {
             setValue(msg.properties.correlationId, data);
             ch.ack(msg);
           };
-          console.log("client" + clientNo + " processing request : " + JSON.stringify(input.params));
+          console.log(clientNo + " processing request : " + JSON.stringify(input.params));
           execute(input.type, client, input.params).then(function (value) {
             reply(ch, msg, JSON.stringify(value));
           }).catch(err => {
-            console.log("Failed message  : " + err.message);
+            console.error("Failed request on " + clientNo);
+            console.error("Failed request : " + input.params);
+            console.error(" Error Message : " + err.message);
             reply(ch, msg, JSON.stringify({
               message: "failed",
               error: err.message

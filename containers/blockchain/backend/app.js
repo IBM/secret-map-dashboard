@@ -37,7 +37,8 @@ const utils = require('./utils/util');
         console.log('user disconnected');
       });
       socket.on('error', function () {
-        console.log('Error : Socket connection');
+        console.error('Error : Socket connection');
+        //console.log();
       });
     });
     peer.clients.eventEmitter.on('block', block => {
@@ -48,13 +49,13 @@ const utils = require('./utils/util');
     });
   }
   for(var i = 0; i < peer.clients.workers.length; i++) {
-    await utils.createConnection(peer.clients.workers[i], i);
+    await utils.createConnection(peer.clients.workers[i], "Client" + i);
   }
   // pass params to iot dashboard
   function sendToIoTDashboard(data) {
     var url = config.iotDashUrl + data;
     request.get(url).on('error', function (err) {
-      console.log(err);
+      console.error(err);
     });
     /*request(options, function (error, response, body) {
       console.log('error:', error); // null if no error occurs, else print error
