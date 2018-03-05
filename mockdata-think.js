@@ -8,7 +8,7 @@ db.booths.insert({ "boothId" : "A12", "unit" : "MongoDB", "description" : "Mongo
 db.booths.insert({ "boothId" : "A13", "unit" : "Swift", "description" : "Swift is not just for iOS", "measurementUnit" : "metre", "shape" : {"type": "circle", "radius" : 3, "cx" : 6, "cy" : 15}, "contact" : "Jane Doe" });
 db.booths.insert({ "boothId" : "A14", "unit" : "VR", "description" : "Virtual Reality is growing", "measurementUnit" : "metre", "shape" : {"type": "ellipse", "cx" : 18, "cy" : 32, "rx" : 13, "ry" : 3}, "contact" : "Smith John" });
 db.booths.insert({ "boothId" : "A15", "unit" : "Watson", "description" : "IBM Watson.", "measurementUnit" : "metre", "shape" : {"type": "polygon", "points" : "22,1 30,21 17,25 13,23"}, "contact" : "Catherine May" });
-db.events.insert({ "eventId" : "think", "eventName" : "Think", "location" : "Las Vegas", "startDate" : ISODate("2018-03-19T00:00:00Z"), "endDate" : ISODate("2018-03-22T00:00:00Z"), "beacons" : [], "map" : [] });
+db.events.insert({ "eventId" : "think", "eventName" : "Think", "location" : "Las Vegas", "x" : 46, "y" : 37, "startDate" : ISODate("2018-03-19T00:00:00Z"), "endDate" : ISODate("2018-03-22T00:00:00Z"), "beacons" : [], "map" : [] });
 
 let booths = db.booths.find({"boothId": {$in: ["A11","A12","A13","A14","A15"]}}).toArray();
 let beacons = db.beacons.find({"beaconId": {$in: ["B11","B12","B13","B14"]}}).toArray();

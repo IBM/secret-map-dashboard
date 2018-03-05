@@ -32,6 +32,8 @@ describe('SVGs', () => {
     let event = {
       eventId : "index",
       eventName : "Index",
+      x : 5,
+      y : 5,
       location : "San Francisco",
       startDate : "2018-02-20T00:00:00Z",
       endDate : "2018-02-24T00:00:00Z",
@@ -67,7 +69,7 @@ describe('SVGs', () => {
         .end((err, res) => {
           res.should.have.status(200);
           res.text.should.be.a('String');
-          res.text.should.be.eql("<svg width='2500' height='2500'><rect x='0' y='0' width='75' height='75' fill='#CCB3B3' /><text x='37.5' y='37.5' alignment-baseline='middle' text-anchor='middle'    fill='blue' font-size='0.75vw' font-family='sans-serif'>Node</text></svg>");
+          res.text.should.be.eql("<svg width='5' height='5'><rect x='0' y='0' width='3' height='3' fill='#CCB3B3' /><text x='1.5' y='1.5' transform='rotate(-45 1.5,1.5)' alignment-baseline='middle' text-anchor='middle'    fill='blue' font-size='0.75vw' font-family='sans-serif'>Node</text></svg>");
           done();
         });
     });
