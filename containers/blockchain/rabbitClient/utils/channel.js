@@ -6,7 +6,7 @@ export class RabbitClient {
     this._connection = null;
     this._queue = null;
   }
-  async configureClient() {
+  async configureClient(count) {
     var self = this;
     try {
       //console.log("connecting to rabbit server : " + this._config.rabbitmq);
@@ -21,14 +21,25 @@ export class RabbitClient {
         });
       });
       self._connection.on('error', function () {
-        console.log('Connection failed');
+        console.log('Connection error event on rabbit client');
         self.stop().then(function () {
           self._connection = null;
           return self.configureClient();
         }).then(function () {
-          console.log('Channel reconfigured');
+          console.log('Rabbit Client reconfigured');
         }).catch(err => {
-          console.log(err);
+          //console.log(err);
+          throw err;
+        });
+      });
+      self._connection.on('close', function () {
+        console.log('Connection closed event on rabbit client');
+        self._connection = null;
+        return self.configureClient().then(function () {
+          console.log('Rabbit Client reconfigured');
+        }).catch(err => {
+          //console.log(err);
+          throw err;
         });
       });
       self._channel = await new Promise(function (resolve, reject) {
@@ -53,10 +64,17 @@ export class RabbitClient {
           }
         });
       });
+      count = 0;
     } catch(err) {
-      console.log("Error in channel setup");
-      console.log(err.message);
-      await self.configureClient();
+      count++;
+      if(count < 10) {
+        console.error("Error in channel setup " + err.message);
+        console.error("Now attempting reconnect ...");
+        await self.configureClient(count);
+      } else {
+        console.error(err);
+        process.exit(-1);
+      }
     }
   }
   async stop() {
