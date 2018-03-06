@@ -51,8 +51,13 @@ export class OrganizationClient extends EventEmitter {
         url: this._peerConfig.userKeystoreDBUrl
       });
       crypto_suite.setCryptoKeyStore(crypto_store);
-      this._client.setCryptoSuite(crypto_suite);
-      //console.log("Register CA " + this._caConfig.caName);
+      var client_crypto_suite = hfc.newCryptoSuite();
+      var client_crypto_store = hfc.newCryptoKeyStore(CouchDBKeyValueStore, {
+        name: this._peerConfig.userKeystoreDBName,
+        url: this._peerConfig.userKeystoreDBUrl
+      });
+      client_crypto_suite.setCryptoKeyStore(client_crypto_store);
+      this._client.setCryptoSuite(client_crypto_suite);
       this._ca = await new CAClient(this._caConfig.url, {
         trustedRoots: [],
         verify: false
