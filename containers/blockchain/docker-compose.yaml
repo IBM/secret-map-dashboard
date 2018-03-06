@@ -55,6 +55,11 @@ services:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
       - RABBITMQ_DEFAULT_VHOST=/
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
 
   rabbitmq2:
     container_name: rabbitmq2
@@ -67,6 +72,11 @@ services:
     volumes:
       - ./rabbitCluster/cluster-entrypoint.sh:/usr/local/bin/cluster-entrypoint.sh
     entrypoint: /usr/local/bin/cluster-entrypoint.sh
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
 
   rabbitmq3:
     container_name: rabbitmq3
@@ -79,6 +89,11 @@ services:
     volumes:
       - ./rabbitCluster/cluster-entrypoint.sh:/usr/local/bin/cluster-entrypoint.sh
     entrypoint: /usr/local/bin/cluster-entrypoint.sh
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
 
   rabbitmq:
     container_name: rabbitmq
@@ -99,6 +114,11 @@ services:
      image: redis-server
      ports:
        - '7000-7005:7000-7005'
+     logging:
+       driver: "json-file"
+       options:
+         max-size: "10m"
+         max-file: "10"
 
   shop-ca:
     container_name: shop-ca
@@ -108,6 +128,11 @@ services:
     command: fabric-ca-server start
     ports:
       - 7054:7054
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
 
   fitcoin-ca:
     container_name: fitcoin-ca
@@ -117,6 +142,11 @@ services:
     command: fabric-ca-server start
     ports:
       - 8054:7054
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
 
   orderer0:
     container_name: orderer0
@@ -136,6 +166,11 @@ services:
     command: orderer
     ports:
     - 7050:7050
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
 
   shop-peer:
     container_name: shop-peer
@@ -174,6 +209,11 @@ services:
     - ca-datastore
     - shop-ledger
     - shop-statedb
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
 
   fitcoin-peer:
     container_name: fitcoin-peer
@@ -263,6 +303,11 @@ services:
     secrets:
       - config
       - channel
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
 
   fitcoin-backend :
     #container_name: fitcoin-backend
@@ -285,6 +330,11 @@ services:
     secrets:
       - config
       - channel
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
 
   rabbitclient1 :
     container_name: rabbitclient1
@@ -301,6 +351,11 @@ services:
     secrets:
       - config
       - channel
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
 
   rabbitclient2 :
     container_name: rabbitclient2
@@ -317,6 +372,11 @@ services:
     secrets:
       - config
       - channel
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
 
   rabbitclient3 :
     container_name: rabbitclient3
@@ -333,6 +393,11 @@ services:
     secrets:
       - config
       - channel
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
 
   rabbitclient:
     container_name: rabbitclient
@@ -346,6 +411,11 @@ services:
       - rabbitclient3
     ports:
       - 3000:3000
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
 
 secrets:
   config:
