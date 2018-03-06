@@ -82,6 +82,7 @@ export default async function (userId, clientObject, chaincodeId, chaincodeVersi
         } catch(e) {
           count++;
           if(count > 2) {
+            clearTimeout(handle);
             reject(e);
           } else {
             return connectHub(event_hub, count);
