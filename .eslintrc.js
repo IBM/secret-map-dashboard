@@ -36,6 +36,12 @@ module.exports = {
         "rules": {
             "no-unused-vars": "off"
         }
-    }
+    },
+    {
+      "files": "containers/registeree-api/test/*.js",
+      "rules": {
+          "no-unused-vars": "off"
+      }
+  }
 ]
 };
