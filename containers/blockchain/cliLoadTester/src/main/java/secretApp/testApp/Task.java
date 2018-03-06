@@ -13,29 +13,29 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 
-public abstract class Task implements Runnable {
+public abstract class Task {
 
-	public String get(String getUrl) throws IOException {
+	public static String get(String getUrl) throws IOException {
 		URL url = new URL(getUrl);
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		con.setRequestMethod("GET");
 
-		return this.read(con.getInputStream());
+		return read(con.getInputStream());
 	}
 
-	public String post(String postUrl, String data) throws IOException {
+	public static String post(String postUrl, String data) throws IOException {
 		URL url = new URL(postUrl);
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		con.setRequestMethod("POST");
 
 		con.setDoOutput(true);
 
-		this.sendData(con, data);
+		sendData(con, data);
 
-		return this.read(con.getInputStream());
+		return read(con.getInputStream());
 	}
 
-	protected void sendData(HttpURLConnection con, String data) throws IOException {
+	public static void sendData(HttpURLConnection con, String data) throws IOException {
 		DataOutputStream wr = null;
 		try {
 			wr = new DataOutputStream(con.getOutputStream());
@@ -45,11 +45,11 @@ public abstract class Task implements Runnable {
 		} catch (IOException exception) {
 			throw exception;
 		} finally {
-			this.closeQuietly(wr);
+			closeQuietly(wr);
 		}
 	}
 
-	protected String read(InputStream is) throws IOException {
+	public static String read(InputStream is) throws IOException {
 		BufferedReader in = null;
 		String inputLine;
 		StringBuilder body;
@@ -67,11 +67,11 @@ public abstract class Task implements Runnable {
 		} catch (IOException ioe) {
 			throw ioe;
 		} finally {
-			this.closeQuietly(in);
+			closeQuietly(in);
 		}
 	}
 
-	protected void closeQuietly(Closeable closeable) {
+	public static void closeQuietly(Closeable closeable) {
 		try {
 			if (closeable != null) {
 				closeable.close();
@@ -83,7 +83,15 @@ public abstract class Task implements Runnable {
 
 	public static DBCollection getDBCollection(DB database, String collectionName) {
 		if (!database.collectionExists(collectionName)) {
-			database.createCollection(collectionName, new BasicDBObject());
+			BasicDBObject basicDBObject = new BasicDBObject();
+			database.createCollection(collectionName, basicDBObject);
+			if (!(collectionName.equals("users") || collectionName.equals("results"))) {
+				BasicDBObject dbObject = new BasicDBObject();
+				dbObject.append("id", "count");
+				dbObject.append("value", 0);
+				database.getCollection(collectionName).insert(dbObject);
+			}
+
 			System.out.println("Collection created successfully : " + collectionName);
 		}
 		return database.getCollection(collectionName);

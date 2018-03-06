@@ -59,28 +59,37 @@ export default async function (userId, clientObject, chaincodeId, chaincodeVersi
           event_status: 'TIMEOUT'
         });
       }, TRANSACTION_TIMEOUT);
-      event_hub.connect();
-      event_hub.registerTxEvent(transaction_id_string, (tx, code) => {
-        // this is the callback for transaction event status
-        // first some clean up of event listener
-        clearTimeout(handle);
-        event_hub.unregisterTxEvent(transaction_id_string);
-        event_hub.disconnect();
-        // now let the application know what happened
-        var return_status = {
-          event_status: code,
-          tx_id: transaction_id_string
-        };
-        if(code !== 'VALID') {
-          console.error('The transaction was invalid, code = ' + code);
-          resolve(return_status); // we could use reject(new Error('Problem with the tranaction, event status ::'+code));
-        } else {
-          //console.log('The transaction has been committed on peer ' + event_hub._ep._endpoint.addr);
-          resolve(return_status);
+      var connectHub = async function (event_hub, count) {
+        try {
+          event_hub.connect();
+          event_hub.registerTxEvent(transaction_id_string, (tx, code) => {
+            // this is the callback for transaction event status
+            // first some clean up of event listener
+            clearTimeout(handle);
+            event_hub.unregisterTxEvent(transaction_id_string);
+            event_hub.disconnect();
+            // now let the application know what happened
+            resolve({
+              event_status: code,
+              tx_id: transaction_id_string
+            });
+            //return return_status;
+          }, (err) => {
+            //clearTimeout(handle);
+            throw new Error('There was a problem with the eventhub ::' + err);
+            //reject(new Error('There was a problem with the eventhub ::' + err));
+          });
+        } catch(e) {
+          count++;
+          if(count > 2) {
+            clearTimeout(handle);
+            reject(e);
+          } else {
+            return connectHub(event_hub, count);
+          }
         }
-      }, (err) => {
-        reject(new Error('There was a problem with the eventhub ::' + err));
-      });
+      }
+      connectHub(event_hub, 1);
     });
     promises.push(txPromise);
     var results = await Promise.all(promises);

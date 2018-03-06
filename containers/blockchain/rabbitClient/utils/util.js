@@ -7,16 +7,14 @@ import config from './config';
 import {
   RabbitClient
 } from './channel';
-//const amqp = require('amqplib/callback_api');
 var RedisClustr = require('redis-clustr');
 const rabbitClient = new RabbitClient(config);
 (async () => {
   try {
-    await rabbitClient.configureClient();
+    await rabbitClient.configureClient(0);
     console.log("Rabbit client configured");
-    //console.log(rabbitClient);
   } catch(e) {
-    console.log(e);
+    console.error(e);
     process.exit(-1);
   }
 })();

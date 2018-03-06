@@ -51,19 +51,23 @@ export class OrganizationClient extends EventEmitter {
         url: this._peerConfig.userKeystoreDBUrl
       });
       crypto_suite.setCryptoKeyStore(crypto_store);
-      this._client.setCryptoSuite(crypto_suite);
-      console.log("Register CA " + this._caConfig.caName);
+      var client_crypto_suite = hfc.newCryptoSuite();
+      var client_crypto_store = hfc.newCryptoKeyStore(CouchDBKeyValueStore, {
+        name: this._peerConfig.userKeystoreDBName,
+        url: this._peerConfig.userKeystoreDBUrl
+      });
+      client_crypto_suite.setCryptoKeyStore(client_crypto_store);
+      this._client.setCryptoSuite(client_crypto_suite);
       this._ca = await new CAClient(this._caConfig.url, {
         trustedRoots: [],
         verify: false
       }, this._caConfig.caName, crypto_suite);
-      console.log("CA registration complete " + this._ca);
-      //await this.createOrgAdmin();
-      //this._adminUser = await getSubmitter(this._client, "admin", "adminpw", this._ca, {
+      console.log("CA registration complete ");
       this._adminUser = await enrollUser(this._client, "admin", "adminpw", this._ca, {
         mspId: this._caConfig.mspId,
         adminUser: null,
-        affiliationOrg: this._peerConfig.org
+        affiliationOrg: this._peerConfig.org,
+        noOfAttempts: 5
       });
       //await this._client.setUserContext(this._adminUser);
       //await this.createOrgAdmin();
@@ -318,7 +322,8 @@ export class OrganizationClient extends EventEmitter {
       return enrollUser(this._client, enrollmentID, "", this._ca, {
         mspId: this._caConfig.mspId,
         adminUser: adminUser,
-        affiliationOrg: this._peerConfig.org
+        affiliationOrg: this._peerConfig.org,
+        noOfAttempts: 3
       });
     } catch(e) {
       throw e;

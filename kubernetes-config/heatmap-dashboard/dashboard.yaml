@@ -1,0 +1,35 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: heatmap-dashboard
+  labels:
+    app: heatmap-dashboard
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 4200
+  type: LoadBalancer
+  selector:
+    app: heatmap-dashboard
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: heatmap-dashboard-deployment
+  labels:
+    app: heatmap-dashboard
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: heatmap-dashboard
+    spec:
+      containers:
+        - image: darryl3223/heatmap-dashboard:1.0
+          name: heatmap-dashboard
+          ports:
+            - containerPort: 4200
