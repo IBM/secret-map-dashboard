@@ -82,14 +82,14 @@ router.post("/add", function(req, res) {
 router.post("/update/:registereeId/steps/:steps", function(req, res) {
   // JSON in req.body
   // Insert input validation
-  Registerees.update({"registereeId": req.params.registereeId}, 
-  {"steps": req.params.steps}, function(err) {
-    if(err){
-      res.send(err);
-    } else {
-      res.send(`Update Registeree ${req.params.registereeId}'s steps.`);
-    }
-  });
+  Registerees.update({"registereeId": req.params.registereeId},
+    {"steps": req.params.steps}, function(err) {
+      if (err) {
+        res.send(err);
+      } else {
+        res.send(`Update Registeree ${req.params.registereeId}'s steps.`);
+      }
+    });
 });
 
 
@@ -97,13 +97,13 @@ router.post("/update/:registereeId/calories/:calories", function(req, res) {
   // JSON in req.body
   // Insert input validation
   Registerees.update({"registereeId": req.params.registereeId}, 
-  {"calories": req.params.calories}, function(err) {
-    if(err){
-      res.send(err);
-    } else {
-      res.send(`Update Registeree ${req.params.registereeId}'s calories.`);
-    }
-  });
+    {"calories": req.params.calories}, function(err) {
+      if (err) {
+        res.send(err);
+      } else {
+        res.send(`Update Registeree ${req.params.registereeId}'s calories.`);
+      }
+    });
 });
 
 module.exports = router;
