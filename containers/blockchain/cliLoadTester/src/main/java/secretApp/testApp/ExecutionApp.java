@@ -1,13 +1,14 @@
 package secretApp.testApp;
 
-import java.net.UnknownHostException;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Set;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -18,100 +19,170 @@ public class ExecutionApp {
 	private static String executionURL = "http://localhost:3000/api/execute";
 	private static String dbName = "testResults";
 	private static int count = 0;
+	private static int steps = 100;
+	private static int fixOperations = 10;
+	private static int totalUsers = 1500;
+	private static int queuedOperations = 2000;
 
+	@SuppressWarnings("static-access")
 	public static void main(String[] args) {
 		try {
-
-			ExecutorService executorService = Executors.newFixedThreadPool(10);
-			Scanner scan = new Scanner(System.in);
-			int number = 0;
-			do {
-				System.out.println("Select user option ");
-				System.out.println("1. Enroll Users");
-				System.out.println("2. Perform Invoke Operation");
-				System.out.println("3. Perform Query Operation");
-				System.out.println("Enter 0 to exit");
-				try {
-					number = scan.nextInt();
-					switch (number) {
-					case 1:
-						enrollUsers(scan, executorService);
-						System.out.println("Total number of request : " + count);
-						break;
-					case 2:
-						performInvokeOpertion(scan, executorService);
-						System.out.println("Total number of request : " + count);
-						break;
-					case 3:
-						performQueryOpertion(scan, executorService);
-						System.out.println("Total number of request : " + count);
-						break;
-					default:
-						break;
-					}
-				} catch (InputMismatchException e) {
-					System.out.println("Input has to be a number. ");
+			while (true) {
+				MongoClient mongo = getConnection();
+				if (mongo == null) {
+					System.exit(0);
 				}
-			} while (number != 0);
-			scan.close();
-			// while (!executorService.isTerminated()) {
-			// }
-			System.out.println("Finished all threads");
+				Set<DBObject> dbobj = getUserObjects("results", mongo);
+				closeConnection(mongo);
+				if (dbobj.size() > queuedOperations) {
+					System.out.println("Wait for 3 min to finsh execution of queued request");
+					Thread.currentThread().sleep(180000);
+				} else {
+					mongo = getConnection();
+					if (mongo == null) {
+						System.exit(0);
+					}
+					dbobj = getUserObjects("users", mongo);
+					closeConnection(mongo);
+					if (dbobj.size() > 10) {
+						performQueryOpertion(fixOperations);
+						System.out.println("Total Operations queue : " + count);
+						performInvokeOpertion(fixOperations, String.valueOf(steps));
+						System.out.println("Total Operations queue : " + count);
+						performQueryOpertion(fixOperations);
+						System.out.println("Total Operations queue : " + count);
+						steps += 10;
+						if (dbobj.size() < totalUsers) {
+							System.out.println("Enrolling users");
+							enrollUsers(fixOperations);
+						}
+					} else {
+						System.out.println("Enrolling users");
+						enrollUsers(fixOperations);
+						System.out.println("Total Operations queue : " + count);
+						Thread.currentThread().sleep(10000);
+					}
+
+				}
+
+			}
+
 		} catch (Exception ioe) {
 			ioe.printStackTrace();
 		}
 	}
 
-	private static List<DBObject> getUserObjects() {
-		List<DBObject> users = new ArrayList<>();
-		MongoClient mongo;
+	private static MongoClient getConnection() {
+		int attempt = 0;
+		MongoClient mongo = null;
+		while (mongo == null && attempt <= 10) {
+			attempt++;
+			try {
+				mongo = new MongoClient("localhost", 27017);
+				break;
+			} catch (Exception e) {
+				mongo = null;
+			}
+		}
+		return mongo;
+	}
+
+	private static void closeConnection(MongoClient mongo) {
+		mongo.close();
+	}
+
+	private static void executeRequest(String data, MongoClient mongo) {
+		String body;
 		try {
-			mongo = new MongoClient("localhost", 27017);
+			body = Task.post(executionURL, data);
+			JsonObject jsonObj = new JsonParser().parse(body).getAsJsonObject();
+			if (jsonObj.get("status").toString().equals("\"success\"")) {
+				DB database = mongo.getDB(dbName);
+				DBCollection collection = Task.getDBCollection(database, "results");
+				List<DBObject> list = new ArrayList<>();
+				BasicDBObject dataObject = new BasicDBObject();
+				dataObject.append("resultId", jsonObj.get("resultId").getAsString());
+				dataObject.append("query", data);
+				list.add(dataObject);
+				collection.insert(list);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static Set<DBObject> getUserObjects(String collectionName, MongoClient mongo) {
+		Set<DBObject> users = new HashSet<>();
+		try {
 			DB database = mongo.getDB(dbName);
-			DBCollection collection = Task.getDBCollection(database, "users");
+			DBCollection collection = Task.getDBCollection(database, collectionName);
 			DBCursor cursor = collection.find();
 			while (cursor.hasNext()) {
 				users.add(cursor.next());
 			}
-			mongo.close();
-		} catch (UnknownHostException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return users;
 	}
 
-	private static void performQueryOpertion(Scanner scan, ExecutorService executorService) {
-		List<DBObject> users = getUserObjects();
+	private static void performQueryOpertion(int number) {
+		MongoClient mongo = getConnection();
+		if (mongo == null) {
+			System.exit(0);
+		}
+		Set<DBObject> users = getUserObjects("users", mongo);
+		int temp = 0;
 		for (DBObject dbObject : users) {
 			count++;
+			temp++;
 			String userId = dbObject.get("user").toString();
 			String query = "type=query&queue=user_queue&params={\"userId\":\"" + userId
 					+ "\" , \"fcn\":\"getState\" ,\"args\":[\"" + userId + "\"]}";
-			//System.out.println(query);
-			executorService.execute(new ExecutionTask(query, executionURL, dbName));
+
+			executeRequest(query, mongo);
+			if (temp >= number) {
+				break;
+			}
 		}
+		closeConnection(mongo);
 	}
 
-	private static void performInvokeOpertion(Scanner scan, ExecutorService executorService) {
-		System.out.println("Enter users step count");
-		String steps = scan.next();
-		List<DBObject> users = getUserObjects();
+	private static void performInvokeOpertion(int number, String steps) {
+		MongoClient mongo = getConnection();
+		if (mongo == null) {
+			System.exit(0);
+		}
+		Set<DBObject> users = getUserObjects("users", mongo);
+		int temp = 0;
 		for (DBObject dbObject : users) {
 			count++;
+			temp++;
 			String userId = dbObject.get("user").toString();
 			String query = "type=invoke&queue=user_queue&params={ \"userId\":\"" + userId
 					+ "\",\"fcn\":\"generateFitcoins\",\"args\":[\"" + userId + "\",\"" + steps + "\"]}";
-			//System.out.println(query);
-			executorService.execute(new ExecutionTask(query, executionURL, dbName));
+			// executorService.execute(new ExecutionTask(query, executionURL,
+			// dbName));
+			executeRequest(query, mongo);
+			if (temp >= number) {
+				break;
+			}
 		}
+		closeConnection(mongo);
 	}
 
-	private static void enrollUsers(Scanner scan, ExecutorService executorService) {
-		System.out.println("Enter number of users");
-		int number = scan.nextInt();
+	private static void enrollUsers(int number) {
+		MongoClient mongo = getConnection();
+		if (mongo == null) {
+			System.exit(0);
+		}
 		for (int i = 0; i < number; i++) {
 			count++;
-			executorService.execute(new ExecutionTask("type=enroll&queue=user_queue&params={}", executionURL, dbName));
+			// executorService.execute(new
+			// ExecutionTask("type=enroll&queue=user_queue&params={}",
+			// executionURL, dbName));
+			executeRequest("type=enroll&queue=user_queue&params={}", mongo);
 		}
+		closeConnection(mongo);
 	}
 }

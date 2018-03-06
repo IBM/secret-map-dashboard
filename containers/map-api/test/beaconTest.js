@@ -97,8 +97,8 @@ describe('Beacons', () => {
             res.body.should.have.property('beaconId').eql('B01');
             res.body.should.have.property('x');
             res.body.should.have.property('y');
-            res.body.should.have.property('minCount');
-            res.body.should.have.property('maxCount');
+            // res.body.should.have.property('minCount');
+            // res.body.should.have.property('maxCount');
             done();
           });
       });

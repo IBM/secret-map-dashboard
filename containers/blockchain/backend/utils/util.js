@@ -90,42 +90,49 @@ async function execute(type, client, params) {
     throw err;
   }
 }
-export async function createConnection(client) {
+export async function createConnection(client, clientNo) {
   var expiry = process.env.MESSAGEEXPIRY || 300;
+  var q = process.env.RABBITMQQUEUE || 'user_queue';
   amqp.connect(config.rabbitmq, function (err, conn) {
     if(err) {
-      console.log('connection failed', err);
+      console.error('connection failed', err);
       setTimeout(function () {
-        console.log('now attempting reconnect ...');
-        createConnection(client);
+        console.error(clientNo + 'now attempting reconnect ...');
+        createConnection(client, clientNo);
       }, 3000);
     } else {
-      console.log("connected to the server");
+      //console.log("connected to the server");
       conn.on('error', function () {
-        console.log('Connection failed event');
+        console.error('Connection failed event on ' + clientNo);
         setTimeout(function () {
-          console.log('now attempting reconnect ...');
-          createConnection(client);
+          console.error(clientNo + ' now attempting reconnect ...');
+          createConnection(client, clientNo);
         }, 3000);
-        //conn.close();
+      });
+      conn.on("close", function () {
+        console.error('Connection close event on ' + clientNo);
+        setTimeout(function () {
+          console.error(clientNo + ' now attempting reconnect ...');
+          createConnection(client, clientNo);
+        }, 3000);
       });
       conn.createChannel(function (err, ch) {
-        var q = process.env.RABBITMQQUEUE || 'user_queue';
+        //var q = process.env.RABBITMQQUEUE || 'user_queue';
         var setValue = function (key, value) {
           try {
             var redisClient = getRedisConnection();
             redisClient.set(key, value, 'EX', expiry, () => redisClient.quit());
             //redisClient.set(key, value);
           } catch(err) {
-            console.log("Error on redis client : " + err);
+            console.error("Error on redis client : " + err);
           }
         };
-        console.log("creating server queue connection " + q);
+        //console.log("creating server queue connection " + q);
         ch.assertQueue(q, {
           durable: true
         });
         ch.prefetch(1);
-        console.log(' [x] Awaiting RPC requests');
+        console.log('[x] Awaiting RPC requests on client' + clientNo);
         ch.consume(q, function reply(msg) {
           var input = JSON.parse(msg.content.toString());
           var reply = (ch, msg, data) => {
@@ -137,11 +144,13 @@ export async function createConnection(client) {
             setValue(msg.properties.correlationId, data);
             ch.ack(msg);
           };
-          console.log("Processing request : " + JSON.stringify(input.params));
+          console.log(clientNo + " processing request : " + JSON.stringify(input.params));
           execute(input.type, client, input.params).then(function (value) {
             reply(ch, msg, JSON.stringify(value));
           }).catch(err => {
-            console.log("Failed message  : " + err.message);
+            console.error("Failed request on " + clientNo);
+            console.error("Failed request : " + input.params);
+            console.error(" Error Message : " + err.message);
             reply(ch, msg, JSON.stringify({
               message: "failed",
               error: err.message

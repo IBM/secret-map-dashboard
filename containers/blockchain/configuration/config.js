@@ -9,11 +9,10 @@ const config = {
   chaincodeId: 'bcfit',
   chaincodeVersion: '1',
   chaincodePath: 'bcfit',
-  rabbitmq: 'amqp://rabbitmq:5672',
-  //redis: 'redis-server:7000',
+  rabbitmq: 'amqp://rabbitmq:5672?heartbeat=60',
   redisHost: 'redis-server',
   redisPort: 7000,
-  iotDashUrl: 'https://secretmap.mybluemix.net/steps?message=',
+  iotDashUrl: 'https://secretmap-iot.mybluemix.net/steps?message=',
   orderer: {
     hostname: 'orderer0',
     url: 'grpcs://orderer0:7050',
@@ -25,10 +24,10 @@ const config = {
       url: 'grpcs://shop-peer:7051',
       eventHubUrl: 'grpcs://shop-peer:7053',
       pem: readCryptoFile('shopOrg.pem'),
-      userKeystoreDBName: 'user_keystore_db',
-      userKeystoreDBUrl: 'http://couchdb0:5984',
-      stateDBName: 'member_state_db',
-      stateDBUrl: 'http://couchdb0:5984',
+      userKeystoreDBName: 'seller_db',
+      userKeystoreDBUrl: 'http://ca-datastore:5984',
+      stateDBName: 'member_db',
+      stateDBUrl: 'http://shop-statedb:5984',
       org: 'org.ShopOrg',
       userType: 'seller'
     },
@@ -47,10 +46,10 @@ const config = {
       hostname: 'fitcoin-peer',
       url: 'grpcs://fitcoin-peer:7051',
       pem: readCryptoFile('fitcoinOrg.pem'),
-      userKeystoreDBName: 'user_keystore_db',
-      userKeystoreDBUrl: 'http://couchdb1:5984',
-      stateDBName: 'member_state_db',
-      stateDBUrl: 'http://couchdb1:5984',
+      userKeystoreDBName: 'user_db',
+      userKeystoreDBUrl: 'http://ca-datastore:5984',
+      stateDBName: 'member_db',
+      stateDBUrl: 'http://fitcoin-statedb:5984',
       eventHubUrl: 'grpcs://fitcoin-peer:7053',
       org: 'org.FitCoinOrg',
       userType: 'user'
@@ -73,15 +72,15 @@ if(process.env.LOCALCONFIG) {
   config.peers[0].peer.eventHubUrl = 'grpcs://localhost:7053';
   config.peers[0].ca.url = 'https://localhost:7054';
   config.peers[0].peer.userKeystoreDBUrl = 'http://localhost:5984';
-  config.peers[0].peer.stateDBUrl = 'http://localhost:5984';
+  config.peers[0].peer.stateDBUrl = 'http://localhost:9984';
   config.peers[1].peer.url = 'grpcs://localhost:8051';
   config.peers[1].peer.eventHubUrl = 'grpcs://localhost:8053';
   config.peers[1].ca.url = 'https://localhost:8054';
-  config.peers[1].peer.userKeystoreDBUrl = 'http://localhost:6984';
-  config.peers[1].peer.stateDBUrl = 'http://localhost:6984';
-  config.rabbitmq = 'amqp://localhost:5672';
+  config.peers[1].peer.userKeystoreDBUrl = 'http://localhost:5984';
+  config.peers[1].peer.stateDBUrl = 'http://localhost:8984';
+  config.rabbitmq = 'amqp://localhost:5672?heartbeat=60';
   config.redisHost = 'localhost';
-  config.iotDashUrl = 'https://secretmap.mybluemix.net/steps?message=';
+  config.iotDashUrl = 'https://secretmap-iot.mybluemix.net/steps?message=';
 }
 //export default config;
 fs.writeFile("./config.json", JSON.stringify(config), (err) => {
