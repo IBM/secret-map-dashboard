@@ -60,34 +60,31 @@ export default async function (userId, clientObject, chaincodeId, chaincodeVersi
         });
       }, TRANSACTION_TIMEOUT);
       var connectHub = async function (event_hub, count) {
-        try {
-          event_hub.connect();
-          event_hub.registerTxEvent(transaction_id_string, (tx, code) => {
-            // this is the callback for transaction event status
-            // first some clean up of event listener
-            clearTimeout(handle);
-            event_hub.unregisterTxEvent(transaction_id_string);
-            event_hub.disconnect();
-            // now let the application know what happened
-            resolve({
-              event_status: code,
-              tx_id: transaction_id_string
-            });
-            //return return_status;
-          }, (err) => {
-            //clearTimeout(handle);
-            throw new Error('There was a problem with the eventhub ::' + err);
-            //reject(new Error('There was a problem with the eventhub ::' + err));
+        event_hub.connect();
+        event_hub.registerTxEvent(transaction_id_string, (tx, code) => {
+          // this is the callback for transaction event status
+          // first some clean up of event listener
+          clearTimeout(handle);
+          event_hub.unregisterTxEvent(transaction_id_string);
+          event_hub.disconnect();
+          // now let the application know what happened
+          resolve({
+            event_status: code,
+            tx_id: transaction_id_string
           });
-        } catch(e) {
+          //return return_status;
+        }, (err) => {
+          //clearTimeout(handle);
+          //throw new Error('There was a problem with the eventhub ::' + err);
+          //reject(new Error('There was a problem with the eventhub ::' + err));
           count++;
           if(count > 2) {
             clearTimeout(handle);
-            reject(e);
+            reject(new Error('There was a problem with the eventhub ::' + err));
           } else {
-            return connectHub(event_hub, count);
+            connectHub(event_hub, count);
           }
-        }
+        });
       }
       connectHub(event_hub, 1);
     });

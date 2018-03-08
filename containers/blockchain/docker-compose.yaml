@@ -9,6 +9,11 @@ services:
       - COUCHDB_PASSWORD=
     ports:
       - 5984:5984
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "10"
 
   fitcoin-ledger:
     container_name: fitcoin-ledger
@@ -18,6 +23,11 @@ services:
       - COUCHDB_PASSWORD=
     ports:
       - 6984:5984
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "10"
 
   shop-ledger:
     container_name: shop-ledger
@@ -27,6 +37,11 @@ services:
       - COUCHDB_PASSWORD=
     ports:
       - 7984:5984
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "10"
 
   fitcoin-statedb:
     container_name: fitcoin-statedb
@@ -36,6 +51,11 @@ services:
       - COUCHDB_PASSWORD=
     ports:
       - 8984:5984
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "10"
 
   shop-statedb:
     container_name: shop-statedb
@@ -45,6 +65,11 @@ services:
       - COUCHDB_PASSWORD=
     ports:
       - 9984:5984
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "10"
 
   rabbitmq1:
     container_name: rabbitmq1
@@ -58,7 +83,7 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"
+        max-size: "1m"
         max-file: "10"
 
   rabbitmq2:
@@ -75,7 +100,7 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"
+        max-size: "1m"
         max-file: "10"
 
   rabbitmq3:
@@ -92,7 +117,7 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"
+        max-size: "1m"
         max-file: "10"
 
   rabbitmq:
@@ -108,6 +133,11 @@ services:
     ports:
       - 15672:15672
       - 5672:5672
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "10"
 
   redis-server:
      hostname: redis-server
@@ -117,7 +147,7 @@ services:
      logging:
        driver: "json-file"
        options:
-         max-size: "10m"
+         max-size: "1m"
          max-file: "10"
 
   shop-ca:
@@ -131,7 +161,7 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"
+        max-size: "1m"
         max-file: "10"
 
   fitcoin-ca:
@@ -145,7 +175,7 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"
+        max-size: "1m"
         max-file: "10"
 
   orderer0:
@@ -169,7 +199,7 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"
+        max-size: "1m"
         max-file: "10"
 
   shop-peer:
@@ -212,7 +242,7 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"
+        max-size: "1m"
         max-file: "10"
 
   fitcoin-peer:
@@ -253,6 +283,11 @@ services:
       - ca-datastore
       - fitcoin-ledger
       - fitcoin-statedb
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "10"
 
   blockchain-setup :
     container_name: blockchain-setup
@@ -306,7 +341,7 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"
+        max-size: "1m"
         max-file: "10"
 
   fitcoin-backend :
@@ -333,7 +368,7 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"
+        max-size: "1m"
         max-file: "10"
 
   rabbitclient1 :
@@ -354,7 +389,7 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"
+        max-size: "1m"
         max-file: "10"
 
   rabbitclient2 :
@@ -375,7 +410,7 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"
+        max-size: "1m"
         max-file: "10"
 
   rabbitclient3 :
@@ -396,7 +431,7 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"
+        max-size: "1m"
         max-file: "10"
 
   rabbitclient:
@@ -414,7 +449,7 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "10m"
+        max-size: "1m"
         max-file: "10"
 
 secrets:
