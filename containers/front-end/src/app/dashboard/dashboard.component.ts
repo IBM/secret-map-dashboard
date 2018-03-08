@@ -72,7 +72,7 @@ export class DashboardComponent implements OnInit {
    */
   getConferenceAttendees(): void {
     this.MainDisplayInterval = setInterval(() => {
-      if(this.conferenceAttendees < 500){
+      if (this.conferenceAttendees < 500) {
         this.conferenceAttendees += 1;
       }
     }, 1000);

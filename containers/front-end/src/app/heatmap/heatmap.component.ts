@@ -8,16 +8,24 @@ import {setInterval} from 'timers';
 })
 export class HeatmapComponent implements OnInit {
 
-  private heatMapInterval: any;
+  private HEATMAP_INTERVAL = 100;
+  private DEGRADED_INTERVAL = 100;
   private HEATMAP_ROWS = 35;
   private HEATMAP_COLUMNS = 60;
+  private degradedCells: Array<object>;
 
   constructor() {
+    this.degradedCells = [];
   }
 
   ngOnInit() {
     this.makeGrid();
-    this.colorHeatMap();
+    setInterval(() => {
+      this.colorHeatMap();
+    }, this.HEATMAP_INTERVAL);
+    setInterval(() => {
+      this.changeDegradedCell();
+    }, this.DEGRADED_INTERVAL);
   }
 
   /**
@@ -51,11 +59,16 @@ export class HeatmapComponent implements OnInit {
    * @param number y
    */
 
-  public changeGridCell(x, y): void {
+  public changeGridCell(x: number, y: number, decreaseFlag: boolean): void {
     const svg = d3.select('.heatmap');
     const cell = svg.select(`.gridCell${x}-${y}`);
     const rgbArray = parseRGB(cell.style('fill'));
-    const colorValue = increaseColor(rgbArray);
+    let colorValue = [];
+    if (decreaseFlag) {
+      colorValue = decreaseColor(rgbArray);
+    } else {
+      colorValue = increaseColor(rgbArray);
+    }
     cell.style('fill', String(d3.rgb(colorValue[0], colorValue[1], colorValue[2])));
   }
 
@@ -78,10 +91,21 @@ export class HeatmapComponent implements OnInit {
    * Creates a random step and colors grid cell every second
    */
   public colorHeatMap(): void {
-    this.heatMapInterval = setInterval(() => {
-      const step = randomStep(this.HEATMAP_ROWS - 1, this.HEATMAP_COLUMNS - 1);
-      this.changeGridCell(step['x'], step['y']);
-    }, 250);
+    const step = randomStep(this.HEATMAP_ROWS - 1, this.HEATMAP_COLUMNS - 1);
+    this.addDegradedCell(step);
+    this.changeGridCell(step['x'], step['y'], false);
+  }
+
+  /**
+   * Creates a random step and colors grid cell every second
+   */
+  public changeDegradedCell(): void {
+    if(this.getDegradedCellsSize() > 500){
+      const step = this.retrieveDegradedCell();
+      if (step) {
+        this.changeGridCell(step['x'], step['y'], true);
+      }
+    }
   }
 
   /**
@@ -114,14 +138,35 @@ export class HeatmapComponent implements OnInit {
     this.HEATMAP_COLUMNS = columns;
   }
 
-    /**
-   * Checks when browser changes in size and will make the maparea responsive
-   * @param - none
+  /**
+   * Adds a degradedCell object to the queue
    */
-    @HostListener('window:resize')
-    onResize() {
-      this.makeGrid();
-    }
+  public addDegradedCell(degradeCell: object): void {
+    this.degradedCells.push(degradeCell);
+  }
+
+  /**
+   * Returns the first degradedCell object
+   */
+  public retrieveDegradedCell(): object {
+    return this.degradedCells.shift();
+  }
+
+ /**
+  * Returns the first degradedCell object
+  */
+  public getDegradedCellsSize(): number {
+    return this.degradedCells.length;
+  }
+
+  /**
+  * Checks when browser changes in size and will make the maparea responsive
+  * @param - none
+  */
+  @HostListener('window:resize')
+  public onResize(): void {
+    this.makeGrid();
+  }
 }
 
 /**
@@ -151,14 +196,13 @@ export function getRandomInt(upperBound: number): number {
  * @param number upperBound      must be greater than 0
  */
 export function getRandomRows(upperBound: number): number {
-  let prob = Math.random();
-  if(prob <= 0.8){
-    let max = upperBound * 0.2;
-    let min =  upperBound * 0.4;
-    let randomNum =  Math.floor(Math.random() * (max - min) + min);
+  const prob = Math.random();
+  if (prob <= 0.8 ) {
+    const max = upperBound * 0.2;
+    const min =  upperBound * 0.4;
+    const randomNum =  Math.floor(Math.random() * (max - min) + min);
     return (randomNum > 0 ? randomNum : 1);
-  }
-  else{
+  } else {
     return getRandomInt(upperBound);
   }
 }
@@ -168,14 +212,13 @@ export function getRandomRows(upperBound: number): number {
  * @param number upperBound      must be greater than 0
  */
 export function getRandomCols(upperBound: number): number {
-  let prob = Math.random();
-  if(prob <= 0.8){
-    let max = upperBound * 0.1;
-    let min =  upperBound * 0.9;
-    let randomNum =  Math.floor(Math.random() * (max - min) + min);
+  const prob = Math.random();
+  if (prob <= 0.8) {
+    const max = upperBound * 0.1;
+    const min =  upperBound * 0.9;
+    const randomNum =  Math.floor(Math.random() * (max - min) + min);
     return (randomNum > 0 ? randomNum : 1);
-  }
-  else{
+  } else {
     return getRandomInt(upperBound);
   }
 }
@@ -202,14 +245,34 @@ export function increaseColor(rgbArray: Array<number>) {
   const colorVariance = 85;
   if (rgbArray[0] === 255 && rgbArray[1] === 255 && rgbArray[2] === 255) {
     return [0, 255, 0];
-  }
-  if ((Math.abs(rgbArray[0]) < 255 )  && (Math.abs(rgbArray[1]) <= 255 && Math.abs(rgbArray[1]) > 0 )) {
+  } else if (rgbArray[0] < 255  && (rgbArray[1] <= 255 && rgbArray[1] > 0 ) && rgbArray[2] === 0) {
     // change grid cell to yellow
     rgbArray[0] += colorVariance;
     return [rgbArray[0], rgbArray[1], 0];
-  } else if (Math.abs(rgbArray[1]) > 0 ) {
+  } else if (rgbArray[1] > 0 ) {
     // change grid cell to red
     rgbArray[1] -= colorVariance;
+    return [rgbArray[0], rgbArray[1], 0];
+  } else {
+    return rgbArray;
+  }
+}
+
+/**
+ * Changes cell from red to yellow to green
+ * @param Array<number> rgbArray    size of Array must be 3
+ */
+export function decreaseColor(rgbArray: Array<number>) {
+  const colorVariance = 85;
+  if (rgbArray[0] === 0 && rgbArray[1] === 255 && rgbArray[2] === 0 ) {
+    return [255, 255, 255];
+  } else if (rgbArray[0] === 255 && (rgbArray[1] < 255 && rgbArray[1] >= 0) && rgbArray[2] === 0) {
+    // change grid cell to yellow
+    rgbArray[1] += colorVariance;
+    return [rgbArray[0], rgbArray[1], 0];
+  } else if (rgbArray[0] > 0  && rgbArray[1] === 255  && rgbArray[2] === 0) {
+    // change grid cell to green
+    rgbArray[0] -= colorVariance;
     return [rgbArray[0], rgbArray[1], 0];
   } else {
     return rgbArray;

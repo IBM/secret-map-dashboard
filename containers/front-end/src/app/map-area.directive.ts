@@ -58,11 +58,11 @@ export class MapAreaDirective implements AfterViewChecked {
       } else if (eventBlock.attr('name') === 'polygon') {
         const points = this.booths[index].shape['points'].split(/[\s,]+/);
         let scaledPoints = '';
-        for (let index = 0; index < points.length; index++) {
-          if ( index % 2 === 0) {
-            scaledPoints += points[index] * this.widthRatio + ',';
+        for (let x = 0; x < points.length; x++) {
+          if ( x % 2 === 0) {
+            scaledPoints += points[x] * this.widthRatio + ',';
           } else {
-            scaledPoints += points[index] * this.heightRatio + ' ';
+            scaledPoints += points[x] * this.heightRatio + ' ';
           }
         }
         eventBlock.attr('points', scaledPoints);

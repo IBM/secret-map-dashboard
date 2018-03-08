@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 // Componenets
 import { HeatmapComponent } from './heatmap.component';
 // Helper Functions
-import { getRandomInt, randomStep, parseRGB, increaseColor} from './heatmap.component';
+import { getRandomInt, randomStep, parseRGB, increaseColor, decreaseColor} from './heatmap.component';
 
 
 describe('HeatmapComponent', () => {
@@ -48,15 +48,26 @@ describe('HeatmapComponent', () => {
       }
     });
 
-    it('should increase color', () => {
+    it('should increase cell\'s color', () => {
       const colorGreen = [0, 255, 0];
       const colorYellow = [255, 255, 0];
       const colorRed = [255, 0, 0];
       const colorWhite = [255, 255, 255];
-      expect(increaseColor(colorGreen)).toEqual([85, 255, 0]);
-      expect(increaseColor(colorYellow)).toEqual([255, 170, 0]);
-      expect(increaseColor(colorRed)).toEqual([255, 0, 0]);
-      expect(increaseColor(colorWhite)).toEqual([0, 255, 0]);
+      expect(increaseColor(colorGreen)).toEqual([85, 255, 0]); // changing to yellow
+      expect(increaseColor(colorYellow)).toEqual([255, 170, 0]); // changing to red
+      expect(increaseColor(colorRed)).toEqual([255, 0, 0]); // stays the same
+      expect(increaseColor(colorWhite)).toEqual([0, 255, 0]); // changing to green
+    });
+
+    it('should decrease cell\'s color', () => {
+      const colorGreen = [0, 255, 0];
+      const colorYellow = [255, 255, 0];
+      const colorRed = [255, 0, 0];
+      const colorWhite = [255, 255, 255];
+      expect(decreaseColor(colorGreen)).toEqual([255, 255, 255]); // stays the same
+      expect(decreaseColor(colorYellow)).toEqual([170, 255, 0]); // changing to green
+      expect(decreaseColor(colorRed)).toEqual([255, 85, 0]); // changing to yellow
+      expect(decreaseColor(colorWhite)).toEqual([255, 255, 255]); // stays the same
     });
 
     it('should parse rgb string', () => {
@@ -80,7 +91,6 @@ describe('HeatmapComponent', () => {
   });
 
   describe('#componentFunctions', () => {
-
     it('should return an array of grid coordinates', () => {
       let rows = 1;
       let columns = 1;
@@ -97,9 +107,9 @@ describe('HeatmapComponent', () => {
 
     it('should change grid cell\'s color', () => {
       const cell = d3.select('.heatmap').select('.gridCell1-1');
-      component.changeGridCell(1, 1);
+      component.changeGridCell(1, 1, false);
       expect(cell.style('fill')).toEqual('rgb(0, 255, 0)');
-      component.changeGridCell(1, 1);
+      component.changeGridCell(1, 1, false);
       expect(cell.style('fill')).toEqual('rgb(85, 255, 0)');
     });
 
@@ -114,6 +124,23 @@ describe('HeatmapComponent', () => {
         expect(d['className']).toBeDefined();
       });
       expect(cells.size()).toEqual(component.getHEATMAP_COLUMNS() * component.getHEATMAP_ROWS());
+    });
+
+    it('should check if degradedCell is added to queue and removed from queue', () => {
+      const runSize = 10;
+      for (let x = 0; x < runSize; x++ ) {
+        component.colorHeatMap();
+      }
+      expect(component.getDegradedCellsSize()).toEqual(runSize);
+      component.changeDegradedCell();
+      expect(component.getDegradedCellsSize()).toEqual(10);
+      const runSize2 = 500;
+      for (let x = 0; x < runSize2; x++ ) {
+        component.colorHeatMap();
+      }
+      component.changeDegradedCell();
+      expect(component.getDegradedCellsSize()).toEqual((runSize2+runSize)-1);
+
     });
 
   });
