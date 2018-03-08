@@ -1,0 +1,37 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+    ingress.kubernetes.io/ssl-redirect: "true"
+    ingress.kubernetes.io/from-to-www-redirect: "true"
+  name: prod-ingress
+spec:
+  tls:
+    - hosts:
+        - www.ibm-fitchain.com
+      secretName: comodo-cert
+  backend:
+    serviceName: map-api
+    servicePort: 80
+  rules:
+    - host: www.ibm-fitchain.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: map-api
+              servicePort: 80
+          - path: /registerees
+            backend:
+              serviceName: registeree-api
+              servicePort: 80
+          - path: /footprints
+            backend:
+              serviceName: registeree-api
+              servicePort: 80
+          - path: /api
+            backend:
+              serviceName: blockchain-vm
+              servicePort: 3000

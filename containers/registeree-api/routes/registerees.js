@@ -15,6 +15,17 @@ router.get("/", function(req, res) {
   });
 });
 
+router.get("/totalUsers", function(req, res) {
+  Registerees.count(function(err, count) {
+    if (err) {
+      res.send(err);
+    }
+    else {
+      res.send({"count":count});
+    }
+  });
+});
+
 router.get("/info/:registereeId", function(req, res) {
   Registerees.findOne(req.params, function(err, registeree) {
     if (err){
