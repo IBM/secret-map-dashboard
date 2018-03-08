@@ -2,32 +2,32 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const assert = require("assert");
-// const fs = require("fs");
+const fs = require("fs");
 const cors = require("cors");
 
 const registereeRoute = require("./routes/registerees");
 const footprintRoute = require("./routes/footprints");
 
-// const mongoDbUrl = process.env.MONGODB_URL;
-// let ca;
-// if (process.env.MONGODB_CERT_BASE64) { // if encoded certificate is set in ENV, use it.
-//   ca = new Buffer(process.env.MONGODB_CERT_BASE64, "base64");
-// } else if (fs.existsSync("/etc/ssl/mongo.cert")) { // if mongo.cert exists, use it
-//   ca = [fs.readFileSync("/etc/ssl/mongo.cert")];
-// } else if (process.env.UNIT_TEST == "test") { // if a test, don't do anything.
-//   console.log("This is a test. Run a local mongoDB.");
-// } else {
-//   console.log("No certificate provided!");
-// }
+const mongoDbUrl = process.env.MONGODB_URL;
+let ca;
+if (process.env.MONGODB_CERT_BASE64) { // if encoded certificate is set in ENV, use it.
+  ca = new Buffer(process.env.MONGODB_CERT_BASE64, "base64");
+} else if (fs.existsSync("/etc/ssl/mongo.cert")) { // if mongo.cert exists, use it
+  ca = [fs.readFileSync("/etc/ssl/mongo.cert")];
+} else if (process.env.UNIT_TEST == "test") { // if a test, don't do anything.
+  console.log("This is a test. Run a local mongoDB.");
+} else {
+  console.log("No certificate provided!");
+}
 
-// let mongoDbOptions = {
-//   mongos: {
-//     useMongoClient: true,
-//     ssl: true,
-//     sslValidate: true,
-//     sslCA: ca,
-//   },
-// };
+let mongoDbOptions = {
+  mongos: {
+    useMongoClient: true,
+    ssl: true,
+    sslValidate: true,
+    sslCA: ca,
+  },
+};
 
 mongoose.connection.on("error", function(err) {
   console.log("Mongoose default connection error: " + err);
@@ -38,23 +38,14 @@ mongoose.connection.on("open", function(err) {
   assert.equal(null, err);
 });
 
-// if (process.env.UNIT_TEST == "test") {
-//   mongoose.connect("mongodb://localhost/test", mongoDbOptions);
-// }
-// else {
-//   mongoose.connect(mongoDbUrl, mongoDbOptions);
-// }
-
-
-let mongoDbOptions = {
-  useMongoClient: true,
-};
-
 if (process.env.UNIT_TEST == "test") {
-  mongoose.connect("mongodb://localhost/test");
+  mongoDbOptions = {
+    useMongoClient: true,
+  };
+  mongoose.connect("mongodb://localhost/test", mongoDbOptions);
 }
 else {
-  mongoose.connect('mongodb://localhost/registeree-api', mongoDbOptions);
+  mongoose.connect(mongoDbUrl, mongoDbOptions);
 }
 
 app.use(require("body-parser").json());
