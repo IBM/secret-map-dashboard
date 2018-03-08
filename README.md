@@ -102,6 +102,8 @@ _Application will be served on http://localhost:4200_
 
 * Main-dispaly - shows the event name, the event booth blocks with centered text ( which is the Map area componenet), and a footer that displays the total tally number of the distance traveled, the calories burned, and the fitcoins accumlated by conference attendees at a conference. 
 
+* Heatmap - display a NxM grid that will display different gradients of color depending on the conference attendee's footsteps
+
 * Map-area - displays the event booth blocks with centered text as well as a movement heatmap of the conference attendees
 
 * Side-display -  displays theme related images as well as a running count of the number of steps walked and the number calories burned by the conference attendees at the conference
