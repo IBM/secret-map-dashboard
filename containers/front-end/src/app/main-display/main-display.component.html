@@ -4,9 +4,11 @@
     </div>
 </div>
 <div class="mainDisplayMapContainer" >
-        <app-map-area class="mainDisplayMap"
-            [booths]="conference.map"
-            [beacons]="conference.beacons"
-            [eventName]="conference.eventName">
-        </app-map-area>
+    <app-map-area class="mainDisplayMap"
+        [booths]="conference.map"
+        [beacons]="conference.beacons"
+        [eventName]="conference.eventName"
+        [mapHeight]="conference.y"
+        [mapWidth]="conference.x">
+    </app-map-area>
 </div>

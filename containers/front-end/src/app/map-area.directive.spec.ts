@@ -21,7 +21,6 @@ describe('MapAreaDirective', () => {
   });
 
   describe('#initialization', () => {
-
     it('should create a MapAreaDirective instance', () => {
       const directive = new MapAreaDirective(element);
       directive.beacons = [

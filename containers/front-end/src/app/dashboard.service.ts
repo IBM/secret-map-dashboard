@@ -9,9 +9,7 @@ import {Conference} from './conference';
 @Injectable()
 export class DashboardService {
   // IP address where map api server is being served
-  // readonly API_URL = 'http://169.46.74.117';
-  readonly API_URL = 'http://169.48.220.218';
-
+  readonly API_URL = 'https://www.ibm-fitchain.com';
   constructor(private http: HttpClient) { }
 
   /**
@@ -31,6 +29,34 @@ export class DashboardService {
     const url = `${this.API_URL}/events/${eventId}`;
     return this.http.get<Conference>(url).pipe(
       catchError(this.handleError<Conference>(`getConference eventId=${eventId}`)));
+  }
+
+
+  /**
+ * GET total steps from the registeree server.
+ */
+  getTotalSteps(): Observable<object[]> {
+    const url = `${this.API_URL}/registerees/totalSteps`;
+    return this.http.get<object[]>(url)
+      .pipe(catchError(this.handleError('getTotalSteps', [])));
+  }
+
+/**
+ * GET total calories from the registeree server.
+ */
+  getTotalCalories(): Observable<object[]> {
+    const url = `${this.API_URL}/registerees/totalCalories`;
+    return this.http.get<object[]>(url)
+      .pipe(catchError(this.handleError('getTotalCalories', [])));
+  }
+
+  /**
+ * GET total calories from the registeree server.
+ */
+  getTotalUsers(): Observable<object> {
+    const url = `${this.API_URL}/registerees/totalUsers`;
+    return this.http.get<object>(url)
+      .pipe(catchError(this.handleError('getTotalUsers', {})));
   }
 
   /**

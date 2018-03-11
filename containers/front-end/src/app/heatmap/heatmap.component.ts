@@ -8,11 +8,12 @@ import {setInterval} from 'timers';
 })
 export class HeatmapComponent implements OnInit {
 
-  private HEATMAP_INTERVAL = 100;
-  private DEGRADED_INTERVAL = 100;
-  private HEATMAP_ROWS = 35;
-  private HEATMAP_COLUMNS = 60;
+  private HEATMAP_INTERVAL = 500;
+  private DEGRADED_INTERVAL = 1000;
   private degradedCells: Array<object>;
+  private heatMapInterval: any;
+  private HEATMAP_ROWS = 3;
+  private HEATMAP_COLUMNS = 6;
 
   constructor() {
     this.degradedCells = [];
@@ -42,14 +43,16 @@ export class HeatmapComponent implements OnInit {
       .data(data, function(d) {return d['x'] + ':' + d['y']; });
       cards.enter().append('rect')
       .attr('x', function(d) { return (d['x'] - 1) * width / gridColumns; })
-      .attr('y', function(d) { return (d['y'] - 1) * height / gridRows; })
-      .attr('rx', 4)
-      .attr('ry', 4)
+      .attr('y', function(d) {
+        return (d['y'] - 1) * height / gridRows; })
+      .attr('rx', 10)
+      .attr('ry', 10)
       .attr('width', width / gridColumns)
-      .attr('height', height / gridRows )
+      .attr('height', function(d) {
+        return height / gridRows; } )
       .attr('class', function(d){ return d['className']; })
       .style('stroke', '#E6E6E6')
-      .style('stroke-width', '2')
+      .style('stroke-width', '3')
       .style('fill', String(d3.rgb(255, 255, 255)));
   }
 
@@ -91,7 +94,7 @@ export class HeatmapComponent implements OnInit {
    * Creates a random step and colors grid cell every second
    */
   public colorHeatMap(): void {
-    const step = randomStep(this.HEATMAP_ROWS - 1, this.HEATMAP_COLUMNS - 1);
+    const step = randomStep(this.HEATMAP_ROWS, this.HEATMAP_COLUMNS);
     this.addDegradedCell(step);
     this.changeGridCell(step['x'], step['y'], false);
   }
@@ -100,7 +103,7 @@ export class HeatmapComponent implements OnInit {
    * Creates a random step and colors grid cell every second
    */
   public changeDegradedCell(): void {
-    if(this.getDegradedCellsSize() > 500){
+    if (this.getDegradedCellsSize() > 10) {
       const step = this.retrieveDegradedCell();
       if (step) {
         this.changeGridCell(step['x'], step['y'], true);
@@ -165,7 +168,7 @@ export class HeatmapComponent implements OnInit {
   */
   @HostListener('window:resize')
   public onResize(): void {
-    this.makeGrid();
+    // this.makeGrid();
   }
 }
 
@@ -176,8 +179,8 @@ export class HeatmapComponent implements OnInit {
  */
 export function randomStep(rows, columns): object {
   return {
-    x: getRandomCols(columns),
-    y: getRandomRows(rows),
+    x: getRandomInt(columns),
+    y: getRandomInt(rows),
   };
 }
 
@@ -187,42 +190,8 @@ export function randomStep(rows, columns): object {
  */
 export function getRandomInt(upperBound: number): number {
   const randomNum = Math.floor(Math.random() * Math.floor(upperBound));
-  return (randomNum > 0 ? randomNum : 1);
+  return (randomNum > 0 ? randomNum + 1 : 1);
 }
-
-
-/**
- * Gets a random number between 1 and upperBound
- * @param number upperBound      must be greater than 0
- */
-export function getRandomRows(upperBound: number): number {
-  const prob = Math.random();
-  if (prob <= 0.8 ) {
-    const max = upperBound * 0.2;
-    const min =  upperBound * 0.4;
-    const randomNum =  Math.floor(Math.random() * (max - min) + min);
-    return (randomNum > 0 ? randomNum : 1);
-  } else {
-    return getRandomInt(upperBound);
-  }
-}
-
-/**
- * Gets a random number between 1 and upperBound
- * @param number upperBound      must be greater than 0
- */
-export function getRandomCols(upperBound: number): number {
-  const prob = Math.random();
-  if (prob <= 0.8) {
-    const max = upperBound * 0.1;
-    const min =  upperBound * 0.9;
-    const randomNum =  Math.floor(Math.random() * (max - min) + min);
-    return (randomNum > 0 ? randomNum : 1);
-  } else {
-    return getRandomInt(upperBound);
-  }
-}
-
 
 /**
  * Parses RGB string and creates a rgb array

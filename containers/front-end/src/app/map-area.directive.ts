@@ -12,6 +12,8 @@ export class MapAreaDirective implements AfterViewChecked {
   @Input() booths: Booth[];
   @Input() beacons: Beacon[];
   @Input() eventName: string;
+  @Input() mapHeight: number;
+  @Input() mapWidth: number;
   heightRatio: number;
   widthRatio: number;
 
@@ -24,9 +26,7 @@ export class MapAreaDirective implements AfterViewChecked {
    */
   ngAfterViewChecked() {
     this.changeEventBlockSize();
-    this.changeBeaconBlockSize();
     this.changeBoothTextSize();
-    this.changeRadiusBlockSize();
   }
 
    /**
@@ -35,26 +35,24 @@ export class MapAreaDirective implements AfterViewChecked {
    */
   changeEventBlockSize() {
     const mapArea = d3.select('.mapArea');
-    const ratio = this.eventName === 'Index' ? 25 : 50;
     if (mapArea.size() ===  0) {
       return;
     }
     const eventBlocks = mapArea.selectAll('.eventBlock');
-    this.widthRatio = Math.floor(mapArea.property('clientWidth')) / ratio;
-    this.heightRatio = Math.floor(mapArea.property('clientHeight')) / ratio;
-
+    this.heightRatio = Math.floor(mapArea.property('clientHeight')) / this.mapHeight + 0.025;
+    this.widthRatio = Math.floor(mapArea.property('clientWidth')) / this.mapWidth;
     eventBlocks.each((d, i) => {
       const eventBlock = d3.select(`#eventBlock${i}`);
       const index = i;
       if (eventBlock.attr('name') === 'circle') {
-        eventBlock.attr('cx', this.booths[index].shape['cx'] * this.widthRatio);
-        eventBlock.attr('cy', this.booths[index].shape['cy'] * this.heightRatio);
-        eventBlock.attr('r', this.booths[index].shape['radius'] * ((this.widthRatio + this.heightRatio) / 4));
+        eventBlock.attr('cx', Math.floor(this.booths[index].shape['cx'] * this.widthRatio));
+        eventBlock.attr('cy', Math.floor(this.booths[index].shape['cy'] * this.heightRatio));
+        eventBlock.attr('r', Math.floor(this.booths[index].shape['radius'] * ((this.widthRatio + this.heightRatio) / 4)));
       } else if (eventBlock.attr('name') === 'ellipse') {
-        eventBlock.attr('cx', this.booths[index].shape['cx'] * this.widthRatio);
-        eventBlock.attr('cy', this.booths[index].shape['cy'] * this.heightRatio);
-        eventBlock.attr('rx', this.booths[index].shape['rx'] * this.widthRatio);
-        eventBlock.attr('ry', this.booths[index].shape['ry'] * this.heightRatio);
+        eventBlock.attr('cx', Math.floor(this.booths[index].shape['cx'] * this.widthRatio));
+        eventBlock.attr('cy', Math.floor(this.booths[index].shape['cy'] * this.heightRatio));
+        eventBlock.attr('rx', Math.floor(this.booths[index].shape['rx'] * this.widthRatio));
+        eventBlock.attr('ry', Math.floor(this.booths[index].shape['ry'] * this.heightRatio));
       } else if (eventBlock.attr('name') === 'polygon') {
         const points = this.booths[index].shape['points'].split(/[\s,]+/);
         let scaledPoints = '';
@@ -67,58 +65,33 @@ export class MapAreaDirective implements AfterViewChecked {
         }
         eventBlock.attr('points', scaledPoints);
       } else {
-        eventBlock.attr('width', this.booths[index].shape['width'] * this.widthRatio);
-        eventBlock.attr('height', this.booths[index].shape['height'] * this.heightRatio);
-        eventBlock.attr('x', this.booths[index].shape['x'] * this.widthRatio);
-        eventBlock.attr('y', this.booths[index].shape['y'] * this.heightRatio);
+        eventBlock.attr('width', Math.floor(this.booths[index].shape['width'] * this.widthRatio));
+        eventBlock.attr('height', Math.floor(this.booths[index].shape['height'] * this.heightRatio));
+        eventBlock.attr('x', Math.floor(this.booths[index].shape['x'] * this.widthRatio));
+        eventBlock.attr('y', Math.floor(this.booths[index].shape['y'] * this.heightRatio));
       }
     });
   }
-
-   /**
-   * Changes Beacon location in proporation to the window size
-   * @param parent - HTML Element
-   */
-  changeBeaconBlockSize() {
-    const mapArea = d3.select('.mapArea');
-    const ratio = this.eventName === 'Index' ? 25 : 50;
-    if (mapArea.size() ===  0) {
-      return;
-    }
-    const beaconBlocks = mapArea.selectAll('.beaconBlock');
-    this.widthRatio = Math.floor(mapArea.property('clientWidth')) / ratio;
-    this.heightRatio = Math.floor(mapArea.property('clientHeight')) / ratio;
-
-    beaconBlocks.each((d, i) => {
-      const beaconBlock = d3.select(`#beaconBlock${i}`);
-      const index = i;
-      beaconBlock.attr('cy', this.beacons[index].y * this.heightRatio);
-      beaconBlock.attr('cx', this.beacons[index].x * this.widthRatio);
-    });
-  }
-
-
-     /**
-   * Changes Beacon location in proporation to the window size
-   * @param parent - HTML Element
-   */
-  changeRadiusBlockSize() {
-    const mapArea = d3.select('.mapArea');
-    const ratio = this.eventName === 'Index' ? 25 : 50;
-    if (mapArea.size() ===  0) {
-      return;
-    }
-    const radiusBlocks = mapArea.selectAll('.radiusBlock');
-    this.widthRatio = Math.floor(mapArea.property('clientWidth')) / ratio;
-    this.heightRatio = Math.floor(mapArea.property('clientHeight')) / ratio;
-
-    radiusBlocks.each((d, i) => {
-      const radiusBlock = d3.select(`#radiusBlock${i}`);
-      const index = i;
-      radiusBlock.attr('cy', this.beacons[index].y * this.heightRatio);
-      radiusBlock.attr('cx', this.beacons[index].x * this.widthRatio);
-    });
-  }
+  // DO NOT NEED TO SHOW BEACON DOTS
+  //  /**
+  //  * Changes Beacon location in proporation to the window size
+  //  * @param parent - HTML Element
+  //  */
+  // changeBeaconBlockSize() {
+  //   const mapArea = d3.select('.mapArea');
+  //   if (mapArea.size() ===  0) {
+  //     return;
+  //   }
+  //   const beaconBlocks = mapArea.selectAll('.beaconBlock');
+  //   this.heightRatio = Math.floor(mapArea.property('clientHeight')) / this.mapHeight;
+  //   this.widthRatio = Math.floor(mapArea.property('clientWidth')) / this.mapWidth;
+  //   beaconBlocks.each((d, i) => {
+  //     const beaconBlock = d3.select(`#beaconBlock${i}`);
+  //     const index = i;
+  //     beaconBlock.attr('cy', Math.floor(this.beacons[index].y * (this.heightRatio + this.widthRatio) / 2));
+  //     beaconBlock.attr('cx', Math.floor(this.beacons[index].x * (this.heightRatio + this.widthRatio) / 2));
+  //   });
+  // }
 
    /**
    * Centers booth description
@@ -143,24 +116,25 @@ export class MapAreaDirective implements AfterViewChecked {
       if (eventBlock.attr('name') === 'circle' ) {
         centerEventBlockHeight = Number(eventBlock.attr('cy')) + Number(eventBlock.attr('r')) / 2;
         centerEventBlockWidth = Number(eventBlock.attr('cx')) + Number(eventBlock.attr('r')) / 2 ;
-        boothText.attr('x', centerEventBlockWidth -  boothTexts['_groups'][0][i].getBoundingClientRect().width / 2);
-        boothText.attr('y', centerEventBlockHeight);
+        boothText.attr('x', Math.floor(centerEventBlockWidth -  boothTexts['_groups'][0][i].getBoundingClientRect().width / 2));
+        boothText.attr('y', Math.floor(centerEventBlockHeight));
       } else if ( eventBlock.attr('name') === 'ellipse' ) {
         centerEventBlockHeight = Number(eventBlock.attr('cy')) + Number(eventBlock.attr('ry')) / 2;
         centerEventBlockWidth = Number(eventBlock.attr('cx')) + Number(eventBlock.attr('rx')) / 2 ;
-        boothText.attr('x', centerEventBlockWidth - boothTexts['_groups'][0][i].getBoundingClientRect().width);
-        boothText.attr('y', centerEventBlockHeight);
+        boothText.attr('x', Math.floor(centerEventBlockWidth - boothTexts['_groups'][0][i].getBoundingClientRect().width));
+        boothText.attr('y', Math.floor(centerEventBlockHeight));
       } else if ( eventBlock.attr('name') === 'polygon' ) {
         centerEventBlockHeight = eventBlocks['_groups'][0][i].getBoundingClientRect().top;
         centerEventBlockWidth = eventBlocks['_groups'][0][i].getBoundingClientRect().left +
         eventBlocks['_groups'][0][i].getBoundingClientRect().width / 2;
-        boothText.attr('x', centerEventBlockWidth );
-        boothText.attr('y', centerEventBlockHeight );
+        boothText.attr('x', Math.floor(centerEventBlockWidth ));
+        boothText.attr('y', Math.floor(centerEventBlockHeight ));
       } else {
         centerEventBlockHeight = Number(eventBlock.attr('y')) + Number(eventBlock.attr('height')) / 2;
         centerEventBlockWidth = Number(eventBlock.attr('x')) + Number(eventBlock.attr('width')) / 2 ;
-        boothText.attr('x', centerEventBlockWidth - boothTexts['_groups'][0][i].getBoundingClientRect().width / 2 );
-        boothText.attr('y', centerEventBlockHeight);
+        boothText.attr('x', Math.floor(centerEventBlockWidth));
+        boothText.attr('y', Math.floor(centerEventBlockHeight));
+        boothText.attr('transform', `rotate(-45, ${boothText.attr('x')}, ${boothText.attr('y')})`);
       }
     }
   }
@@ -172,9 +146,7 @@ export class MapAreaDirective implements AfterViewChecked {
   @HostListener('window:resize')
   onResize() {
     this.changeEventBlockSize();
-    this.changeBeaconBlockSize();
     this.changeBoothTextSize();
-    this.changeRadiusBlockSize();
   }
 
 }

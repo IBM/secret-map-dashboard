@@ -139,7 +139,7 @@ describe('HeatmapComponent', () => {
         component.colorHeatMap();
       }
       component.changeDegradedCell();
-      expect(component.getDegradedCellsSize()).toEqual((runSize2+runSize)-1);
+      expect(component.getDegradedCellsSize()).toEqual((runSize2 + runSize) - 1);
 
     });
 
