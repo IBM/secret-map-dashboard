@@ -1,6 +1,7 @@
 import { Component, OnInit, HostListener} from '@angular/core';
 import * as d3 from 'd3';
 import {setInterval} from 'timers';
+import { DashboardService } from '../dashboard.service';
 @Component({
   selector: 'app-heatmap',
   templateUrl: './heatmap.component.html',
@@ -44,16 +45,70 @@ export class HeatmapComponent implements OnInit {
       cards.enter().append('rect')
       .attr('x', function(d) { return (d['x'] - 1) * width / gridColumns; })
       .attr('y', function(d) {
-        return (d['y'] - 1) * height / gridRows; })
-      .attr('rx', 10)
-      .attr('ry', 10)
+        if (d['x'] >= 4 && d['y'] === 1) {
+          return 0;
+        }  else {
+          if (d['y'] === 0) {
+            return (d['y'] - 1) * height / gridRows;
+          }  else if (d['x'] >= 4 && d['y'] === 2) {
+            return (d['y'] - 1) * height / gridRows - ((d['y'] - 1) * height * 0.06);
+          }
+          return (d['y'] - 1) * height / gridRows - ((d['y'] - 1) * height * 0.02);
+        }
+      })
+      .attr('rx', 5)
+      .attr('ry', 5)
       .attr('width', width / gridColumns)
       .attr('height', function(d) {
-        return height / gridRows; } )
+        if (d['x'] >= 4 && d['y'] === 1) {
+          return 0;
+        } else {
+          if (d['x'] >= 4 && d['y'] === 2) {
+            return height / gridRows + (height * 0.03);
+          }
+          return height / gridRows - (height * 0.02);
+        }
+      })
       .attr('class', function(d){ return d['className']; })
       .style('stroke', '#E6E6E6')
       .style('stroke-width', '3')
       .style('fill', String(d3.rgb(255, 255, 255)));
+  }
+
+  public resizeGrid(): void {
+    const width = Math.floor(d3.select('.heatmap').property('clientWidth'));
+    const height = Math.floor(d3.select('.heatmap').property('clientHeight'));
+    const gridRows = Math.floor(height / (height / this.HEATMAP_ROWS));
+    const gridColumns = Math.floor(width / (width / this.HEATMAP_COLUMNS));
+    const heatmap = d3.select('.heatmap').select('g').selectAll('rect');
+    heatmap.each((data) => {
+      const gridCell = d3.select(`.${data['className']}`);
+      gridCell.attr('x', function (d) { return (d['x'] - 1) * width / gridColumns; })
+        .attr('y', function (d) {
+          if (d['x'] >= 4 && d['y'] === 1) {
+            return 0;
+          } else {
+            if (d['y'] === 0) {
+              return (d['y'] - 1) * height / gridRows;
+            } else if (d['x'] >= 4 && d['y'] === 2) {
+              return (d['y'] - 1) * height / gridRows - ((d['y'] - 1) * height * 0.06);
+            }
+            return (d['y'] - 1) * height / gridRows - ((d['y'] - 1) * height * 0.02);
+        }
+        })
+        .attr('width', width / gridColumns)
+        .attr('height', function (d) {
+          if (d['x'] >= 4 && d['y'] === 1) {
+            return 0;
+          } else {
+            if (d['x'] >= 4 && d['y'] === 2) {
+              return height / gridRows + (height * 0.03);
+            }
+            return height / gridRows - (height * 0.02);
+          }
+        });
+    });
+
   }
 
   /**
@@ -168,7 +223,7 @@ export class HeatmapComponent implements OnInit {
   */
   @HostListener('window:resize')
   public onResize(): void {
-    // this.makeGrid();
+    this.resizeGrid();
   }
 }
 

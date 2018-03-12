@@ -31,7 +31,6 @@ export class DashboardService {
       catchError(this.handleError<Conference>(`getConference eventId=${eventId}`)));
   }
 
-
   /**
  * GET total steps from the registeree server.
  */
@@ -42,7 +41,7 @@ export class DashboardService {
   }
 
 /**
- * GET total calories from the registeree server.
+ * GET total calories from the registeree-api server.
  */
   getTotalCalories(): Observable<object[]> {
     const url = `${this.API_URL}/registerees/totalCalories`;
@@ -51,12 +50,21 @@ export class DashboardService {
   }
 
   /**
- * GET total calories from the registeree server.
+ * GET total calories from the registeree-api server.
  */
   getTotalUsers(): Observable<object> {
     const url = `${this.API_URL}/registerees/totalUsers`;
     return this.http.get<object>(url)
       .pipe(catchError(this.handleError('getTotalUsers', {})));
+  }
+
+  /**
+   * * GET total beacon triggers from the map-api server.
+   * */
+  getTotalTriggers(): Observable<object> {
+    const url = `${this.API_URL}/triggers/total`;
+    return this.http.get<object>(url)
+      .pipe(catchError(this.handleError('getTotalTriggers', {})));
   }
 
   /**

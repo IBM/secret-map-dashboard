@@ -72,26 +72,6 @@ export class MapAreaDirective implements AfterViewChecked {
       }
     });
   }
-  // DO NOT NEED TO SHOW BEACON DOTS
-  //  /**
-  //  * Changes Beacon location in proporation to the window size
-  //  * @param parent - HTML Element
-  //  */
-  // changeBeaconBlockSize() {
-  //   const mapArea = d3.select('.mapArea');
-  //   if (mapArea.size() ===  0) {
-  //     return;
-  //   }
-  //   const beaconBlocks = mapArea.selectAll('.beaconBlock');
-  //   this.heightRatio = Math.floor(mapArea.property('clientHeight')) / this.mapHeight;
-  //   this.widthRatio = Math.floor(mapArea.property('clientWidth')) / this.mapWidth;
-  //   beaconBlocks.each((d, i) => {
-  //     const beaconBlock = d3.select(`#beaconBlock${i}`);
-  //     const index = i;
-  //     beaconBlock.attr('cy', Math.floor(this.beacons[index].y * (this.heightRatio + this.widthRatio) / 2));
-  //     beaconBlock.attr('cx', Math.floor(this.beacons[index].x * (this.heightRatio + this.widthRatio) / 2));
-  //   });
-  // }
 
    /**
    * Centers booth description
