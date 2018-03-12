@@ -14,6 +14,25 @@ chmod +x clean.sh
 ./build.sh
 ```
 
+### Add compactions for CouchDB instances
+
+In browser, open the web UI for all the couchdb instances and add the compaction rule.
+
+For eg:
+* Open  ```http://<IPAddress>:<Port>/_utils```
+* Now select the Configuration tab and click on the `Add Option` button.
+* Provide the following values for the input fields:
+```
+Selection: compactions
+Option: _default
+Value: [{db_fragmentation, "30%"}, {view_fragmentation, "30%"}]
+```
+* Now using terminal, do the following curl request for all the DB's:
+Format :
+```
+curl -H "Content-Type: application/json" -X POST http://<IPAddress>:<Port>/<DBName>/_compact
+```
+
 ###  Check the logs
 
 **Command**
@@ -126,23 +145,15 @@ Now navigate to url to perform operations on network : **http://localhost:8000/t
 **Invoke Operation**
 ```
 type = invoke
-userId = admin
-fcn = move
-args = a,b,10
+userId = <userID> i.e. user1
+fcn = generateFitcoins
+args = <userID>,<Number as String> i.e. user1,"500"
 ```
 
 **Query Operation**
 ```
 type = query
-userId = admin
-fcn = query
-args = a
-```
-
-**Query Operation**
-```
-type = query
-userId = admin
-fcn = query
-args = b
+userId = <userID> i.e. user1
+fcn = getState
+args = <userID> i.e. user1
 ```
