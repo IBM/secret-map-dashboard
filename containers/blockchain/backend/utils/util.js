@@ -144,7 +144,7 @@ export async function createConnection(client, clientNo) {
             });*/
           var options = {
               method: 'GET',
-              uri: iotDashUrl+data
+              uri: config.iotDashUrl + data
           }
           request(options, function (error, response, body) {
               console.log('error:', error); // null if no error occurs, else print error
