@@ -43,24 +43,9 @@ const utils = require('./utils/util');
     });
     peer.clients.eventEmitter.on('block', block => {
       blockEvent.emit('block', JSON.stringify(block));
-      if(process.env.SENDTOIOT === "true") {
-        sendToIoTDashboard(JSON.stringify(block));
-      }
     });
   }
   for(var i = 0; i < peer.clients.workers.length; i++) {
     await utils.createConnection(peer.clients.workers[i], "Client" + i);
-  }
-  // pass params to iot dashboard
-  function sendToIoTDashboard(data) {
-    var url = config.iotDashUrl + data;
-    request.get(url).on('error', function (err) {
-      console.error(err);
-    });
-    /*request(options, function (error, response, body) {
-      console.log('error:', error); // null if no error occurs, else print error
-      console.log('statusCode:', response && response.statusCode); // print the response status code
-      console.log('body:', body); // print the output body on console
-    });*/
   }
 })();
