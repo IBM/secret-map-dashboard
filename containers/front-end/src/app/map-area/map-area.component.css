@@ -4,24 +4,11 @@
   stroke: rgb(50,50,50);
 }
 
-.beaconBlock {
-  fill: rgb(255, 0, 0);
-  stroke-width: 2px;
-  stroke: rgb(255, 0, 0);
-}
-
-.radiusBlock {
-  fill: rgb(255, 0, 0);
-  stroke-width: 4px;
-  stroke: rgb(255, 0, 0);
-  opacity: 0.2;
-}
-
-.boothText{
+.boothText {
   fill: rgb(235,235,235);
-  stroke-width: 1px;
+  stroke-width: 0.60px;
   stroke: rgb(50,50,50);
-  font-size: calc(0.39vw + 0.39vh + 0.39vmin);
+  font-size: calc(0.27vw + 0.27vh + 0.27vmin);
 }
 
 .mapArea {

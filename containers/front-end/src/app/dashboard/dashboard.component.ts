@@ -41,7 +41,6 @@ export class DashboardComponent implements OnInit {
     this.conferenceAttendees = 0;  // initialization will change to getConferenceAttendees()
     this.totalDistance = 0;
     this.getSideDisplayInfo();
-    this.getConferenceAttendees();
     this.getConference();
   }
 
@@ -51,7 +50,10 @@ export class DashboardComponent implements OnInit {
   getConference(): void {
     const eventId = this.route.snapshot.paramMap.get('eventId');
     this.dashboardService.getConference(eventId)
-    .subscribe( conference => this.conference = conference);
+    .subscribe( conference => {
+      this.conference = conference;
+      console.log(this.conference);
+    });
   }
 
    /**
@@ -60,22 +62,33 @@ export class DashboardComponent implements OnInit {
    */
   getSideDisplayInfo(): void {
     this.sideDisplayInterval = setInterval(() => {
-      this.steps += (4 * this.conferenceAttendees);
+      // this.steps += (4 * this.conferenceAttendees);
+      this.getTotalSteps();
       this.calories = Math.floor(this.steps / 20);
       this.totalDistance = Math.floor(this.steps / 1320);
+      this.getTotalUsers();
     }
     , 1000);
   }
 
-   /**
-   * Increments the value of conferenceAttendees every second by 4
-   */
-  getConferenceAttendees(): void {
-    this.MainDisplayInterval = setInterval(() => {
-      if (this.conferenceAttendees < 500) {
-        this.conferenceAttendees += 1;
-      }
-    }, 1000);
+  /**
+* Increments the value of conferenceAttendees every second by 4
+*/
+  getTotalSteps(): void {
+    this.dashboardService.getTotalSteps()
+      .subscribe(steps => {
+        this.steps = steps[0]['count'];
+      });
+  }
+
+/**
+* Increments the value of conferenceAttendees every second by 4
+*/
+  getTotalUsers(): void {
+    this.dashboardService.getTotalUsers()
+      .subscribe(users => {
+        this.conferenceAttendees = users['count'];
+      });
   }
 
 }

@@ -1,4 +1,9 @@
-<svg class="mapArea" appMapArea [booths]="booths" [beacons]="beacons" [eventName]="eventName">
+<svg class="mapArea" 
+    appMapArea [booths]="booths" 
+    [beacons]="beacons" 
+    [eventName]="eventName"
+    [mapHeight]="mapHeight"
+    [mapWidth]="mapWidth">
 
     <g *ngFor="let booth of booths;let i = index">
         <rect *ngIf="booth.shape['type'] === 'rectangle'"
@@ -38,32 +43,14 @@
         </polygon>
     </g>
 
-    <g>
-      <circle *ngFor="let beacon of beacons; let i = index"
-      [attr.cx]="beacon.x"
-      [attr.cy]="beacon.y"
-      [attr.r]= 4
-      class="beaconBlock"
-      [id]="'beaconBlock' + i">
-      </circle>
-    </g>
-
     <g *ngFor="let booth of booths; let i = index">
       <text
         class="boothText"
-        [id]="'boothText' + i"> 
+        [id]="'boothText' + i"
+         alignment-baseline='middle' 
+         text-anchor='middle'> 
         {{booth.description}}
       </text>
-    </g>
-
-    <g>
-      <circle *ngFor="let beacon of beacons; let i = index"
-      [attr.cx]="beacon.x"
-      [attr.cy]="beacon.y"
-      [attr.r]= 250
-      class="radiusBlock"
-      [id]="'radiusBlock' + i">
-      </circle>
     </g>
 </svg>
 
