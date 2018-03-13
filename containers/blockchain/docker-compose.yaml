@@ -15,34 +15,6 @@ services:
         max-size: "1m"
         max-file: "10"
 
-  fitcoin-ledger:
-    container_name: fitcoin-ledger
-    image: hyperledger/fabric-couchdb:x86_64-1.0.6
-    environment:
-      - COUCHDB_USER=
-      - COUCHDB_PASSWORD=
-    ports:
-      - 6984:5984
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1m"
-        max-file: "10"
-
-  shop-ledger:
-    container_name: shop-ledger
-    image: hyperledger/fabric-couchdb:x86_64-1.0.6
-    environment:
-      - COUCHDB_USER=
-      - COUCHDB_PASSWORD=
-    ports:
-      - 7984:5984
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "1m"
-        max-file: "10"
-
   fitcoin-statedb:
     container_name: fitcoin-statedb
     image: hyperledger/fabric-couchdb:x86_64-1.0.6
@@ -211,7 +183,7 @@ services:
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=shop-peer:7051
       - CORE_PEER_LOCALMSPID=ShopOrgMSP
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=shop-ledger:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=shop-statedb:5984
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
@@ -237,7 +209,6 @@ services:
     - orderer0
     - shop-ca
     - ca-datastore
-    - shop-ledger
     - shop-statedb
     logging:
       driver: "json-file"
@@ -254,7 +225,7 @@ services:
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=fitcoin-peer:7051
       - CORE_PEER_LOCALMSPID=FitCoinOrgMSP
       - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
-      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=fitcoin-ledger:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=fitcoin-statedb:5984
       - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=
       - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
@@ -281,7 +252,6 @@ services:
       - fitcoin-ca
       - shop-peer
       - ca-datastore
-      - fitcoin-ledger
       - fitcoin-statedb
     logging:
       driver: "json-file"
@@ -305,9 +275,7 @@ services:
     - fitcoin-ca
     - fitcoin-peer
     - ca-datastore
-    - shop-ledger
     - shop-statedb
-    - fitcoin-ledger
     - fitcoin-statedb
     secrets:
       - config
