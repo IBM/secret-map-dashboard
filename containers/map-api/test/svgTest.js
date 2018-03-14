@@ -69,7 +69,7 @@ describe('SVGs', () => {
         .end((err, res) => {
           res.should.have.status(200);
           res.text.should.be.a('String');
-          res.text.should.be.eql("<svg width='5' height='5'><rect x='0' y='0' width='3' height='3' fill='#CCB3B3' /><text x='1.5' y='1.5' transform='rotate(-45 1.5,1.5)' alignment-baseline='middle' text-anchor='middle'    fill='blue' font-size='0.75vw' font-family='sans-serif'>Node</text></svg>");
+          res.text.should.be.eql("<svg width='5' height='5'><rect fill='none' x='0' y ='0' width='5' height= '5' stroke='#999999' /><rect x='0' y='0' width='3' height='3' fill='#DEDEDE' stroke='#999999' /><text x='1.5' y='1.5'    fill='black' font-size='20pt' font-family='sans-serif'><tspan dy='0' x='1.5' alignment-baseline='middle' text-anchor='middle'>Node</tspan></text></svg>");
           done();
         });
     });
