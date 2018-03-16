@@ -130,24 +130,23 @@ func (t *SimpleChaincode) generateFitcoins(stub shim.ChaincodeStubInterface, arg
 
 	//update user account
 	var newSteps = newTransactionSteps - user.StepsUsedForConversion
-	if newSteps > STEPS_TO_FITCOIN {
+	user.TotalSteps = newTransactionSteps
+	if newSteps >= STEPS_TO_FITCOIN {
 		var newFitcoins = newSteps / STEPS_TO_FITCOIN
 		var remainderSteps = newSteps % STEPS_TO_FITCOIN
 		user.FitcoinsBalance = user.FitcoinsBalance + newFitcoins
 		user.StepsUsedForConversion = newTransactionSteps - remainderSteps
-		user.TotalSteps = newTransactionSteps
 
-		//update users state
-		updatedUserAsBytes, _ := json.Marshal(user)
-		err = stub.PutState(user_id, updatedUserAsBytes)
-		if err != nil {
-			return shim.Error(err.Error())
-		}
-
-		//return user info
-		return shim.Success(updatedUserAsBytes)
 	}
 
-	return shim.Success(userAsBytes)
+	//update users state
+	updatedUserAsBytes, _ := json.Marshal(user)
+	err = stub.PutState(user_id, updatedUserAsBytes)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+
+	//return user info
+	return shim.Success(updatedUserAsBytes)
 
 }
