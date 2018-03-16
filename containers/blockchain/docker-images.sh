@@ -46,6 +46,7 @@ if [ $DOWNLOAD ]; then
 
     echo "===> Pulling fabric ca Image"
     dockerCaPull ${CA_TAG}
+    docker pull ishangulhane/fabric-couchdb
     echo
     echo "===> List out hyperledger docker images"
     docker images | grep hyperledger*
