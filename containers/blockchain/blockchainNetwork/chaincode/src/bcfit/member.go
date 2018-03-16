@@ -130,23 +130,38 @@ func (t *SimpleChaincode) generateFitcoins(stub shim.ChaincodeStubInterface, arg
 
 	//update user account
 	var newSteps = newTransactionSteps - user.StepsUsedForConversion
-	user.TotalSteps = newTransactionSteps
+	var newFitcoins = 0
 	if newSteps >= STEPS_TO_FITCOIN {
-		var newFitcoins = newSteps / STEPS_TO_FITCOIN
+		newFitcoins = newSteps / STEPS_TO_FITCOIN
 		var remainderSteps = newSteps % STEPS_TO_FITCOIN
 		user.FitcoinsBalance = user.FitcoinsBalance + newFitcoins
 		user.StepsUsedForConversion = newTransactionSteps - remainderSteps
+		user.TotalSteps = newTransactionSteps
 
+		//update users state
+		updatedUserAsBytes, _ := json.Marshal(user)
+		err = stub.PutState(user_id, updatedUserAsBytes)
+		if err != nil {
+			return shim.Error(err.Error())
+		}
 	}
 
-	//update users state
-	updatedUserAsBytes, _ := json.Marshal(user)
-	err = stub.PutState(user_id, updatedUserAsBytes)
-	if err != nil {
-		return shim.Error(err.Error())
+	//return updated user with GeneratedFitcoins and GeneratedSteps
+	type ReturnUser struct {
+		User
+		GeneratedFitcoins			 int      `json:"generatedFitcoins"`
 	}
+	var returnUser ReturnUser
 
-	//return user info
-	return shim.Success(updatedUserAsBytes)
+	returnUser.Id = user.Id
+	returnUser.Type = user.Type
+	returnUser.FitcoinsBalance = user.FitcoinsBalance
+	returnUser.TotalSteps = user.TotalSteps
+	returnUser.StepsUsedForConversion = user.StepsUsedForConversion
+	returnUser.ContractIds = user.ContractIds
+	returnUser.GeneratedFitcoins = newFitcoins
+
+	returnUserBytes, _ := json.Marshal(returnUser)
+	return shim.Success(returnUserBytes)
 
 }
