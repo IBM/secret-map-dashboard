@@ -19,6 +19,6 @@ docker-compose -p "fitcoin" up -d --scale fitcoin-backend=3
 sleep 1s
 docker-compose -p "fitcoin" up -d --scale fitcoin-backend=4
 sleep 1s
-#docker-compose -p "fitcoin" up -d --scale fitcoin-backend=5
-#sleep 1s
+docker-compose -p "fitcoin" up -d --scale fitcoin-backend=5
+sleep 1s
 docker ps
