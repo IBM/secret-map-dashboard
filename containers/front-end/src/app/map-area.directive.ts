@@ -1,4 +1,4 @@
-import { Directive, Input, ElementRef, AfterViewChecked, HostListener} from '@angular/core';
+import { Directive, Input, ElementRef, AfterViewChecked, HostListener, OnInit} from '@angular/core';
 import { forEach } from '@angular/router/src/utils/collection';
 import { interceptingHandler } from '@angular/common/http/src/module';
 import * as d3 from 'd3';
@@ -26,7 +26,7 @@ export class MapAreaDirective implements AfterViewChecked {
    */
   ngAfterViewChecked() {
     this.changeEventBlockSize();
-    this.changeBoothTextSize();
+    this.changeTspanTextSize();
   }
 
    /**
@@ -39,7 +39,7 @@ export class MapAreaDirective implements AfterViewChecked {
       return;
     }
     const eventBlocks = mapArea.selectAll('.eventBlock');
-    this.heightRatio = Math.floor(mapArea.property('clientHeight')) / this.mapHeight + 0.025;
+    this.heightRatio = Math.floor(mapArea.property('clientHeight')) / this.mapHeight;
     this.widthRatio = Math.floor(mapArea.property('clientWidth')) / this.mapWidth;
     eventBlocks.each((d, i) => {
       const eventBlock = d3.select(`#eventBlock${i}`);
@@ -73,13 +73,13 @@ export class MapAreaDirective implements AfterViewChecked {
     });
   }
 
-   /**
-   * Centers booth description
-   * @param parent - HTML Element
-   */
-  changeBoothTextSize() {
+  /**
+* Centers booth description
+* @param parent - HTML Element
+*/
+  changeTspanTextSize() {
     const mapArea = d3.select('.mapArea');
-    if (mapArea.size() ===  0) {
+    if (mapArea.size() === 0) {
       return;
     }
     const boothTexts = mapArea.selectAll('.boothText');
@@ -90,31 +90,39 @@ export class MapAreaDirective implements AfterViewChecked {
     let centerEventBlockHeight = 0;
     let centerEventBlockWidth = 0;
 
-    for (let i = 0; i < boothTexts.size(); i++ ) {
-      const boothText = d3.select(`#boothText${ i }`);
-      const eventBlock = d3.select(`#eventBlock${ i }`);
-      if (eventBlock.attr('name') === 'circle' ) {
+    for (let i = 0; i < boothTexts.size(); i++) {
+      const boothText = d3.select(`#boothText${i}`);
+      const eventBlock = d3.select(`#eventBlock${i}`);
+      const tspans = boothText.selectAll('.tspanText');
+      if (eventBlock.attr('name') === 'circle') {
         centerEventBlockHeight = Number(eventBlock.attr('cy')) + Number(eventBlock.attr('r')) / 2;
-        centerEventBlockWidth = Number(eventBlock.attr('cx')) + Number(eventBlock.attr('r')) / 2 ;
-        boothText.attr('x', Math.floor(centerEventBlockWidth -  boothTexts['_groups'][0][i].getBoundingClientRect().width / 2));
-        boothText.attr('y', Math.floor(centerEventBlockHeight));
-      } else if ( eventBlock.attr('name') === 'ellipse' ) {
+        centerEventBlockWidth = Number(eventBlock.attr('cx')) + Number(eventBlock.attr('r')) / 2;
+      } else if (eventBlock.attr('name') === 'ellipse') {
         centerEventBlockHeight = Number(eventBlock.attr('cy')) + Number(eventBlock.attr('ry')) / 2;
-        centerEventBlockWidth = Number(eventBlock.attr('cx')) + Number(eventBlock.attr('rx')) / 2 ;
-        boothText.attr('x', Math.floor(centerEventBlockWidth - boothTexts['_groups'][0][i].getBoundingClientRect().width));
-        boothText.attr('y', Math.floor(centerEventBlockHeight));
-      } else if ( eventBlock.attr('name') === 'polygon' ) {
+        centerEventBlockWidth = Number(eventBlock.attr('cx')) + Number(eventBlock.attr('rx')) / 2;
+      } else if (eventBlock.attr('name') === 'polygon') {
         centerEventBlockHeight = eventBlocks['_groups'][0][i].getBoundingClientRect().top;
         centerEventBlockWidth = eventBlocks['_groups'][0][i].getBoundingClientRect().left +
-        eventBlocks['_groups'][0][i].getBoundingClientRect().width / 2;
-        boothText.attr('x', Math.floor(centerEventBlockWidth ));
-        boothText.attr('y', Math.floor(centerEventBlockHeight ));
+          eventBlocks['_groups'][0][i].getBoundingClientRect().width / 2;
       } else {
         centerEventBlockHeight = Number(eventBlock.attr('y')) + Number(eventBlock.attr('height')) / 2;
-        centerEventBlockWidth = Number(eventBlock.attr('x')) + Number(eventBlock.attr('width')) / 2 ;
-        boothText.attr('x', Math.floor(centerEventBlockWidth));
-        boothText.attr('y', Math.floor(centerEventBlockHeight));
-        boothText.attr('transform', `rotate(-45, ${boothText.attr('x')}, ${boothText.attr('y')})`);
+        centerEventBlockWidth = Number(eventBlock.attr('x')) + Number(eventBlock.attr('width')) / 2;
+      }
+
+      boothText.attr('x', Math.floor(centerEventBlockWidth));
+      boothText.attr('y', Math.floor(centerEventBlockHeight));
+      for (let x = 0; x < tspans.size(); x++) {
+          const tspanText = boothText.select(`#tspanText${x}`);
+          let dy = '1.2em';
+          if (x === 0 && tspans.size() === 3) {
+            dy = '-1.2em';
+          } else if (x === 0 && tspans.size() === 2) {
+            dy = '-0.6em';
+          } else if (x === 0 && tspans.size() === 1) {
+            dy = '0';
+          }
+          tspanText.attr('dy', dy)
+            .attr('x', Math.floor(centerEventBlockWidth));
       }
     }
   }
@@ -126,7 +134,7 @@ export class MapAreaDirective implements AfterViewChecked {
   @HostListener('window:resize')
   onResize() {
     this.changeEventBlockSize();
-    this.changeBoothTextSize();
+    this.changeTspanTextSize();
   }
 
 }

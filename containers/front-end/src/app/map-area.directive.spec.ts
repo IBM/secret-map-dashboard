@@ -5,6 +5,10 @@ import { MapAreaComponent } from './map-area/map-area.component';
 import { HeatmapComponent } from './heatmap/heatmap.component';
 // Directives
 import { MapAreaDirective } from './map-area.directive';
+import { HttpClientModule } from '@angular/common/http';
+import { DashboardService } from './dashboard.service';
+import { APP_BASE_HREF } from '@angular/common';
+import { AppRoutingModule } from './app-routing.module';
 
 describe('MapAreaDirective', () => {
   let element, fixture;
@@ -14,7 +18,9 @@ describe('MapAreaDirective', () => {
     TestBed.configureTestingModule({
         declarations: [ MapAreaComponent,
           MapAreaDirective,
-          HeatmapComponent]
+          HeatmapComponent],
+      providers: [DashboardService],
+      imports: [HttpClientModule]
       });
     fixture = TestBed.createComponent(MapAreaComponent);
     element = fixture.nativeElement;

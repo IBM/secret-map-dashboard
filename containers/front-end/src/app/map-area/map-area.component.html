@@ -43,15 +43,30 @@
         </polygon>
     </g>
 
-    <g *ngFor="let booth of booths; let i = index">
+    <!-- <g *ngFor="let booth of booths; let i = index">
       <text
         class="boothText"
         [id]="'boothText' + i"
          alignment-baseline='middle' 
-         text-anchor='middle'> 
-        {{booth.description}}
+         text-anchor='middle'
+         [attr.value]="booth.unit">
+      {{booth.unit}} 
       </text>
+    </g> -->
+
+    <g *ngFor="let booth of booths; let i = index">
+        <text class="boothText" [id]="'boothText' + i">
+            <tspan *ngFor="let text of booth.unit.split(' '); let j = index"
+            class="tspanText"
+            alignment-baseline='middle'
+            text-anchor='middle'
+            [id]="'tspanText' + j"
+            [attr.value]="text">
+            {{text}}
+          </tspan>
+        </text>
     </g>
+
 </svg>
 
 <app-heatmap class="heatmapArea"></app-heatmap>
