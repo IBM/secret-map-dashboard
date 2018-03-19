@@ -3,7 +3,7 @@
   height: 15%;
   display: flex;
   flex-direction: column;
-  border-bottom: 0.3vh rgb(0, 0, 0) solid;
+  border-bottom: 0.3vh #003BC9  solid;
 }
 
 .mainDisplayMapContainer{
@@ -21,7 +21,7 @@
   margin-left: 2em;
   display: flex;
   flex-direction: row;
-  color: rgb(0, 0, 0);
+  color: #6E177D ;
   font-size: calc(1vw + 1vh + 1vmin);
 }
 

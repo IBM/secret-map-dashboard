@@ -2,15 +2,15 @@
     height: 33.3%;
     display: flex;
     flex-direction: column;
-    border-bottom: 0.3vh rgb(0, 0, 0) solid;
-    border-left: 0.25vw rgb(0, 0, 0)solid;
+    border-bottom: 0.3vh #003BC9 solid;
+    border-left: 0.25vw #003BC9 solid;
 }
 
 .sideBlockBottom{
   height: 33.3%;
   display: flex;
   flex-direction: column;
-  border-left: 0.25vw rgb(0, 0, 0) solid;
+  border-left: 0.25vw #003BC9 solid;
 }
 
 .sideBlockPriateImage{
@@ -35,7 +35,7 @@
   align-items: center;
   align-content: center;
   justify-content: center;
-  color: rgb(50, 50, 50) ;
+  color: rgb(110, 23, 125) ;
   font-size: calc(0.75vw + 0.75vh + 0.75vmin);
 }
   
@@ -46,7 +46,7 @@
   align-items: center;
   align-content: center;
   justify-content: center;
-  color: rgb(50, 50, 50) ;
+  color: #6E177D;
   font-size: calc(0.75vw + 0.75vh + 0.75vmin);
 }
 
@@ -66,6 +66,6 @@
   align-items: center;
   align-content: center;
   justify-content: center;
-  color: rgb(50, 50, 50) ;
+  color: #6E177D ;
   font-size: calc(0.75vw + 0.75vh + 0.75vmin);
 }

@@ -14,7 +14,7 @@ export class HomepageComponent implements OnInit {
   conferences: Conference[];
 
   constructor(private dashboardService: DashboardService) {
-   }
+  }
 
    /**
    * Initializes component by requesting data from the map-api server

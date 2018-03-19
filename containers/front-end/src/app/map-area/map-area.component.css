@@ -1,19 +1,21 @@
 .eventBlock {
-  fill: #3064A5;
+  /* fill: #3064A5;
+   */
+  fill: #003BC9;
   stroke-width: 2px;
   stroke: rgb(50,50,50);
 }
 
 .boothText {
   fill: rgb(235,235,235);
-  stroke-width: 0.60px;
+  stroke-width: 0.70px;
   stroke: rgb(50,50,50);
-  font-size: calc(0.27vw + 0.27vh + 0.27vmin);
+  font-size: calc(0.30vw + 0.30vh + 0.30vmin);
 }
 
 .mapArea {
   margin: auto;
-  height: 82vh;
+  height: 84vh;
   width: 78vw;
   display: flex;
   flex-direction: column;
