@@ -133,3 +133,7 @@ _Application will be served on http://localhost:4200_
 ## Unit tests
 
 * `npm run test`
+
+
+## IoT/Analytics dashboards
+IoT app will require a separate setup. Please check the iot-analytics-node-red-json folder for more information on how you can start using IoT as part of this project.
