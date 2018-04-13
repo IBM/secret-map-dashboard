@@ -7,13 +7,6 @@ services:
   - docker
   - mongodb
 
-addons:
-  apt:
-    sources:
-      - debian-sid
-    packages:
-      - shellcheck
-
 matrix:
   fast_finish: true
 
@@ -21,6 +14,10 @@ matrix:
 #   - TEST_RUN="./tests/test-docker.sh"
 
 before_install:
+
+  - curl -sSL "https://ftp-master.debian.org/keys/archive-key-7.0.asc" | sudo -E apt-key add -
+  - echo "deb http://ftp.us.debian.org/debian unstable main contrib non-free" | sudo tee -a /etc/apt/sources.list > /dev/null
+  - sudo apt-get install shellcheck=0.3.3-1~ubuntu14.04.1
   - npm install eslint html-lint csslint
   - sudo pip install yamllint
   - export CHROME_BIN=chromium-browser
