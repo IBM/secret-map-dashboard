@@ -86,7 +86,7 @@ input = {
   params: {
     userId: userId,
     fcn: makePurchase
-    args: userId, sellerId, productId, quantity
+    args: userId, sellerId, productId, quantity, contractID
   }
 }
 ```
@@ -95,6 +95,7 @@ input = {
 - userID
 - productID - the id of product with seller, picked by user through interface
 - quantity - picked by user through interface
+- contractID - must start with `c` and then `six digits` i.e c111111 or c123456
 
 
 ### Seller invoke calls
