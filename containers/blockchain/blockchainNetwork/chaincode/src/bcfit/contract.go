@@ -22,10 +22,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"math/rand"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	pb "github.com/hyperledger/fabric/protos/peer"
@@ -33,17 +31,18 @@ import (
 
 // ============================================================================================================================
 // Make Purchase - creates purchase Contract
-// Inputs - userID, sellerID, productID, quantity
+// Inputs - userID, sellerID, productID, quantity, contractID
+// contractID must be in format c and then six digits i.e c123456)
 // ============================================================================================================================
 func (t *SimpleChaincode) makePurchase(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	if len(args) != 4 {
+	if len(args) != 5 {
 		return shim.Error("Incorrect number of arguments")
 	}
 	var err error
 
 	//creates contract struct with properties, and get sellerID, userID, productID, quantity from args
 	var contract Contract
-	contract.Id = "c" + randomInts(6)
+	//contract.Id = "c" + randomInts(6)
 	contract.UserId = args[0]
 	contract.SellerId = args[1]
 	contract.ProductId = args[2]
@@ -52,6 +51,32 @@ func (t *SimpleChaincode) makePurchase(stub shim.ChaincodeStubInterface, args []
 		return shim.Error("4th argument 'quantity' must be a numeric string")
 	}
 	contract.Quantity = quantity
+
+	contract.Id = strings.ToLower(args[4])
+
+	//contract id must be in format c and then six digits i.e c123456
+	contractIDarray := strings.SplitAfter(contract.Id, "c")
+	if len(contractIDarray) != 2 {
+		return shim.Error("Incorrect contract ID format")
+	} else if contractIDarray[0] != "c" {
+			return shim.Error("Incorrect contract ID format")
+	} else if len(contractIDarray[1]) != 6 {
+			return shim.Error("Incorrect contract ID format")
+	} else if _, err := strconv.Atoi(contractIDarray[1]); err != nil {
+			return shim.Error("Incorrect contract ID format")
+	}
+
+	//check if contract id already exists
+	var existingContract Contract
+	existingContractAsBytes, err := stub.GetState(contract.Id)
+	if err != nil {
+		return shim.Error("Failed getting constract state")
+	}
+	json.Unmarshal(existingContractAsBytes, &existingContract)
+	if contract.Id == existingContract.Id {
+		return shim.Error("contract id already exists")
+	}
+
 
 	//get seller
 	sellerAsBytes, err := stub.GetState(contract.SellerId)
@@ -310,24 +335,4 @@ func (t *SimpleChaincode) getAllContracts(stub shim.ChaincodeStubInterface, args
 	contractsAsBytes, _ := json.Marshal(contracts)
 	return shim.Success(contractsAsBytes)
 
-}
-
-//generate an array of random ints
-func randomArray(len int) []int {
-	a := make([]int, len)
-	for i := 0; i <= len-1; i++ {
-		a[i] = rand.Intn(10)
-	}
-	return a
-}
-
-// Generate a random string of ints with length len
-func randomInts(len int) string {
-	rand.Seed(time.Now().UnixNano())
-	intArray := randomArray(len)
-	var stringInt []string
-	for _, i := range intArray {
-		stringInt = append(stringInt, strconv.Itoa(i))
-	}
-	return strings.Join(stringInt, "")
 }
